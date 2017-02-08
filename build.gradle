@@ -14,15 +14,37 @@ buildscript {
 apply plugin: "us.ihmc.gradle.ihmc-build"
 
 sourceCompatibility = 1.8
-version = '1.0'
+version = '0.9'
+
+project.ext.fullVersion = version
+project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-continuous-integration-framework"
+project.ext.licenseURL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+project.ext.licenseName = "Apache License, Version 2.0"
+project.ext.bintrayLicenseName = "Apache-2.0"
+
+jar {
+   manifest {
+      attributes(
+      "Created-By": "IHMC Gradle Build Script",
+      "Implementation-Title": project.name,
+      "Implementation-Version": project.version,
+      "Implementation-Vendor": "IHMC",
+
+      "Bundle-Name": project.name,
+      "Bundle-Version": project.version,
+      "Bundle-License": "http://www.apache.org/licenses/LICENSE-2.0.txt",
+      "Bundle-Vendor": "IHMC")
+   }
+}
+
+task sourceJar(type: Jar) {
+   from sourceSets.main.allJava
+}
+
+def labels = ['ihmc', 'robotics', 'java', 'infrastructure']
+ihmc.configureForIHMCOpenSourceBintrayPublish(false, "mavenJava", "maven-release", labels)
 
 repositories ihmc.ihmcDefaultArtifactProxies()
-
-repositories {
-    maven {
-        url "http://artifactory.ihmc.us/artifactory/thirdparty/"
-    }
-}
 
 repositories {
     mavenLocal()

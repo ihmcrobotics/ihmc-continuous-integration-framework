@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
-version = '0.9.2'
+version = '0.9.3'
 
 project.ext.fullVersion = version
 project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-continuous-integration-framework"
@@ -15,15 +15,15 @@ project.ext.licenseName = "Apache License, Version 2.0"
 project.ext.bintrayLicenseName = "Apache-2.0"
 
 project.sourceSets {
-   testsrc {
+   testUtil {
       java {
-         srcDirs = ['test-src']
+         srcDirs = ['test-util']
       }
    }
 }
 
 jar {
-   from sourceSets.testsrc.output
+   from sourceSets.testUtil.output
    manifest {
       attributes(
       "Created-By": "IHMC Gradle Build Script",
@@ -39,7 +39,7 @@ jar {
 }
 
 task sourceJar(type: Jar) {
-   from sourceSets.testsrc.allJava
+   from sourceSets.testUtil.allJava
 }
 
 publishing {
@@ -84,5 +84,5 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testUtilCompile group: 'junit', name: 'junit', version: '4.11'
 }

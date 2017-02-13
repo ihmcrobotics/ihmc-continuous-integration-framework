@@ -15,7 +15,7 @@ project.ext.licenseName = "Apache License, Version 2.0"
 project.ext.bintrayLicenseName = "Apache-2.0"
 
 project.sourceSets {
-   test-src {
+   testsrc {
       java {
          srcDirs = ['test-src']
       }
@@ -23,7 +23,7 @@ project.sourceSets {
 }
 
 jar {
-   from sourceSets.test-src.output
+   from sourceSets.testsrc.output
    manifest {
       attributes(
       "Created-By": "IHMC Gradle Build Script",
@@ -39,7 +39,7 @@ jar {
 }
 
 task sourceJar(type: Jar) {
-   from sourceSets.test-src.allJava
+   from sourceSets.testsrc.allJava
 }
 
 publishing {

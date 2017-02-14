@@ -72,7 +72,7 @@ publishing {
 	}
 }
 
-def labels = ['ihmc', 'robotics', 'java', 'infrastructure']
+def labels = ['ihmc', 'java', 'infrastructure', 'continuous', 'integration', 'devops']
 ihmc.configureForIHMCOpenSourceBintrayPublish(false, "mavenJava", "maven-release", labels)
 
 repositories ihmc.ihmcDefaultArtifactProxies()

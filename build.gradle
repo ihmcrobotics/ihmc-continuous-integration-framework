@@ -1,109 +1,28 @@
 plugins {
-   id "us.ihmc.gradle.ihmc-build" version "0.0.19"
+   id 'us.ihmc.gradle.ihmc-build' version '0.0.29'
 }
 
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+ihmc.applyJavaPlugins(project)
 
-sourceCompatibility = 1.8
-version = '0.9.4'
+group = 'us.ihmc'
+version = '0.10.0'
 
-project.ext.fullVersion = version
 project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-continuous-integration-framework"
 project.ext.licenseURL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
 project.ext.licenseName = "Apache License, Version 2.0"
-project.ext.bintrayLicenseName = "Apache-2.0"
-project.ext.publicationName = "ihmc-continuous-integration-framework"
+project.ext.companyName = "IHMC"
+project.ext.maintainer = "Duncan Calvert"
 
-jar {
-   manifest {
-      attributes(
-              "Created-By": "IHMC Gradle Build Script",
-              "Implementation-Title": project.name,
-              "Implementation-Version": project.version,
-              "Implementation-Vendor": "IHMC",
+ihmc.setupCommonArtifactProxies(project)
 
-              "Bundle-Name": project.ext.publicationName,
-              "Bundle-Version": project.version,
-              "Bundle-License": "http://www.apache.org/licenses/LICENSE-2.0.txt",
-              "Bundle-Vendor": "IHMC")
-   }
-}
+ihmc.setupJavaSourceSets(project)
 
-task sourceJar(type: Jar) {
-   from sourceSets.main.allJava
-}
+ihmc.setupCommonJARConfiguration(project)
 
-publishing {
-   publications {
-      mavenJava(MavenPublication) {
-         groupId 'us.ihmc'
-         artifactId project.ext.publicationName
-         version "$version"
-         from components.java
+ihmc.declareBintray(project)
 
-         pom.withXml {
-            asNode().children().last() + {
-               resolveStrategy = Closure.DELEGATE_FIRST
-               name project.name
-               url 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'
-               licenses {
-                  license {
-                     name 'Apache License, Version 2.0'
-                     url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                     distribution 'repo'
-                  }
-               }
-            }
-         }
-
-         artifact sourceJar {
-            classifier "sources"
-         }
-      }
-   }
-}
-
-bintray {
-   user = bintray_user
-   key = bintray_key
-
-   dryRun = false
-   publish = false
-
-   publications = ["mavenJava"]
-
-   pkg {
-      repo = "maven-release"
-      name = project.ext.publicationName
-      userOrg = 'ihmcrobotics'
-      desc = "IHMC Open Robotics Software Project ${project.name}"
-
-      websiteUrl = project.ext.vcsUrl
-      issueTrackerUrl = "${project.ext.vcsUrl}/issues"
-      vcsUrl = "${project.ext.vcsUrl}.git"
-
-      licenses = [project.ext.bintrayLicenseName]
-      labels = ['ihmc', 'java', 'infrastructure', 'continuous', 'integration', 'devops']
-      publicDownloadNumbers = true
-
-      version {
-         name = project.ext.fullVersion
-         desc = "IHMC Open Robotics Software Project ${project.name} v${project.ext.fullVersion}"
-         released = new Date()
-         vcsTag = "v${project.version}"
-      }
-   }
-}
-
-repositories ihmc.ihmcDefaultArtifactProxies()
-
-repositories {
-   mavenLocal()
-   jcenter()
-   mavenCentral()
-}
+ihmc.declarePublication(project, project.name, project.configurations.compile, project.sourceSets.main)
+ihmc.declarePublication(project, project.name + '-test', project.configurations.testCompile, project.sourceSets.test, project.name)
 
 dependencies {
    compile group: 'junit', name: 'junit', version: '4.11'

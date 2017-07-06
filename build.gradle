@@ -1,11 +1,12 @@
 plugins {
    id 'us.ihmc.gradle.ihmc-build' version '0.0.31'
+   id 'com.gradle.plugin-publish' version '0.9.7'
 }
 
 ihmc.applyJavaPlugins(project)
 
 group = 'us.ihmc'
-version = '0.10.1'
+version = '0.12.0'
 
 if (publishMode == 'SNAPSHOT')
 {
@@ -20,22 +21,25 @@ project.ext.maintainer = "Duncan Calvert"
 
 ihmc.setupCommonJARConfiguration(project)
 
-
-
 project.sourceSets {
-   main.java.srcDirs = ['src']
+   core.java.srcDirs = ['src']
    generator.java.srcDirs = ['generator']
    generatorTest.java.srcDirs = ['generatorTest']
    generatorTest.resources.srcDirs = ['generatorTestResources']
+   main.java.srcDirs = ['plugin']
+   main.resources.srcDirs = ['pluginResources']
 }
 
-ihmc.setupCommonArtifactProxies(project)
+project.repositories {
+   jcenter()
+   mavenCentral()
+}
 
 dependencies {
-   compile group: 'junit', name: 'junit', version: '4.11'
+   coreCompile group: 'junit', name: 'junit', version: '4.11'
 
    generatorCompile group: 'junit', name: 'junit', version: '4.11'
-   generatorCompile sourceSets.main.output
+   generatorCompile sourceSets.core.output
    generatorCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
    generatorCompile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
    generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
@@ -48,18 +52,24 @@ dependencies {
    generatorCompile group: 'us.ihmc', name: 'euclid-core', version: '0.4.3'
    generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
    generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
-   
-   generatorTestCompile sourceSets.main.output
+
+   generatorTestCompile sourceSets.core.output
    generatorTestCompile sourceSets.generator.output
    generatorTestCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
    generatorTestCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
    generatorTestCompile('us.ihmc:ihmc-commons-testing:0.11.2')
-   {
-      exclude group: 'us.ihmc', module: 'ihmc-commons' 
-   }
+         {
+            exclude group: 'us.ihmc', module: 'ihmc-commons'
+            exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
+         }
    generatorTestCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
+
+   compile sourceSets.core.output
+   compile sourceSets.generator.output
+   compile gradleApi()
 }
 
+eclipse.classpath.plusConfigurations << configurations.coreCompile
 eclipse.classpath.plusConfigurations << configurations.generatorCompile
 eclipse.classpath.plusConfigurations << configurations.generatorTestCompile
 
@@ -71,6 +81,28 @@ if (publishMode == "SNAPSHOT")
    ihmc.declareBintray(project)
 }
 
-ihmc.declarePublication(project, project.name + '-core-api', configurations.compile, sourceSets.main)
+ihmc.declarePublication(project, project.name + '-core-api', configurations.coreCompile, sourceSets.core)
 ihmc.declarePublication(project, project.name + '-generator', configurations.generatorCompile, sourceSets.generator, project.name + '-core-api')
 ihmc.declarePublication(project, project.name + '-generator-test', configurations.generatorTestCompile, sourceSets.generatorTest, project.name + '-core-api', project.name + '-generator')
+ihmc.declarePublication(project, project.name + '-plugin', configurations.compile, sourceSets.main, project.name + '-core-api', project.name + '-generator')
+
+pluginBundle {
+   website = 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'
+   vcsUrl = 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'
+   description = 'Use this plugin to generate load-balanced and categorized test suites for use with annotations provided in ihmc-ci-core-api.'
+
+   plugins {
+      ihmcContinuousIntegrationPlugin {
+         id = project.group + '.' + project.name
+         displayName = 'IHMC Continuous Integration Plugin'
+         tags = ['continuous', 'integration', 'ihmc', 'robotics']
+         version = project.version
+      }
+   }
+
+   mavenCoordinates {
+      groupId = project.group
+      artifactId = project.name + '-plugin'
+      version = project.version
+   }
+}

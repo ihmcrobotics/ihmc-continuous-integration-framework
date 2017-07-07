@@ -10,8 +10,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import us.ihmc.commons.PrintTools;
+import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
+import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
+import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
@@ -19,21 +22,19 @@ import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.model.AgileTestingLoadBalancedPlan;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.model.AgileTestingTestSuiteFile;
-import us.ihmc.continuousIntegration.model.AgileTestingWorkspace;
+import us.ihmc.continuousIntegration.model.AgileTestingMultiProjectWorkspace;
 import us.ihmc.continuousIntegration.tools.SourceTools;
-import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
-import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
 @ContinuousIntegrationPlan(categories = IntegrationCategory.COMPILE)
 public class BambooJobConfigurationTest
 {
    private static BambooRestApi bambooRestApi;
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
 
    @BeforeClass
    public static void setUp()
    {
-      bambooRestApi = new BambooRestApi();
+      bambooRestApi = new BambooRestApi(bambooBaseUrl);
    }
 
    @AfterClass
@@ -76,14 +77,15 @@ public class BambooJobConfigurationTest
          }
       }, SourceTools.getWorkspacePath());
 
-      AgileTestingWorkspace workspace = new AgileTestingWorkspace(nameToProjectMap);
+      AgileTestingMultiProjectWorkspace workspace = new AgileTestingMultiProjectWorkspace(nameToProjectMap);
       workspace.buildMaps();
       
-      List<BambooRestJob> allJobsFromBambooRestApi = bambooRestApi.queryAllJobs();
+      List<BambooRestJob> allJobsFromBambooRestApi = null;
       List<AgileTestingClassPath> allMappedTestSuites = new ArrayList<>();
 
       for (AgileTestingProject bambooEnabledProject : nameToProjectMap.values())
       {
+         allJobsFromBambooRestApi = bambooRestApi.queryAllJobs(bambooEnabledProject.getConfiguration().getBambooPlans());
          for (AgileTestingLoadBalancedPlan loadBalancedPlan : bambooEnabledProject.getTestCloud().getLoadBalancedPlans().values())
          {
             loadBalancedPlan.loadTestSuites();

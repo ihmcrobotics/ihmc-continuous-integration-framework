@@ -30,6 +30,17 @@ public class AgileTestingClassPath
       projectName = SourceTools.deriveProjectNameFromPath(path);
    }
    
+   public AgileTestingClassPath(Path path, String projectName)
+   {
+      this.path = path;
+      
+      className = SourceTools.deriveClassNameFromPath(path);
+      simpleName = PathTools.getBaseName(path);
+      sourceFolder = SourceTools.deriveSourceFolderFromPath(path);
+      packageName = SourceTools.derivePackageFromPath(path);
+      this.projectName = projectName;
+   }
+   
    public void countLines()
    {
       lineCount = new JavaLineCounter(false, false, false).countLines(path);

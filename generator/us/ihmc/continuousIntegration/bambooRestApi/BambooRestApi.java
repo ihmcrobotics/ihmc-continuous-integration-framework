@@ -18,7 +18,7 @@ public class BambooRestApi
    // https://bamboo.ihmc.us/rest/api/latest/plan/RC-FASTLOOP.xml?expand=stages.stage.plans
    // https://bamboo.ihmc.us/rest/api/latest/result/RC-FASTLOOP.xml?expand=results[0].result
    // https://bamboo.ihmc.us/rest/api/latest/result/RC-INDEV-ATLASIINDEVELOPMENT/319?expand=testResults.allTests.testResult
-   public static final String BASE_URL = "http://bamboo.ihmc.us/rest/api/latest/";
+   public static final String API_PATH = "rest/api/latest/";
    public static final String XML = ".xml";
    public static final String JSON = ".json";
    public static final String PLAN = "plan/";
@@ -35,16 +35,16 @@ public class BambooRestApi
    private final LoginInfo loginInfo;
    private final BambooUnirestConnector unirestConnector;
    
-   public BambooRestApi()
+   public BambooRestApi(String baseUrl)
    {
       loginInfo = SecurityTools.loadLoginInfo(CREDENTIALS_PATH);
-      unirestConnector = new BambooUnirestConnector(loginInfo);
+      unirestConnector = new BambooUnirestConnector(baseUrl, loginInfo);
    }
    
-   public BambooRestApi(LoginInfo loginInfo)
+   public BambooRestApi(String baseUrl, LoginInfo loginInfo)
    {
       this.loginInfo = loginInfo;
-      unirestConnector = new BambooUnirestConnector(loginInfo);
+      unirestConnector = new BambooUnirestConnector(baseUrl, loginInfo);
    }
    
    public void destroy()
@@ -62,9 +62,9 @@ public class BambooRestApi
       return unirestConnector.queryJobsInPlan(bambooRestPlan, includeDisabledJobs);
    }
    
-   public List<BambooRestJob> queryAllJobs()
+   public List<BambooRestJob> queryAllJobs(List<BambooRestPlan> planList)
    {
-      return unirestConnector.queryAllJobs();
+      return unirestConnector.queryAllJobs(planList);
    }
 
    public BambooResult queryLatestPlanResults(BambooRestPlan bambooRestPlan)

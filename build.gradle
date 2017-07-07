@@ -6,7 +6,7 @@ plugins {
 ihmc.applyJavaPlugins(project)
 
 group = 'us.ihmc'
-version = '0.12.8'
+version = '0.13.2'
 
 if (publishMode == 'SNAPSHOT')
 {
@@ -67,6 +67,7 @@ dependencies {
    compile sourceSets.core.output
    compile sourceSets.generator.output
    compile gradleApi()
+   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
 }
 
 eclipse.classpath.plusConfigurations << configurations.coreCompile

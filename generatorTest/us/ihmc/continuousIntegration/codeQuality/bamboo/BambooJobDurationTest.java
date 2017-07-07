@@ -14,8 +14,10 @@ import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
+import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
+import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
@@ -26,8 +28,6 @@ import us.ihmc.continuousIntegration.testSuiteRunner.AgileTestingTestMethodAnnot
 import us.ihmc.continuousIntegration.testSuiteRunner.AtomicTestRun;
 import us.ihmc.continuousIntegration.tools.SecurityTools;
 import us.ihmc.continuousIntegration.tools.SourceTools;
-import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
 @ContinuousIntegrationPlan(categories = IntegrationCategory.EXCLUDE)
 public class BambooJobDurationTest
@@ -35,11 +35,23 @@ public class BambooJobDurationTest
    private static final boolean AUTO_FIX = false;
    
    private static BambooRestApi bambooRestApi;
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
+   private static final List<BambooRestPlan> planList = new ArrayList<>();
+   private static final BambooRestPlan videoPlan = new BambooRestPlan("ROB-VIDEO");
+   static
+   {
+      planList.add(new BambooRestPlan("ROB-FAST"));
+      planList.add(new BambooRestPlan("ROB-SLOW"));
+      planList.add(new BambooRestPlan("ROB-UI"));
+      planList.add(videoPlan);
+      planList.add(new BambooRestPlan("ROB-FLAKY"));
+      planList.add(new BambooRestPlan("ROB-INDEVELOPMENT"));
+   }
    
    @BeforeClass
    public static void setUp()
    {
-      bambooRestApi = new BambooRestApi();
+      bambooRestApi = new BambooRestApi(bambooBaseUrl);
    }
    
    @AfterClass
@@ -58,9 +70,9 @@ public class BambooJobDurationTest
       final Map<BambooRestJob, Double> jobToDurationMap = new HashMap<>();
       final Map<BambooRestPlan, Map<BambooRestJob, List<BambooTestResult>>> planToTestResultMap = new HashMap<>();
       
-      for (BambooRestPlan plan : BambooRestPlan.values)
+      for (BambooRestPlan plan : planList)
       {
-         if (!plan.equals(BambooRestPlan.VIDEO))
+         if (!plan.equals(videoPlan))
          {
             fillResultsMap(plan, jobToDurationMap, planToTestResultMap);
          }
@@ -159,7 +171,7 @@ public class BambooJobDurationTest
       
       planToTestResultMap.put(plan, new HashMap<BambooRestJob, List<BambooTestResult>>());
       
-      System.out.println("Loading " + plan.name());
+      System.out.println("Loading " + plan);
       int i = 0, tot = jobsInPlan.size();
       for (BambooRestJob job : jobsInPlan)
       {

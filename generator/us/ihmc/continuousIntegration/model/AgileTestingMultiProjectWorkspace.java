@@ -8,7 +8,7 @@ import java.util.Map;
 
 import us.ihmc.continuousIntegration.IntegrationCategory;
 
-public class AgileTestingWorkspace
+public class AgileTestingMultiProjectWorkspace
 {
    private final Map<String, AgileTestingProject> nameToProjectMap;
 
@@ -16,7 +16,7 @@ public class AgileTestingWorkspace
    private ArrayList<AgileTestingTestMethod> allTestsSortedByDuration;
    private ArrayList<AgileTestingTestClass> allTestClassesSortedByDuration;
 
-   public AgileTestingWorkspace(Map<String, AgileTestingProject> nameToProjectMap)
+   public AgileTestingMultiProjectWorkspace(Map<String, AgileTestingProject> nameToProjectMap)
    {
       this.nameToProjectMap = nameToProjectMap;
    }

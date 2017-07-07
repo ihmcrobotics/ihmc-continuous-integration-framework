@@ -2,11 +2,14 @@ package us.ihmc.continuousIntegration;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang3.StringUtils;
 
 import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
@@ -31,6 +34,7 @@ public class AgileTestingTools
    public static final SortedSet<String> BAMBOO_DISABLED_PROJECT_NAMES = new TreeSet<String>();
    public static final SortedSet<String> INDEPENDENT_PROJECT_NAMES = new TreeSet<String>();
    public static final SortedSet<String> THIRD_PARTY_PACKAGE_NAMES = new TreeSet<String>();
+   private static Map<String, String> projectNameReplacements = new HashMap<>();
    static
    {
       BAMBOO_DISABLED_PROJECT_NAMES.add("ROSJava");
@@ -45,6 +49,50 @@ public class AgileTestingTools
       THIRD_PARTY_PACKAGE_NAMES.add("jp");
       THIRD_PARTY_PACKAGE_NAMES.add("multiNyAR");
       THIRD_PARTY_PACKAGE_NAMES.add("it");
+      
+      projectNameReplacements.put("ihmc", "IHMC");
+      projectNameReplacements.put("vt", "VT");
+      projectNameReplacements.put("javafx", "JavaFX");
+      projectNameReplacements.put("jmonkey", "JMonkey");
+      projectNameReplacements.put("ros", "ROS");
+      projectNameReplacements.put("ros1", "ROS1");
+      projectNameReplacements.put("ros2", "ROS2");
+      projectNameReplacements.put("lla", "LLA");
+      projectNameReplacements.put("devops", "DevOps");
+      projectNameReplacements.put("ejml", "EJML");
+      projectNameReplacements.put("icub", "ICub");
+      projectNameReplacements.put("dds", "DDS");
+      projectNameReplacements.put("rtps", "RTPS");
+      projectNameReplacements.put("sri", "SRI");
+      projectNameReplacements.put("ethercat", "EtherCAT");
+      projectNameReplacements.put("imu", "IMU");
+      projectNameReplacements.put("icp", "ICP");
+      projectNameReplacements.put("it", "IT");
+      projectNameReplacements.put("ipxe", "IPXE");
+      projectNameReplacements.put("aot", "AOT");
+      projectNameReplacements.put("joctomap", "JOctoMap");
+      projectNameReplacements.put("mav", "MAV");
+      projectNameReplacements.put("megabots", "MegaBots");
+      projectNameReplacements.put("megabot", "MegaBot");
+      
+   }
+   
+   public static String hyphenatedToPascalCased(String hyphenated)
+   {
+      String[] split = hyphenated.split("-");
+      String pascalCased = "";
+      for (String section : split)
+      {
+         if (projectNameReplacements.containsKey(section))
+         {
+            pascalCased += projectNameReplacements.get(section);
+         }
+         else
+         {
+            pascalCased += StringUtils.capitalize(section);
+         }
+      }
+      return pascalCased;
    }
    
    public static Map<String, AgileTestingProject> loadATProjects(AgileTestingProjectLoader atProjectLoader, Path rootProjectPath)
@@ -146,6 +194,19 @@ public class AgileTestingTools
       for (String className : javaNameToPathMap.keySet())
       {
          javaNameToClassPathMap.put(className, new AgileTestingClassPath(javaNameToPathMap.get(className)));
+      }
+      
+      return javaNameToClassPathMap;
+   }
+   
+   public static Map<String, AgileTestingClassPath> mapAllClassNamesToClassPaths(StandaloneProjectConfiguration configuration)
+   {
+      Map<String, Path> javaNameToPathMap = SourceTools.mapAllClassNamesToPaths(configuration.getProjectPath());
+      Map<String, AgileTestingClassPath> javaNameToClassPathMap = new LinkedHashMap<>();
+      
+      for (String className : javaNameToPathMap.keySet())
+      {
+         javaNameToClassPathMap.put(className, new AgileTestingClassPath(javaNameToPathMap.get(className), configuration.getPascalCasedName()));
       }
       
       return javaNameToClassPathMap;

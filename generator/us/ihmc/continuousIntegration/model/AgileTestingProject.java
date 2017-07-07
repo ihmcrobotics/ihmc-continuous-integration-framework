@@ -15,11 +15,13 @@ import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
+import us.ihmc.continuousIntegration.StandaloneProjectConfiguration;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.tools.SourceTools.SourceFolder;
 
 public class AgileTestingProject implements Comparable<AgileTestingProject>
 {
+   private final StandaloneProjectConfiguration configuration;
    private final Path pathToProject;
 
    private final String rawProjectName;
@@ -41,9 +43,15 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
 
    public AgileTestingProject(Path pathToProject)
    {
-      this.pathToProject = pathToProject;
+      this(StandaloneProjectConfiguration.defaultConfiguration(pathToProject));
+   }
+   
+   public AgileTestingProject(StandaloneProjectConfiguration configuration)
+   {
+      this.configuration = configuration;
+      this.pathToProject = configuration.getProjectPath();
 
-      rawProjectName = pathToProject.getFileName().toString();
+      this.rawProjectName = configuration.getPascalCasedName();
       modifiedProjectName = WordUtils.capitalize(rawProjectName.replaceAll("_.*", ""));
 
       generatedTestSuitesDirectory = findGeneratedTestSuitesDirectory();
@@ -59,7 +67,7 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
          e.printStackTrace();
          directoryCreationFailed = true;
       }
-      
+
       if (generatedTestSuitesDirectory != null)
          primaryPackageName = findPackageName();
       else
@@ -176,6 +184,11 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
    public AgileTestingProjectTestCloud getTestCloud()
    {
       return testCloud;
+   }
+   
+   public StandaloneProjectConfiguration getConfiguration()
+   {
+      return configuration;
    }
 
    public String getPackageName()

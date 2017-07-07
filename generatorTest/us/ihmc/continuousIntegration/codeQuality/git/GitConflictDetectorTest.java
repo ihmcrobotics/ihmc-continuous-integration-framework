@@ -56,7 +56,7 @@ public class GitConflictDetectorTest
          for(String project : bambooEnabledProjects.keySet())
          {
             Path projectPath = bambooEnabledProjects.get(project).getPath();
-            HashMap<Ref, List<DiffEntry>> repoDiffsMap = repoDiffsMap = getBranchDiffsWithDevelopBranchForRepo(projectPath.toString());
+            HashMap<Ref, List<DiffEntry>> repoDiffsMap = getBranchDiffsWithDevelopBranchForRepo(projectPath.toString());
             HashMap<Ref, HashMap<Ref, List<String>>> conflictsMap = buildConflictsMap(repoDiffsMap);
 
             for(Ref branch : conflictsMap.keySet())

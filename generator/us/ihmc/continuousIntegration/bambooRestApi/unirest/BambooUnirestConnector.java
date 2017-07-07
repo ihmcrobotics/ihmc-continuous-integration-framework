@@ -29,9 +29,11 @@ public class BambooUnirestConnector
 {
    public static final boolean DEBUG = false;
    private final LoginInfo loginInfo;
+   private final String baseUrl;
    
-   public BambooUnirestConnector(LoginInfo loginInfo)
+   public BambooUnirestConnector(String baseUrl, LoginInfo loginInfo)
    {
+      this.baseUrl = baseUrl;
       this.loginInfo = loginInfo;
       
       Unirest.setObjectMapper(new ObjectMapper()
@@ -69,10 +71,10 @@ public class BambooUnirestConnector
       });
    }
    
-   public List<BambooRestJob> queryAllJobs()
+   public List<BambooRestJob> queryAllJobs(List<BambooRestPlan> planList)
    {
       List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
-      for (BambooRestPlan bambooRestPlan : BambooRestPlan.values)
+      for (BambooRestPlan bambooRestPlan : planList)
       {
          try
          {
@@ -93,7 +95,7 @@ public class BambooUnirestConnector
    {
       try
       {
-         String url = BambooRestApi.BASE_URL + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
+         String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
          PrintTools.debug(DEBUG, "Querying: " + url);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.JOB_EXPANSION);
@@ -112,7 +114,7 @@ public class BambooUnirestConnector
    {
       try
       {
-         String url = BambooRestApi.BASE_URL + BambooRestApi.RESULT + bambooRestPlan.getKey() + BambooRestApi.JSON;
+         String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestPlan.getKey() + BambooRestApi.JSON;
          PrintTools.debug(DEBUG, "Querying: " + url);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
@@ -139,7 +141,7 @@ public class BambooUnirestConnector
    {
       try
       {
-         String url = BambooRestApi.BASE_URL + BambooRestApi.RESULT + bambooRestJob.getKey() + BambooRestApi.JSON;
+         String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestJob.getKey() + BambooRestApi.JSON;
          PrintTools.debug(DEBUG, "Querying: " + url);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
@@ -188,7 +190,7 @@ public class BambooUnirestConnector
    {
       try
       {
-         String url = BambooRestApi.BASE_URL + BambooRestApi.RESULT + bambooRestJob.getKey() + "/" + buildNumber + BambooRestApi.JSON;
+         String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestJob.getKey() + "/" + buildNumber + BambooRestApi.JSON;
          PrintTools.debug(DEBUG, "Querying: " + url);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.ALL_TESTS_EXPANSION);
@@ -206,7 +208,7 @@ public class BambooUnirestConnector
    {
       try
       {
-         String url = BambooRestApi.BASE_URL + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
+         String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
          PrintTools.debug(DEBUG, "Querying: " + url);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.JOB_EXPANSION);
@@ -256,7 +258,7 @@ public class BambooUnirestConnector
 
    private GetRequest requestPost(String url)
    {
-      PrintTools.debug("LOGGING IN AS: " + loginInfo.getUsername() + " " + loginInfo.getPassword());
+      PrintTools.debug(DEBUG, "LOGGING IN AS: " + loginInfo.getUsername());
       return Unirest.get(url).basicAuth(loginInfo.getUsername(), loginInfo.getPassword());
    }
 }

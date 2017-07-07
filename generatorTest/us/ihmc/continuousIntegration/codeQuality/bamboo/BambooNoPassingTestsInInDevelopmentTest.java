@@ -29,11 +29,14 @@ public class BambooNoPassingTestsInInDevelopmentTest
    private static final int MAX_SUCCESSFUL_TESTS_IN_DEVELOPMENT = 30;
 
    private static BambooRestApi bambooRestApi;
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
+   
+   private BambooRestPlan inDevelopmentPlan = new BambooRestPlan("ROB-INDEVELOPMENT");
 
    @BeforeClass
    public static void setUp()
    {
-      bambooRestApi = new BambooRestApi();
+      bambooRestApi = new BambooRestApi(bambooBaseUrl);
    }
 
    @AfterClass
@@ -49,12 +52,12 @@ public class BambooNoPassingTestsInInDevelopmentTest
       if (System.getProperty("bamboo.username") != null)
          SecurityTools.storeLoginInfo("BambooRestConnector", System.getProperty("bamboo.username"), System.getProperty("bamboo.password"));
 
-      List<BambooRestJob> inDevJobs = bambooRestApi.queryJobsInPlan(BambooRestPlan.IN_DEVELOPMENT, false);
+      List<BambooRestJob> inDevJobs = bambooRestApi.queryJobsInPlan(inDevelopmentPlan, false);
 
       if (inDevJobs.isEmpty())
          return;
 
-      BambooResult latestInDevelopmentResult = bambooRestApi.queryLatestPlanResults(BambooRestPlan.IN_DEVELOPMENT);
+      BambooResult latestInDevelopmentResult = bambooRestApi.queryLatestPlanResults(inDevelopmentPlan);
 
       Map<BambooRestJob, List<BambooTestResult>> jobPlanToResultMap = new LinkedHashMap<>();
       List<BambooTestResult> successfulTests = new ArrayList<>();

@@ -1,151 +1,172 @@
-package us.ihmc.continuousIntegration.generator;
+package us.ihmc.continuousIntegration.model;
 
-import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
-import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
+import us.ihmc.continuousIntegration.StandaloneProjectConfiguration;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
-import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
-import us.ihmc.continuousIntegration.model.AgileTestingLoadBalancedPlan;
-import us.ihmc.continuousIntegration.model.AgileTestingMultiProjectWorkspace;
-import us.ihmc.continuousIntegration.model.AgileTestingProject;
-import us.ihmc.continuousIntegration.model.AgileTestingTestClass;
-import us.ihmc.continuousIntegration.model.AgileTestingTestMethod;
-import us.ihmc.continuousIntegration.model.AgileTestingTestSuiteFile;
+import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
 
-public class BambooTestSuiteGenerator
+public class AgileTestingStandaloneWorkspace
 {
-   public static final boolean DEBUG = true;
-
-   private Map<String, AgileTestingProject> nameToProjectMap;
+   private final StandaloneProjectConfiguration configuration;
+   private final AgileTestingProject agileTestingProject;
    private Map<String, AgileTestingClassPath> nameToClassPathMap;
-   private AgileTestingMultiProjectWorkspace workspace;
 
-   public void createForMultiProjectBuild(Path rootProjectPath)
+   private Map<IntegrationCategory, ArrayList<AgileTestingTestSuiteFile>> sortedTestSuitesByDurationMap;
+   private ArrayList<AgileTestingTestMethod> allTestsSortedByDuration;
+   private ArrayList<AgileTestingTestClass> allTestClassesSortedByDuration;
+
+   public AgileTestingStandaloneWorkspace(StandaloneProjectConfiguration configuration)
    {
-      nameToClassPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(rootProjectPath);
-
-      nameToProjectMap = AgileTestingTools.loadATProjects(new AgileTestingProjectLoader()
-      {
-         @Override
-         public boolean meetsCriteria(AgileTestingProject atProject)
-         {
-            return atProject.isBambooEnabled();
-         }
-
-         @Override
-         public void setupProject(AgileTestingProject atProject)
-         {
-            atProject.loadTestCloud(nameToClassPathMap);
-         }
-      }, rootProjectPath);
-
-      workspace = new AgileTestingMultiProjectWorkspace(nameToProjectMap);
+      this.configuration = configuration;
+      agileTestingProject = new AgileTestingProject(configuration);
    }
 
-   public void generateSpecificTestSuites(Set<String> projectNameWhiteList)
+   public void loadClasses()
    {
-      double totalDuration = 0.0;
+      nameToClassPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(configuration);
+   }
 
-      for (AgileTestingProject bambooEnabledProject : nameToProjectMap.values())
+   public void loadTestCloud()
+   {
+      if (nameToClassPathMap == null)
       {
-         if (projectNameWhiteList.contains(bambooEnabledProject.getRawProjectName())
-               || projectNameWhiteList.contains(bambooEnabledProject.getModifiedProjectName()))
-         {
-            bambooEnabledProject.generateAllTestSuites();
-
-            totalDuration += bambooEnabledProject.getFastTotalDuration();
-         }
+         loadClasses();
       }
 
-      PrintTools.info(this, "Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
-
-      workspace.buildMaps();
+      agileTestingProject.loadTestCloud(nameToClassPathMap);
    }
 
    public void generateAllTestSuites()
    {
-      double totalDuration = 0.0;
+      agileTestingProject.generateAllTestSuites();
 
-      for (AgileTestingProject bambooEnabledProject : nameToProjectMap.values())
-      {
-         bambooEnabledProject.generateAllTestSuites();
-
-         totalDuration += bambooEnabledProject.getFastTotalDuration();
-      }
+      double totalDuration = agileTestingProject.getFastTotalDuration();
 
       PrintTools.info(this, "Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
 
-      workspace.buildMaps();
+      buildMaps();
    }
 
-   public void generateRunAllTestSuites()
+   private void buildMaps()
    {
-      Path runAllTestSuitesPath = AgileTestingTools.getRunAllTestSuitesPath(nameToClassPathMap);
+      buildDurationToTestSuiteMap();
+      buildAllTestSortedByDurationMap();
+      buildAllTestClassSortedByDurationMap();
+   }
 
-      if (runAllTestSuitesPath == null)
-         return;
+   private void buildAllTestClassSortedByDurationMap()
+   {
+      allTestClassesSortedByDuration = new ArrayList<>();
 
-      for (IntegrationCategory bambooPlanType : IntegrationCategory.includedCategories)
+      for (AgileTestingTestClass testClass : agileTestingProject.getTestCloud().getTestClasses())
       {
-         PrintTools.info(this, "Generating: RunAll" + bambooPlanType.getName() + "TestSuites");
-
-         ArrayList<AgileTestingTestSuiteFile> bambooTestSuiteFiles = new ArrayList<AgileTestingTestSuiteFile>();
-
-         for (AgileTestingProject bambooEnabledProject : nameToProjectMap.values())
-         {
-            if (bambooPlanType.isIncludedAndNotLoadBalanced())
-            {
-               AgileTestingTestSuiteFile bambooSingletonTestSuiteFile = bambooEnabledProject.getTestCloud().getSingletonTestSuiteFiles().get(bambooPlanType);
-               if (bambooSingletonTestSuiteFile != null)
-                  bambooTestSuiteFiles.add(bambooSingletonTestSuiteFile);
-            }
-            else
-            {
-               bambooTestSuiteFiles.addAll(bambooEnabledProject.getTestCloud().getLoadBalancedPlans().get(bambooPlanType).getTestSuiteFiles());
-            }
-         }
-
-         for (AgileTestingTestSuiteFile suiteFile : bambooTestSuiteFiles)
-         {
-            if (suiteFile.getPath().toString().matches(".*bin.*"))
-               PrintTools.debug(this, "matches bin: " + suiteFile.getPath().toString());
-         }
-
-         String shortName = "RunAll" + bambooPlanType.getName();
-
-         AgileTestingTestSuiteFile bambooRunAllTestSuitesFile = new AgileTestingTestSuiteFile(runAllTestSuitesPath.resolve(shortName + "TestSuites.java"),
-                                                                                              bambooPlanType, shortName, 0.0);
-
-         List<Path> bambooTestSuitePaths = new ArrayList<>();
-
-         for (AgileTestingTestSuiteFile littleBambooTestSuiteFile : bambooTestSuiteFiles)
-         {
-            bambooTestSuitePaths.add(littleBambooTestSuiteFile.getPath());
-         }
-
-         bambooRunAllTestSuitesFile.generateTestSuite("RunAll" + bambooPlanType.getName() + "TestSuites", "us.ihmc.runAllBambooTestSuites",
-                                                      bambooTestSuitePaths);
+         allTestClassesSortedByDuration.add(testClass);
       }
+
+      Collections.sort(allTestClassesSortedByDuration, new Comparator<AgileTestingTestClass>()
+      {
+         @Override
+         public int compare(AgileTestingTestClass o1, AgileTestingTestClass o2)
+         {
+            if (o1.getTotalDurationForAllPlans() > o2.getTotalDurationForAllPlans())
+               return -1;
+            else if (o1.getTotalDurationForAllPlans() == o2.getTotalDurationForAllPlans())
+               return 0;
+            else
+               return 1;
+         }
+      });
+   }
+
+   private void buildDurationToTestSuiteMap()
+   {
+      sortedTestSuitesByDurationMap = new HashMap<>();
+
+      for (IntegrationCategory testSuiteTarget : IntegrationCategory.includedCategories)
+      {
+         sortedTestSuitesByDurationMap.put(testSuiteTarget, new ArrayList<AgileTestingTestSuiteFile>());
+      }
+
+      for (IntegrationCategory testSuiteTarget : IntegrationCategory.includedCategories)
+      {
+         if (testSuiteTarget.isLoadBalanced())
+         {
+            sortedTestSuitesByDurationMap.get(testSuiteTarget)
+                                         .addAll(agileTestingProject.getTestCloud().getLoadBalancedPlans().get(testSuiteTarget).getTestSuiteFiles());
+         }
+         else
+         {
+            sortedTestSuitesByDurationMap.get(testSuiteTarget).addAll(agileTestingProject.getTestCloud().getSingletonTestSuiteFiles().values());
+         }
+      }
+
+      for (IntegrationCategory category : IntegrationCategory.includedCategories)
+      {
+         Collections.sort(sortedTestSuitesByDurationMap.get(category), new Comparator<AgileTestingTestSuiteFile>()
+         {
+            @Override
+            public int compare(AgileTestingTestSuiteFile o1, AgileTestingTestSuiteFile o2)
+            {
+               if (o1.getDuration() > o2.getDuration())
+                  return -1;
+               else if (o1.getDuration() == o2.getDuration())
+                  return 0;
+               else
+                  return 1;
+            }
+         });
+      }
+   }
+
+   private void buildAllTestSortedByDurationMap()
+   {
+      allTestsSortedByDuration = new ArrayList<>();
+
+      for (AgileTestingTestClass testClass : agileTestingProject.getTestCloud().getTestClasses())
+      {
+         allTestsSortedByDuration.addAll(testClass.getTestMethods());
+      }
+
+      Collections.sort(allTestsSortedByDuration, new Comparator<AgileTestingTestMethod>()
+      {
+         @Override
+         public int compare(AgileTestingTestMethod o1, AgileTestingTestMethod o2)
+         {
+            if (o1.getDuration() > o2.getDuration())
+               return -1;
+            else if (o1.getDuration() == o2.getDuration())
+               return 0;
+            else
+               return 1;
+         }
+      });
+   }
+
+   public void printAllStatistics()
+   {
+      sortAndPrintSuiteDurationsByPlanType();
+      printOutTopOnePercentHighestDurationTests();
+      printOutTopTwoPercentHighestDurationTestClasses();
    }
 
    public void sortAndPrintSuiteDurationsByPlanType()
    {
-      Map<IntegrationCategory, ArrayList<AgileTestingTestSuiteFile>> sortedTestSuitesByDurationMap = workspace.getSortedTestSuitesByDurationMap();
-
       for (IntegrationCategory bambooPlanType : IntegrationCategory.includedCategories)
       {
          System.out.println("\n-- SORTED TESTS FOR " + bambooPlanType.getName().toUpperCase() + " --");
@@ -159,8 +180,6 @@ public class BambooTestSuiteGenerator
 
    public void printOutTopOnePercentHighestDurationTests()
    {
-      ArrayList<AgileTestingTestMethod> allTestsSortedByDuration = workspace.getAllTestsSortedByDuration();
-
       System.out.println("\n-- LONGEST RUNNING TESTS --");
 
       for (int i = 0; i < ((double) allTestsSortedByDuration.size() * 0.01); i++)
@@ -176,8 +195,6 @@ public class BambooTestSuiteGenerator
 
    public void printOutTopTwoPercentHighestDurationTestClasses()
    {
-      ArrayList<AgileTestingTestClass> allTestClassesSortedByDuration = workspace.getAllTestClassesSortedByDuration();
-
       System.out.println("\n-- LONGEST RUNNING CLASSES --");
 
       for (int i = 0; i < ((double) allTestClassesSortedByDuration.size() * 0.02); i++)
@@ -191,21 +208,15 @@ public class BambooTestSuiteGenerator
       }
    }
 
-   public void printAllStatistics()
+   public void checkJobConfigurationOnBamboo()
    {
-      sortAndPrintSuiteDurationsByPlanType();
-      printOutTopOnePercentHighestDurationTests();
-      printOutTopTwoPercentHighestDurationTestClasses();
-   }
-
-   public void checkJobConfigurationOnBamboo(String bambooBaseUrl, List<BambooRestPlan> bambooPlanList)
-   {
-      BambooRestApi bambooRestApi = new BambooRestApi(bambooBaseUrl);
+      BambooRestApi bambooRestApi = new BambooRestApi(configuration.getBambooBaseUrl());
 
       SortedSet<String> existingJobsThatShouldBeEnabledOnBamboo = new TreeSet<String>();
       SortedSet<String> emptyJobsThatShouldBeDisabledOnBamboo = new TreeSet<String>();
 
-      compareGeneratedTestSuitesWithBamboo(existingJobsThatShouldBeEnabledOnBamboo, emptyJobsThatShouldBeDisabledOnBamboo, bambooRestApi, bambooPlanList);
+      compareGeneratedTestSuitesWithBamboo(existingJobsThatShouldBeEnabledOnBamboo, emptyJobsThatShouldBeDisabledOnBamboo, bambooRestApi,
+                                           configuration.getBambooPlans());
 
       if (!existingJobsThatShouldBeEnabledOnBamboo.isEmpty())
       {
@@ -226,16 +237,13 @@ public class BambooTestSuiteGenerator
       List<BambooRestJob> allJobsFromBambooRestApi = bambooRestApi.queryAllJobs(bambooPlanList);
       List<AgileTestingClassPath> allMappedTestSuites = new ArrayList<>();
 
-      for (AgileTestingProject bambooEnabledProject : nameToProjectMap.values())
+      for (AgileTestingLoadBalancedPlan loadBalancedPlan : agileTestingProject.getTestCloud().getLoadBalancedPlans().values())
       {
-         for (AgileTestingLoadBalancedPlan loadBalancedPlan : bambooEnabledProject.getTestCloud().getLoadBalancedPlans().values())
-         {
-            loadBalancedPlan.loadTestSuites();
+         loadBalancedPlan.loadTestSuites();
 
-            for (AgileTestingTestSuiteFile testSuiteFile : loadBalancedPlan.getTestSuiteFiles())
-            {
-               checkTestSuite(existingJobsThatShouldBeEnabledOnBamboo, allJobsFromBambooRestApi, allMappedTestSuites, testSuiteFile);
-            }
+         for (AgileTestingTestSuiteFile testSuiteFile : loadBalancedPlan.getTestSuiteFiles())
+         {
+            checkTestSuite(existingJobsThatShouldBeEnabledOnBamboo, allJobsFromBambooRestApi, allMappedTestSuites, testSuiteFile);
          }
       }
 
@@ -333,25 +341,18 @@ public class BambooTestSuiteGenerator
       }
    }
 
-   public static void main(String[] args)
+   public Map<IntegrationCategory, ArrayList<AgileTestingTestSuiteFile>> getSortedTestSuitesByDurationMap()
    {
-      //      if (ContinuousIntegrationTools.isRunningOnContinuousIntegrationServer())
-      //      {
-      //         BambooTestSuiteGenerator bambooTestSuiteGenerator = new BambooTestSuiteGenerator(SourceTools.getWorkspacePath());
-      //         bambooTestSuiteGenerator.generateAllTestSuites();
-      //         bambooTestSuiteGenerator.generateRunAllTestSuites();
-      //         bambooTestSuiteGenerator.printAllStatistics();
-      //      }
-      //      else
-      //      {
-      //         PrintTools.error("Test suites are no longer generated locally.");
-      //         PrintTools.error("It's automatic on the server side now.");
-      //         PrintTools.error("Please run BambooJobConfigurationTest to see which jobs to enable/disable.");
-      //      }
-      //      
-//      BambooTestSuiteGenerator bambooTestSuiteGenerator = new BambooTestSuiteGenerator();
-//      bambooTestSuiteGenerator.createForStandaloneProject(StandaloneProjectConfiguration.defaultConfiguration(Paths.get("F:/ReposMisc/IHMCCommons")));
-//      bambooTestSuiteGenerator.generateAllTestSuites();
-//      bambooTestSuiteGenerator.printAllStatistics();
+      return sortedTestSuitesByDurationMap;
+   }
+
+   public ArrayList<AgileTestingTestMethod> getAllTestsSortedByDuration()
+   {
+      return allTestsSortedByDuration;
+   }
+
+   public ArrayList<AgileTestingTestClass> getAllTestClassesSortedByDuration()
+   {
+      return allTestClassesSortedByDuration;
    }
 }

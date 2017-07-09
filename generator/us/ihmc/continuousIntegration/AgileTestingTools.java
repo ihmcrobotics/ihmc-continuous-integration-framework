@@ -2,6 +2,7 @@ package us.ihmc.continuousIntegration;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ public class AgileTestingTools
    public static final SortedSet<String> INDEPENDENT_PROJECT_NAMES = new TreeSet<String>();
    public static final SortedSet<String> THIRD_PARTY_PACKAGE_NAMES = new TreeSet<String>();
    private static Map<String, String> projectNameReplacements = new HashMap<>();
+   private static Map<String, String> hyphenationReplacements = new HashMap<>();
    static
    {
       BAMBOO_DISABLED_PROJECT_NAMES.add("ROSJava");
@@ -75,6 +77,31 @@ public class AgileTestingTools
       projectNameReplacements.put("megabots", "MegaBots");
       projectNameReplacements.put("megabot", "MegaBot");
       
+      hyphenationReplacements.put("-i-h-m-c-", "-ihmc-");
+      hyphenationReplacements.put("-v-t-", "-ihmc-");
+      hyphenationReplacements.put("-3-d-", "-3d-");
+      hyphenationReplacements.put("-java-f-x-", "-javafx-");
+      hyphenationReplacements.put("-l-l-a-", "-lla-");
+      hyphenationReplacements.put("-j-monkey-", "-jmonkey-");
+      hyphenationReplacements.put("-r-o-s-", "-ros-");
+      hyphenationReplacements.put("-r-o-s-1-", "-ros1-");
+      hyphenationReplacements.put("-r-o-s-2-", "-ros2-");
+      hyphenationReplacements.put("-dev-ops-", "-devops-");
+      hyphenationReplacements.put("-e-j-m-l-", "-ejml-");
+      hyphenationReplacements.put("-i-cub-", "-icub-");
+      hyphenationReplacements.put("-d-d-s-", "-dds-");
+      hyphenationReplacements.put("-r-t-p-s-", "-rtps-");
+      hyphenationReplacements.put("-s-r-i-", "-sri-");
+      hyphenationReplacements.put("-ether-c-a-t-", "-ethercat-");
+      hyphenationReplacements.put("-i-m-u-", "-imu-");
+      hyphenationReplacements.put("-i-c-p-", "-icp-");
+      hyphenationReplacements.put("-i-t", "-it-");
+      hyphenationReplacements.put("-i-p-x-e-", "-ipxe-");
+      hyphenationReplacements.put("-a-o-t-", "-aot-");
+      hyphenationReplacements.put("-j-octo-map-", "-joctomap-");
+      hyphenationReplacements.put("-m-a-v-", "-mav-");
+      hyphenationReplacements.put("-mega-bots-", "-megabots-");
+      hyphenationReplacements.put("-mega-bot-", "-megabot-");
    }
    
    public static String hyphenatedToPascalCased(String hyphenated)
@@ -93,6 +120,79 @@ public class AgileTestingTools
          }
       }
       return pascalCased;
+   }
+   
+   public static String pascalCasedToHyphenated(String pascalCased)
+   {
+      String hyphenated = pascalCasedToPrehyphenated(pascalCased);
+      
+      hyphenated = hyphenated.substring(1, hyphenated.length() - 1);
+
+      return hyphenated;
+   }
+   
+   public static String pascalCasedToHyphenatedWithoutJob(String pascalCased)
+   {
+      for (IntegrationCategory integrationCategory : IntegrationCategory.values)
+      {
+         if (pascalCased.endsWith(integrationCategory.getName()))
+         {
+            pascalCased = pascalCased.substring(0, pascalCased.length() - integrationCategory.name().length());
+            
+            if (integrationCategory.isLoadBalanced())
+               pascalCased = pascalCased.substring(0, pascalCased.length() - 1);
+               
+            break;
+         }
+      }
+      
+      String hyphenated = pascalCasedToPrehyphenated(pascalCased);
+      
+      hyphenated = hyphenated.substring(1, hyphenated.length() - 1);
+
+      return hyphenated;
+   }
+   
+   private static String pascalCasedToPrehyphenated(String pascalCased)
+   {
+      List<String> parts = new ArrayList<>();
+      String part = "";
+      
+      for (int i = 0; i < pascalCased.length(); i++)
+      {
+         String character = String.valueOf(pascalCased.charAt(i));
+         if (StringUtils.isAllUpperCase(character) || StringUtils.isNumeric(character))
+         {
+            if (!part.isEmpty())
+            {
+               parts.add(part.toLowerCase());
+            }
+            part = character;
+         }
+         else
+         {
+            part += character;
+         }
+      }
+      if (!part.isEmpty())
+      {
+         parts.add(part.toLowerCase());
+      }
+
+      String hyphenated = "";
+      for (int i = 0; i < parts.size(); i++)
+      {
+         hyphenated += '-';
+         hyphenated += parts.get(i);
+      }
+      hyphenated += '-';
+      
+      for (String replacement : hyphenationReplacements.keySet())
+      {
+         hyphenated = hyphenated.replaceAll(replacement, hyphenationReplacements.get(replacement));
+      }
+      
+      return hyphenated;
    }
    
    public static Map<String, AgileTestingProject> loadATProjects(AgileTestingProjectLoader atProjectLoader, Path rootProjectPath)

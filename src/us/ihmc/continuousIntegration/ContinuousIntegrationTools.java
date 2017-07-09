@@ -4,7 +4,7 @@ public class ContinuousIntegrationTools
 {
    public static boolean isRunningOnContinuousIntegrationServer()
    {
-      String runningOnContinuousIntegrationServer = System.getenv("RUNNING_ON_CONTINUOUS_INTEGRATION_SERVER");
+      String runningOnContinuousIntegrationServer = System.getProperty("runningOnCIServer");
 
       if (runningOnContinuousIntegrationServer == null || !runningOnContinuousIntegrationServer.equals("true"))
       {

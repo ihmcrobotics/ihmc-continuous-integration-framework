@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.runtime.MethodClosure;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

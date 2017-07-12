@@ -253,7 +253,8 @@ public class AgileTestingStandaloneWorkspace
 
          if (result.addToList)
             if (!result.jobShortName.equals("CheckLicenses"))
-               emptyJobsThatShouldBeDisabledOnBamboo.add(result.jobShortName);
+               if (result.jobShortName.startsWith(agileTestingProject.getModifiedProjectName()))
+                  emptyJobsThatShouldBeDisabledOnBamboo.add(result.jobShortName);
       }
 
       for (String jobShortName : existingJobsThatShouldBeEnabledOnBamboo)

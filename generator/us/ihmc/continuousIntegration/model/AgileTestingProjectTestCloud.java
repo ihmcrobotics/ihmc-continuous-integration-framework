@@ -87,7 +87,7 @@ public class AgileTestingProjectTestCloud
    {
       final List<AgileTestingTestClass> bambooTestClasses = new ArrayList<>();
       
-      List<Path> testPaths = PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceFolder.test.name()), AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX);
+      List<Path> testPaths = PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceFolder.test.name()).resolve(SourceFolder.src.name()), AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX);
       
       for (Path testPath : testPaths)
       {

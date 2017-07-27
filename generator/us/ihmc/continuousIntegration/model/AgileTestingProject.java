@@ -100,7 +100,7 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
 
    private Path findGeneratedTestSuitesDirectory()
    {
-      return pathToProject.resolve(SourceFolder.test.name()).resolve(AgileTestingTools.GENERATED_TEST_SUITES_DIRECTORY_PACKAGE);
+      return pathToProject.resolve(SourceFolder.test.name()).resolve(SourceFolder.src.name()).resolve(AgileTestingTools.GENERATED_TEST_SUITES_DIRECTORY_PACKAGE);
    }
 
    private String findPackageName()

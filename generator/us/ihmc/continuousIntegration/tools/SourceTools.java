@@ -89,7 +89,7 @@ public class SourceTools
          
          if (gotATestOrSrc == false)
          {
-            if (subPathString.equals(SourceFolder.src.name()) || subPathString.equals(SourceFolder.test.name()))
+            if (subPathString.equals(SourceFolder.src.name()))
             {
                gotATestOrSrc = true;
             }
@@ -126,7 +126,7 @@ public class SourceTools
          
          if (gotATestOrSrc == false)
          {
-            if (subPathString.equals(SourceFolder.src.name()) || subPathString.equals(SourceFolder.test.name()))
+            if (subPathString.equals(SourceFolder.src.name()))
             {
                gotATestOrSrc = true;
             }

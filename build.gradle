@@ -6,7 +6,7 @@ plugins {
 ihmc.applyJavaPlugins(project)
 
 group = 'us.ihmc'
-version = '0.12.12'
+version = '0.12.13'
 
 if (publishMode == 'SNAPSHOT')
 {
@@ -21,70 +21,100 @@ project.ext.maintainer = "Duncan Calvert"
 
 ihmc.setupCommonJARConfiguration(project)
 
-project.sourceSets {
-   core.java.srcDirs = ['src']
-   generator.java.srcDirs = ['generator']
-   generatorTest.java.srcDirs = ['generatorTest']
-   generatorTest.resources.srcDirs = ['generatorTestResources']
-   main.java.srcDirs = ['plugin']
-   main.resources.srcDirs = ['pluginResources']
-}
-
-project.repositories {
+repositories {
    jcenter()
    mavenCentral()
+   maven {
+      url "http://dl.bintray.com/ihmcrobotics/maven-release"
+   }
 }
 
-dependencies {
-   coreCompile group: 'junit', name: 'junit', version: '4.11'
-
-   generatorCompile group: 'junit', name: 'junit', version: '4.11'
-   generatorCompile sourceSets.core.output
-   generatorCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
-   generatorCompile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
-   generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
-   generatorCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-   generatorCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-   generatorCompile group: 'com.google.guava', name: 'guava', version: '18.0'
-   generatorCompile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-   generatorCompile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
-   generatorCompile group: 'commons-io', name: 'commons-io', version: '2.4'
-   generatorCompile group: 'us.ihmc', name: 'euclid-core', version: '0.4.3'
-   generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
-   generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
-
-   generatorTestCompile sourceSets.core.output
-   generatorTestCompile sourceSets.generator.output
-   generatorTestCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-   generatorTestCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-   generatorTestCompile('us.ihmc:ihmc-commons-testing:0.11.2')
-         {
-            exclude group: 'us.ihmc', module: 'ihmc-commons'
-            exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
-         }
-   generatorTestCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
-
-   compile sourceSets.core.output
-   compile sourceSets.generator.output
-   compile gradleApi()
-}
-
-eclipse.classpath.plusConfigurations << configurations.coreCompile
-eclipse.classpath.plusConfigurations << configurations.generatorCompile
-eclipse.classpath.plusConfigurations << configurations.generatorTestCompile
-
-if (publishMode == "SNAPSHOT")
+if (publishMode == 'PLUGIN')
 {
-   ihmc.declareArtifactory(project, "snapshots")
-} else if (publishMode == "STABLE")
-{
-   ihmc.declareBintray(project)
-}
+   sourceSets {
+      main.java.srcDirs = ['src', 'plugin', 'generator']
+      main.resources.srcDirs = ['pluginResources']
+   }
 
-ihmc.declarePublication(project, project.name + '-core-api', configurations.coreCompile, sourceSets.core)
-ihmc.declarePublication(project, project.name + '-generator', configurations.generatorCompile, sourceSets.generator, project.name + '-core-api')
-ihmc.declarePublication(project, project.name + '-generator-test', configurations.generatorTestCompile, sourceSets.generatorTest, project.name + '-core-api', project.name + '-generator')
-ihmc.declarePublication(project, project.name + '-plugin', configurations.compile, sourceSets.main, project.name + '-core-api', project.name + '-generator')
+   dependencies {
+      compile group: 'junit', name: 'junit', version: '4.11'
+      compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
+      compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
+      compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
+      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+      compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
+      compile group: 'com.google.guava', name: 'guava', version: '18.0'
+      compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
+      compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
+      compile group: 'commons-io', name: 'commons-io', version: '2.4'
+      compile group: 'us.ihmc', name: 'euclid-core', version: '0.4.3'
+      compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
+      compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
+      compile gradleApi()
+      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+   }
+} else
+{
+   sourceSets {
+      core.java.srcDirs = ['src']
+      generator.java.srcDirs = ['generator']
+      generatorTest.java.srcDirs = ['generatorTest']
+      generatorTest.resources.srcDirs = ['generatorTestResources']
+      main.java.srcDirs = ['plugin']
+      main.resources.srcDirs = ['pluginResources']
+   }
+   dependencies {
+      coreCompile group: 'junit', name: 'junit', version: '4.11'
+
+      generatorCompile group: 'junit', name: 'junit', version: '4.11'
+      generatorCompile sourceSets.core.output
+      generatorCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
+      generatorCompile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
+      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
+      generatorCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+      generatorCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
+      generatorCompile group: 'com.google.guava', name: 'guava', version: '18.0'
+      generatorCompile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
+      generatorCompile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
+      generatorCompile group: 'commons-io', name: 'commons-io', version: '2.4'
+      generatorCompile group: 'us.ihmc', name: 'euclid-core', version: '0.4.3'
+      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
+      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
+
+      generatorTestCompile sourceSets.core.output
+      generatorTestCompile sourceSets.generator.output
+      generatorTestCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
+      generatorTestCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
+      generatorTestCompile('us.ihmc:ihmc-commons-testing:0.11.2')
+            {
+               exclude group: 'us.ihmc', module: 'ihmc-commons'
+               exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
+            }
+      generatorTestCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
+
+      compile sourceSets.core.output
+      compile sourceSets.generator.output
+      compile gradleApi()
+      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+   }
+   
+   eclipse.classpath.plusConfigurations << configurations.coreCompile
+   eclipse.classpath.plusConfigurations << configurations.generatorCompile
+   eclipse.classpath.plusConfigurations << configurations.generatorTestCompile
+
+   if (publishMode == "SNAPSHOT")
+   {
+      ihmc.declareArtifactory(project, "snapshots")
+   } else if (publishMode == "STABLE")
+   {
+      ihmc.declareBintray(project)
+   }
+
+   ihmc.declarePublication(project, project.name + '-core-api', configurations.coreCompile, sourceSets.core)
+   ihmc.declarePublication(project, project.name + '-generator', configurations.generatorCompile, sourceSets.generator, project.name + '-core-api')
+   ihmc.declarePublication(project, project.name + '-generator-test', configurations.generatorTestCompile, sourceSets.generatorTest, project.name + '-core-api', project.name + '-generator')
+   ihmc.declarePublication(project, project.name + '-plugin', configurations.compile, sourceSets.main, project.name + '-core-api', project.name + '-generator')
+}
 
 pluginBundle {
    website = 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'

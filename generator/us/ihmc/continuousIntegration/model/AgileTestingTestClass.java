@@ -22,35 +22,36 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
-import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
+import us.ihmc.commons.PrintTools;
 import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
+import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
+import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.IntegrationCategory;
+import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
 
 public class AgileTestingTestClass
 {
    private final AgileTestingClassPath classPath;
    private final String testClassSimpleName;
-   
+
    // For code quality tests
    private int numberOfLocalUnitTests = 0;
    private int numberOfTimeouts = 0;
    private int numberOfDeployableTestMethods = 0;
    private int numberOfEstimatedDurations = 0;
-   
+
    private int numberOfUnitTests = 0;
    private boolean isExtendingTest = false;
    private boolean isAbstractTest = false;
-   
+
    private final Map<String, AgileTestingClassPath> nameToPathMap;
    private final SortedSet<IntegrationCategory> allPlanTargets = new TreeSet<>();
    private final SortedSet<IntegrationCategory> classPlanTargets = new TreeSet<>();
    private final Map<String, AgileTestingTestMethod> atTestMethods = new HashMap<>();
    private final Map<IntegrationCategory, Double> testPlanDurations = new HashMap<>();
    private double totalDuration = 0.0;
-   
+
    private final Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap;
    private final Pair<CompilationUnit, ClassOrInterfaceDeclaration> pair;
 
@@ -59,10 +60,10 @@ public class AgileTestingTestClass
       this.nameToPathMap = nameToPathMap;
       this.classPath = classPath;
       this.testClassSimpleName = classPath.getSimpleName();
-      
+
       methodAnnotationMap = new HashMap<>();
       pair = AgileTestingJavaParserTools.parseForTestAnnotations(classPath, methodAnnotationMap);
-      
+
       loadTestClass();
    }
 
@@ -70,23 +71,24 @@ public class AgileTestingTestClass
    {
       parseLocalMethodsForCodeQualityTests();
       addPlanTargetsFromClassAnnotationFields();
-      
+
       isExtendingTest = AgileTestingJavaParserTools.classOrInterfaceExtends(pair.getRight());
       isAbstractTest = ModifierSet.isAbstract(pair.getRight().getModifiers());
-      
+
       totalDuration += addAllEstimatedDurationsInFile(pair, methodAnnotationMap);
       if (isExtendingTest)
       {
          totalDuration += addAllDurationsOfSuperClassTests(pair, methodAnnotationMap);
       }
-      
+
       if (allPlanTargets.isEmpty())
       {
          allPlanTargets.add(IntegrationCategory.defaultCategory);
       }
    }
 
-   private double addAllEstimatedDurationsInFile(Pair<CompilationUnit, ClassOrInterfaceDeclaration> pair, Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap)
+   private double addAllEstimatedDurationsInFile(Pair<CompilationUnit, ClassOrInterfaceDeclaration> pair,
+                                                 Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap)
    {
       double totalDuration = 0.0;
       for (MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> method : methodAnnotationMap.values())
@@ -97,9 +99,11 @@ public class AgileTestingTestClass
 
             if (method.getRight().containsKey(ContinuousIntegrationTest.class.getSimpleName()))
             {
-               Map<String, MemberValuePair> deployableTestAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight().get(ContinuousIntegrationTest.class.getSimpleName()));
+               Map<String, MemberValuePair> deployableTestAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight()
+                                                                                                                                   .get(ContinuousIntegrationTest.class.getSimpleName()));
 
-               Double methodDuration = Double.valueOf(((StringLiteralExpr) deployableTestAnnotationFields.get(AgileTestingAnnotationTools.ESTIMATED_DURATION).getValue()).getValue());
+               Double methodDuration = Double.valueOf(((StringLiteralExpr) deployableTestAnnotationFields.get(AgileTestingAnnotationTools.ESTIMATED_DURATION)
+                                                                                                         .getValue()).getValue());
 
                atTestMethods.put(method.getLeft().getName(), new AgileTestingTestMethod(method.getLeft().getName(), methodDuration, pair.getRight().getName()));
                totalDuration += methodDuration;
@@ -141,7 +145,7 @@ public class AgileTestingTestClass
                      atTestMethods.get(method.getLeft().getName()).addCategory(IntegrationCategory.defaultCategory);
                   }
                }
-               
+
                for (IntegrationCategory integrationCategory : atTestMethods.get(method.getLeft().getName()).getCategories())
                {
                   allPlanTargets.add(integrationCategory);
@@ -152,32 +156,35 @@ public class AgileTestingTestClass
 
       return totalDuration;
    }
-   
+
    private void addDurationToMap(IntegrationCategory integrationCategory, double duration)
    {
       if (!testPlanDurations.containsKey(integrationCategory))
       {
          testPlanDurations.put(integrationCategory, 0.0);
       }
-      
+
       testPlanDurations.put(integrationCategory, testPlanDurations.get(integrationCategory) + duration);
    }
-   
-   private double addAllDurationsOfSuperClassTests(Pair<CompilationUnit, ClassOrInterfaceDeclaration> pair, Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap)
+
+   private double addAllDurationsOfSuperClassTests(Pair<CompilationUnit, ClassOrInterfaceDeclaration> pair,
+                                                   Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap)
    {
       AgileTestingClassPath superClassPath = AgileTestingTools.getFirstMatchInMap(nameToPathMap, pair.getRight().getExtends().get(0).getName());
-      
+
       if (superClassPath == null)
          return 0.0;
-      
+
       Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> superClassMethodAnnotationMap = new HashMap<>();
-      Pair<CompilationUnit, ClassOrInterfaceDeclaration> superClassPair = AgileTestingJavaParserTools.parseForTestAnnotations(superClassPath, superClassMethodAnnotationMap);
-      
+      Pair<CompilationUnit, ClassOrInterfaceDeclaration> superClassPair = AgileTestingJavaParserTools.parseForTestAnnotations(superClassPath,
+                                                                                                                              superClassMethodAnnotationMap);
+
       boolean isExtendingSuperClass = AgileTestingJavaParserTools.classOrInterfaceExtends(superClassPair.getRight());
-      
+
       if (isExtendingSuperClass)
       {
-         return addAllEstimatedDurationsInFile(superClassPair, superClassMethodAnnotationMap) + addAllDurationsOfSuperClassTests(superClassPair, superClassMethodAnnotationMap);
+         return addAllEstimatedDurationsInFile(superClassPair, superClassMethodAnnotationMap)
+               + addAllDurationsOfSuperClassTests(superClassPair, superClassMethodAnnotationMap);
       }
       else
       {
@@ -187,32 +194,40 @@ public class AgileTestingTestClass
 
    private void addPlanTargetsFromClassAnnotationFields()
    {
-      for (AnnotationExpr annotationExpr : pair.getRight().getAnnotations())
+      try
       {
-         if (annotationExpr.getName().getName().equals(ContinuousIntegrationPlan.class.getName()) || annotationExpr.getName().getName().equals(ContinuousIntegrationPlan.class.getSimpleName()))
+         for (AnnotationExpr annotationExpr : pair.getRight().getAnnotations())
          {
-            Map<String, MemberValuePair> classAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(annotationExpr);
-            
-            if (classAnnotationFields.containsKey(AgileTestingAnnotationTools.CLASS_TARGETS))
+            if (annotationExpr.getName().getName().equals(ContinuousIntegrationPlan.class.getName())
+                  || annotationExpr.getName().getName().equals(ContinuousIntegrationPlan.class.getSimpleName()))
             {
-               Expression expression = classAnnotationFields.get(AgileTestingAnnotationTools.CLASS_TARGETS).getValue();
-               if (expression instanceof FieldAccessExpr)
+               Map<String, MemberValuePair> classAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(annotationExpr);
+
+               if (classAnnotationFields.containsKey(AgileTestingAnnotationTools.CLASS_TARGETS))
                {
-                  FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
-                  classPlanTargets.add(IntegrationCategory.fromString(fieldAccessExpr.getField()));
-               }
-               else if (expression instanceof ArrayInitializerExpr)
-               {
-                  ArrayInitializerExpr arrayInitializerExpr = (ArrayInitializerExpr) expression;
-                  
-                  for (Expression arrayField : arrayInitializerExpr.getValues())
+                  Expression expression = classAnnotationFields.get(AgileTestingAnnotationTools.CLASS_TARGETS).getValue();
+                  if (expression instanceof FieldAccessExpr)
                   {
-                     FieldAccessExpr arrayFieldAccessExpr = (FieldAccessExpr) arrayField;
-                     classPlanTargets.add(IntegrationCategory.fromString(arrayFieldAccessExpr.getField()));
+                     FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
+                     classPlanTargets.add(IntegrationCategory.fromString(fieldAccessExpr.getField()));
+                  }
+                  else if (expression instanceof ArrayInitializerExpr)
+                  {
+                     ArrayInitializerExpr arrayInitializerExpr = (ArrayInitializerExpr) expression;
+
+                     for (Expression arrayField : arrayInitializerExpr.getValues())
+                     {
+                        FieldAccessExpr arrayFieldAccessExpr = (FieldAccessExpr) arrayField;
+                        classPlanTargets.add(IntegrationCategory.fromString(arrayFieldAccessExpr.getField()));
+                     }
                   }
                }
             }
          }
+      }
+      catch (NullPointerException e)
+      {
+         PrintTools.error("Error parsing class: " + classPath.getClassName());
       }
    }
 
@@ -221,18 +236,19 @@ public class AgileTestingTestClass
       for (MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> method : methodAnnotationMap.values())
       {
          numberOfLocalUnitTests++;
-         
+
          Map<String, MemberValuePair> testAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight().get(Test.class.getSimpleName()));
          if (testAnnotationFields.containsKey(AgileTestingAnnotationTools.TIMEOUT))
          {
             numberOfTimeouts++;
          }
-         
+
          if (method.getRight().containsKey(ContinuousIntegrationTest.class.getSimpleName()))
          {
             numberOfDeployableTestMethods++;
-            
-            Map<String, MemberValuePair> deployableTestAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight().get(ContinuousIntegrationTest.class.getSimpleName()));
+
+            Map<String, MemberValuePair> deployableTestAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight()
+                                                                                                                                .get(ContinuousIntegrationTest.class.getSimpleName()));
 
             if (deployableTestAnnotationFields.containsKey(AgileTestingAnnotationTools.ESTIMATED_DURATION))
             {
@@ -246,7 +262,7 @@ public class AgileTestingTestClass
    {
       return testClassSimpleName;
    }
-   
+
    public String getTestClassName()
    {
       return classPath.getClassName();
@@ -271,7 +287,7 @@ public class AgileTestingTestClass
    {
       return numberOfDeployableTestMethods;
    }
-   
+
    public int getNumberOfEstimatedDurations()
    {
       return numberOfEstimatedDurations;
@@ -303,7 +319,7 @@ public class AgileTestingTestClass
          return testPlanDurations.get(integrationCategory);
       }
    }
-   
+
    public double getTotalDurationForAllPlans()
    {
       return totalDuration;

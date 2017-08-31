@@ -18,19 +18,18 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 
 import us.ihmc.commons.PrintTools;
+import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
+import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
+import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
+import us.ihmc.continuousIntegration.ContinuousIntegrationTools;
+import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.model.AgileTestingTestClass;
 import us.ihmc.continuousIntegration.tools.SourceTools;
-import us.ihmc.continuousIntegration.tools.SourceTools.SourceFolder;
-import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
-import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
-import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
 @ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
 public class UnitTestsCodeQualityTest
@@ -72,7 +71,7 @@ public class UnitTestsCodeQualityTest
                   PrintTools.warn("Bad name: " + classPath.getClassName());
                }
 
-               if (classPath.getSourceFolder() != SourceFolder.test)
+               if (classPath.getSourceFolder().name() != SourceTools.TEST_SOURCE_FOLDER.name())
                {
                   classesNotInTestFolder.add(classPath.getSimpleName());
 

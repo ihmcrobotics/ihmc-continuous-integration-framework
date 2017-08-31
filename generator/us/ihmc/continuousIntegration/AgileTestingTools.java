@@ -25,7 +25,6 @@ public class AgileTestingTools
    public static final String GENERATED_TEST_SUITES_DIRECTORY_PACKAGE = "us/ihmc/" + GENERATED_TEST_SUITES_DIRECTORY_NAME;
    public static final String SETTINGS_GRADLE_NAME = "settings.gradle";
    private static final String BUILD_GRADLE_NAME = "build.gradle";
-   private static final String SOURCE_FOLDER_NAME = "src";
    private static final String COMPILE_PROJECT_REGEX = SourceTools.NOT_COMMENTED_REGEX + "compile.*getProjectDependency.*";
    private static final String TEST_COMPILE_PROJECT_REGEX = SourceTools.NOT_COMMENTED_REGEX + "testCompile.*getProjectDependency.*";
    private static final String RUNTIME_COMPILE_PROJECT_REGEX = SourceTools.NOT_COMMENTED_REGEX + "runtime.*getProjectDependency.*";
@@ -233,7 +232,7 @@ public class AgileTestingTools
          @Override
          public boolean meetsCriteria(AgileTestingProject atProject)
          {
-            return Files.exists(atProject.getPath().resolve(BUILD_GRADLE_NAME)) && Files.exists(atProject.getPath().resolve(SOURCE_FOLDER_NAME));
+            return Files.exists(atProject.getPath().resolve(BUILD_GRADLE_NAME)) && Files.exists(atProject.getPath().resolve(SourceTools.SOURCE_SETS_DIRECTORY_NAME));
          }
       }, SourceTools.getWorkspacePath());
       

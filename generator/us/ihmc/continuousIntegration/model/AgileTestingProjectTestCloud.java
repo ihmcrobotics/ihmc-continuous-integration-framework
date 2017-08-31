@@ -12,7 +12,7 @@ import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
-import us.ihmc.continuousIntegration.tools.SourceTools.SourceFolder;
+import us.ihmc.continuousIntegration.tools.SourceTools;
 
 public class AgileTestingProjectTestCloud
 {
@@ -87,7 +87,7 @@ public class AgileTestingProjectTestCloud
    {
       final List<AgileTestingTestClass> bambooTestClasses = new ArrayList<>();
       
-      List<Path> testPaths = PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceFolder.test.name()).resolve(SourceFolder.src.name()), AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX);
+      List<Path> testPaths = PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceTools.TEST_SOURCE_FOLDER.getMavenPath()), AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX);
       
       for (Path testPath : testPaths)
       {

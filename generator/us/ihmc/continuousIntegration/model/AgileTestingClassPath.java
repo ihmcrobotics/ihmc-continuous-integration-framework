@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.lineCounting.JavaLineCounter;
 import us.ihmc.continuousIntegration.tools.SourceTools;
-import us.ihmc.continuousIntegration.tools.SourceTools.SourceFolder;
+import us.ihmc.continuousIntegration.tools.SourceFolder;
 
 public class AgileTestingClassPath
 {

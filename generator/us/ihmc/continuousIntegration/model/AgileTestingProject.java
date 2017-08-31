@@ -17,7 +17,6 @@ import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.StandaloneProjectConfiguration;
 import us.ihmc.continuousIntegration.tools.SourceTools;
-import us.ihmc.continuousIntegration.tools.SourceTools.SourceFolder;
 
 public class AgileTestingProject implements Comparable<AgileTestingProject>
 {
@@ -100,7 +99,7 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
 
    private Path findGeneratedTestSuitesDirectory()
    {
-      return pathToProject.resolve(SourceFolder.test.name()).resolve(SourceFolder.src.name()).resolve(AgileTestingTools.GENERATED_TEST_SUITES_DIRECTORY_PACKAGE);
+      return pathToProject.resolve(SourceTools.TEST_SOURCE_FOLDER.getMavenPath()).resolve(AgileTestingTools.GENERATED_TEST_SUITES_DIRECTORY_PACKAGE);
    }
 
    private String findPackageName()
@@ -169,11 +168,11 @@ public class AgileTestingProject implements Comparable<AgileTestingProject>
          {
             allClasses.add(classPath);
 
-            if (classPath.getSourceFolder() == SourceFolder.src)
+            if (classPath.getSourceFolder().name() == SourceTools.MAIN_SOURCE_FOLDER.name())
             {
                applicationClasses.add(classPath);
             }
-            else if (classPath.getSourceFolder() == SourceFolder.test)
+            else if (classPath.getSourceFolder().name() == SourceTools.TEST_SOURCE_FOLDER.name())
             {
                testClasses.add(classPath);
             }

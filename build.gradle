@@ -13,7 +13,7 @@ if (publishMode == 'SNAPSHOT')
    version = ihmc.getSnapshotVersion(version, bambooBuildNumber)
 }
 
-project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-continuous-integration-framework"
+project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
 project.ext.licenseURL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
 project.ext.licenseName = "Apache License, Version 2.0"
 project.ext.companyName = "IHMC"

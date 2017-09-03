@@ -136,7 +136,7 @@ public class AgileTestingTools
       {
          if (pascalCased.endsWith(integrationCategory.getName()))
          {
-            pascalCased = pascalCased.substring(0, pascalCased.length() - integrationCategory.name().length());
+            pascalCased = pascalCased.substring(0, pascalCased.length() - integrationCategory.getName().length());
             
             if (integrationCategory.isLoadBalanced())
                pascalCased = pascalCased.substring(0, pascalCased.length() - 1);

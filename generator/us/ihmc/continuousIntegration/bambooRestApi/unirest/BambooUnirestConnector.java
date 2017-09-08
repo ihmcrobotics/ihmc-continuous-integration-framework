@@ -22,6 +22,7 @@ import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooPlan;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooPlanRequest;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooResult;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooResultRequest;
+import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooStage;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooTestResult;
 import us.ihmc.continuousIntegration.tools.LoginInfo;
 
@@ -30,12 +31,12 @@ public class BambooUnirestConnector
    public static final boolean DEBUG = false;
    private final LoginInfo loginInfo;
    private final String baseUrl;
-   
+
    public BambooUnirestConnector(String baseUrl, LoginInfo loginInfo)
    {
       this.baseUrl = baseUrl;
       this.loginInfo = loginInfo;
-      
+
       Unirest.setObjectMapper(new ObjectMapper()
       {
          private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
@@ -70,7 +71,7 @@ public class BambooUnirestConnector
          }
       });
    }
-   
+
    public List<BambooRestJob> queryAllJobs(List<BambooRestPlan> planList)
    {
       List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
@@ -78,9 +79,12 @@ public class BambooUnirestConnector
       {
          try
          {
-            for (BambooPlan jobPlan : queryPlanRequest(bambooRestPlan).getStages().getStage()[0].getPlans().getPlan())
+            for (BambooStage bambooStage : queryPlanRequest(bambooRestPlan).getStages().getStage())
             {
-               jobs.add(new BambooRestJob(jobPlan));
+               for (BambooPlan jobPlan : bambooStage.getPlans().getPlan())
+               {
+                  jobs.add(new BambooRestJob(jobPlan));
+               }
             }
          }
          catch (ArrayIndexOutOfBoundsException | NullPointerException e)
@@ -90,7 +94,7 @@ public class BambooUnirestConnector
       }
       return jobs;
    }
-   
+
    public BambooPlanRequest queryPlanRequest(BambooRestPlan bambooRestPlan)
    {
       try
@@ -120,7 +124,7 @@ public class BambooUnirestConnector
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
          HttpResponse<BambooResultRequest> bambooResultRequestResponse = httpRequest.asObject(BambooResultRequest.class);
          BambooResultRequest bambooResultRequest = bambooResultRequestResponse.getBody();
-         
+
          try
          {
             return bambooResultRequest.getResults().getResult()[0];
@@ -136,7 +140,7 @@ public class BambooUnirestConnector
          return null;
       }
    }
-   
+
    public BambooJobResultRequest queryLastestJobResult(BambooRestJob bambooRestJob)
    {
       try
@@ -147,7 +151,7 @@ public class BambooUnirestConnector
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
          HttpResponse<BambooResultRequest> bambooResultRequestResponse = httpRequest.asObject(BambooResultRequest.class);
          BambooResultRequest bambooResultRequest = bambooResultRequestResponse.getBody();
-         
+
          try
          {
             BambooResult bambooResult = bambooResultRequest.getResults().getResult()[0];
@@ -164,7 +168,7 @@ public class BambooUnirestConnector
          return null;
       }
    }
-   
+
    public List<BambooTestResult> queryAllTestResultsFromJob(BambooRestJob bambooRestJob, int buildNumber)
    {
       BambooJobResultRequest bambooJobResultRequest = queryBambooJobResultRequest(bambooRestJob, buildNumber);
@@ -181,11 +185,11 @@ public class BambooUnirestConnector
       }
       catch (NullPointerException e)
       {
-         
+
       }
       return allTestResults;
    }
-   
+
    public BambooJobResultRequest queryBambooJobResultRequest(BambooRestJob bambooRestJob, int buildNumber)
    {
       try
@@ -203,7 +207,7 @@ public class BambooUnirestConnector
          return null;
       }
    }
-   
+
    public List<BambooRestJob> queryJobsInPlan(BambooRestPlan bambooRestPlan, boolean includeDisabledJobs)
    {
       try
@@ -214,7 +218,7 @@ public class BambooUnirestConnector
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.JOB_EXPANSION);
          HttpResponse<BambooPlanRequest> bambooPlanRequestResponse = httpRequest.asObject(BambooPlanRequest.class);
          BambooPlanRequest bambooPlanRequest = bambooPlanRequestResponse.getBody();
-         
+
          List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
          for (BambooPlan jobPlan : bambooPlanRequest.getStages().getStage()[0].getPlans().getPlan())
          {
@@ -231,7 +235,7 @@ public class BambooUnirestConnector
          return null;
       }
    }
-   
+
    public void destroy()
    {
       try
@@ -243,7 +247,7 @@ public class BambooUnirestConnector
          e.printStackTrace();
       }
    }
-   
+
    private void handleUnirestExceptions(UnirestException e)
    {
       if (e.getMessage().contains("Authentication Failure"))

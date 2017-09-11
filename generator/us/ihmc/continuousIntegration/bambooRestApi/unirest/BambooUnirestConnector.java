@@ -100,7 +100,7 @@ public class BambooUnirestConnector
       try
       {
          String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
-         PrintTools.debug(DEBUG, "Querying: " + url);
+         PrintTools.debug(DEBUG, "Querying: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.JOB_EXPANSION);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.JOB_EXPANSION);
          HttpResponse<BambooPlanRequest> bambooPlanRequestResponse = httpRequest.asObject(BambooPlanRequest.class);
@@ -119,7 +119,7 @@ public class BambooUnirestConnector
       try
       {
          String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestPlan.getKey() + BambooRestApi.JSON;
-         PrintTools.debug(DEBUG, "Querying: " + url);
+         PrintTools.debug(DEBUG, "Querying: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.RESULT_EXPANSION);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
          HttpResponse<BambooResultRequest> bambooResultRequestResponse = httpRequest.asObject(BambooResultRequest.class);
@@ -146,7 +146,7 @@ public class BambooUnirestConnector
       try
       {
          String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestJob.getKey() + BambooRestApi.JSON;
-         PrintTools.debug(DEBUG, "Querying: " + url);
+         PrintTools.debug(DEBUG, "Querying: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.RESULT_EXPANSION);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.RESULT_EXPANSION);
          HttpResponse<BambooResultRequest> bambooResultRequestResponse = httpRequest.asObject(BambooResultRequest.class);
@@ -195,7 +195,7 @@ public class BambooUnirestConnector
       try
       {
          String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.RESULT + bambooRestJob.getKey() + "/" + buildNumber + BambooRestApi.JSON;
-         PrintTools.debug(DEBUG, "Querying: " + url);
+         PrintTools.debug(DEBUG, "Querying: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.ALL_TESTS_EXPANSION);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.ALL_TESTS_EXPANSION);
          HttpResponse<BambooJobResultRequest> bambooJobResultRequestResponse = httpRequest.asObject(BambooJobResultRequest.class);
@@ -213,18 +213,21 @@ public class BambooUnirestConnector
       try
       {
          String url = baseUrl + BambooRestApi.API_PATH + BambooRestApi.PLAN + bambooRestPlan + BambooRestApi.JSON;
-         PrintTools.debug(DEBUG, "Querying: " + url);
+         PrintTools.debug(DEBUG, "Querying: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.JOB_EXPANSION);
 
          HttpRequest httpRequest = requestPost(url).queryString(BambooRestApi.EXPAND, BambooRestApi.JOB_EXPANSION);
          HttpResponse<BambooPlanRequest> bambooPlanRequestResponse = httpRequest.asObject(BambooPlanRequest.class);
          BambooPlanRequest bambooPlanRequest = bambooPlanRequestResponse.getBody();
 
          List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
-         for (BambooPlan jobPlan : bambooPlanRequest.getStages().getStage()[0].getPlans().getPlan())
+         for (BambooStage stage : bambooPlanRequest.getStages().getStage())
          {
-            if (includeDisabledJobs || jobPlan.isEnabled())
+            for (BambooPlan jobPlan : stage.getPlans().getPlan())
             {
-               jobs.add(new BambooRestJob(jobPlan));
+               if (includeDisabledJobs || jobPlan.isEnabled())
+               {
+                  jobs.add(new BambooRestJob(jobPlan));
+               }
             }
          }
          return jobs;

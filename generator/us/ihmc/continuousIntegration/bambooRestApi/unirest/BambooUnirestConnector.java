@@ -72,29 +72,6 @@ public class BambooUnirestConnector
       });
    }
 
-   public List<BambooRestJob> queryAllJobs(List<BambooRestPlan> planList)
-   {
-      List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
-      for (BambooRestPlan bambooRestPlan : planList)
-      {
-         try
-         {
-            for (BambooStage bambooStage : queryPlanRequest(bambooRestPlan).getStages().getStage())
-            {
-               for (BambooPlan jobPlan : bambooStage.getPlans().getPlan())
-               {
-                  jobs.add(new BambooRestJob(jobPlan));
-               }
-            }
-         }
-         catch (ArrayIndexOutOfBoundsException | NullPointerException e)
-         {
-            continue;
-         }
-      }
-      return jobs;
-   }
-
    public BambooPlanRequest queryPlanRequest(BambooRestPlan bambooRestPlan)
    {
       try

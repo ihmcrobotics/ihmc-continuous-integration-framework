@@ -6,7 +6,7 @@ plugins {
 ihmc.applyJavaPlugins(project)
 
 group = 'us.ihmc'
-version = '0.16.5'
+version = '0.16.6'
 
 if (publishMode == 'SNAPSHOT')
 {

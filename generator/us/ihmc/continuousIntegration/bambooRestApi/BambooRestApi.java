@@ -2,6 +2,7 @@ package us.ihmc.continuousIntegration.bambooRestApi;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooJobResultRequest;
@@ -29,49 +30,57 @@ public class BambooRestApi
    public static final String JOB_EXPANSION = "stages.stage.plans";
    public static final String RESULT_EXPANSION = "results[0].result";
    public static final String ALL_TESTS_EXPANSION = "testResults.allTests.testResult";
-   
+
    public static final Path CREDENTIALS_PATH = Paths.get(System.getProperty("user.home"), ".ihmc", "bamboo-rest-login.properties");
-   
+
    private final LoginInfo loginInfo;
    private final BambooUnirestConnector unirestConnector;
-   
+
    public BambooRestApi(String baseUrl)
    {
       loginInfo = SecurityTools.loadLoginInfo(CREDENTIALS_PATH);
       unirestConnector = new BambooUnirestConnector(baseUrl, loginInfo);
    }
-   
+
    public BambooRestApi(String baseUrl, LoginInfo loginInfo)
    {
       this.loginInfo = loginInfo;
       unirestConnector = new BambooUnirestConnector(baseUrl, loginInfo);
    }
-   
+
    public void destroy()
    {
       unirestConnector.destroy();
    }
-   
+
    public List<BambooTestResult> queryAllTestResultsFromJob(BambooRestJob bambooRestJob, int buildNumber)
-   {      
+   {
       return unirestConnector.queryAllTestResultsFromJob(bambooRestJob, buildNumber);
    }
-   
+
    public List<BambooRestJob> queryJobsInPlan(BambooRestPlan bambooRestPlan, boolean includeDisabledJobs)
    {
       return unirestConnector.queryJobsInPlan(bambooRestPlan, includeDisabledJobs);
    }
-   
+
    public List<BambooRestJob> queryAllJobs(List<BambooRestPlan> planList)
    {
-      return unirestConnector.queryAllJobs(planList);
+      List<BambooRestJob> jobs = new ArrayList<>();
+      for (BambooRestPlan bambooRestPlan : planList)
+      {
+         for (BambooRestJob bambooRestJob : queryJobsInPlan(bambooRestPlan, true))
+         {
+            jobs.add(bambooRestJob);
+         }
+      }
+      return jobs;
    }
 
    public BambooResult queryLatestPlanResults(BambooRestPlan bambooRestPlan)
    {
       return unirestConnector.queryLastestPlanResult(bambooRestPlan);
    }
-   
+
    public BambooJobResultRequest queryLatestJobResults(BambooRestJob bambooRestJob)
    {
       return unirestConnector.queryLastestJobResult(bambooRestJob);

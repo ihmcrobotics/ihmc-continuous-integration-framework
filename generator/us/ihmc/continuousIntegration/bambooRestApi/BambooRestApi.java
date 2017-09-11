@@ -85,4 +85,15 @@ public class BambooRestApi
    {
       return unirestConnector.queryLastestJobResult(bambooRestJob);
    }
+
+//   public static void main(String[] args)
+//   {
+//      BambooRestApi bambooRestApi = new BambooRestApi("https://bamboo.ihmc.us/");
+//      ArrayList<BambooRestPlan> plans = new ArrayList<>();
+//      plans.add(new BambooRestPlan("BEAST-KIWI"));
+//      for (BambooRestJob bambooRestJob : bambooRestApi.queryAllJobs(plans))
+//      {
+//         System.out.println(bambooRestJob.getName() + " " + bambooRestJob.isEnabled());
+//      }
+//   }
 }

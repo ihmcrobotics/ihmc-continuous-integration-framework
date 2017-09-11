@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import us.ihmc.commons.PrintTools;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
 
 public class StandaloneProjectConfiguration
@@ -24,6 +25,7 @@ public class StandaloneProjectConfiguration
       this.bambooUrl = testSuiteConfiguration.bambooUrl;
       for (String planKey : testSuiteConfiguration.getBambooPlanKeys())
       {
+         PrintTools.info("[ihmc-ci] Adding plan to check: " + planKey);
          bambooPlans.add(new BambooRestPlan(planKey));
       }
       this.maximumSuiteDuration = testSuiteConfiguration.getMaximumSuiteDuration();

@@ -249,6 +249,7 @@ public class AgileTestingStandaloneWorkspace
 
       for (BambooRestJob job : allJobsFromBambooRestApi)
       {
+         PrintTools.info("Found job: " + job.getName() + " Enabled: " + job.isEnabled());
          Result result = checkThatEnabledJobHasAMatchingTestSuite(job, allMappedTestSuites);
 
          if (result.addToList)

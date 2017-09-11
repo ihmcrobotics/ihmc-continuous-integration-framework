@@ -28,7 +28,7 @@ import us.ihmc.continuousIntegration.tools.LoginInfo;
 
 public class BambooUnirestConnector
 {
-   public static final boolean DEBUG = false;
+   public static final boolean DEBUG = true;
    private final LoginInfo loginInfo;
    private final String baseUrl;
 

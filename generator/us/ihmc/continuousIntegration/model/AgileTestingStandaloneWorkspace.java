@@ -224,7 +224,8 @@ public class AgileTestingStandaloneWorkspace
       }
       if (!emptyJobsThatShouldBeDisabledOnBamboo.isEmpty())
       {
-         throw new RuntimeException("Job(s) " + emptyJobsThatShouldBeDisabledOnBamboo + " should be disabled in Bamboo!");
+         PrintTools.warn(this, emptyJobsThatShouldBeDisabledOnBamboo + " might not have a matching test suite.");
+         //throw new RuntimeException("Job(s) " + emptyJobsThatShouldBeDisabledOnBamboo + " should be disabled in Bamboo!");
       }
 
       bambooRestApi.destroy();

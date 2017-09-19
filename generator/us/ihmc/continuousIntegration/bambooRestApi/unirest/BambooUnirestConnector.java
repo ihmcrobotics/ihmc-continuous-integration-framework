@@ -199,14 +199,11 @@ public class BambooUnirestConnector
          List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
          for (BambooStage stage : bambooPlanRequest.getStages().getStage())
          {
-            if (stage.getName().equals("Test"))
+            for (BambooPlan jobPlan : stage.getPlans().getPlan())
             {
-               for (BambooPlan jobPlan : stage.getPlans().getPlan())
+               if (includeDisabledJobs || jobPlan.isEnabled())
                {
-                  if (includeDisabledJobs || jobPlan.isEnabled())
-                  {
-                     jobs.add(new BambooRestJob(jobPlan));
-                  }
+                  jobs.add(new BambooRestJob(jobPlan));
                }
             }
          }

@@ -7,7 +7,7 @@ public class TestSuiteConfiguration
    public boolean disableBambooConfigurationCheck = false;
    public boolean disableBalancing = false;
    public String bambooUrl = "http://bamboo.ihmc.us/";
-   public String[] bambooPlanKeys = new String[] {"ROB-FAST", "ROB-SLOW", "ROB-UI", "ROB-VIDEO", "ROB-FLAKY", "ROB-INDEVELOPMENT"};
+   public String[] bambooPlanKeys = new String[] {};
    public double maximumSuiteDuration = 5.5;
    public double recommendedTestClassDuration = 2.0;
    

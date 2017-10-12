@@ -40,6 +40,7 @@ public class BambooUnirestConnector
       Unirest.setObjectMapper(new ObjectMapper()
       {
          private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+
          {
             jacksonObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
          }
@@ -197,15 +198,22 @@ public class BambooUnirestConnector
          BambooPlanRequest bambooPlanRequest = bambooPlanRequestResponse.getBody();
 
          List<BambooRestJob> jobs = new ArrayList<BambooRestJob>();
-         for (BambooStage stage : bambooPlanRequest.getStages().getStage())
+         try
          {
-            for (BambooPlan jobPlan : stage.getPlans().getPlan())
+            for (BambooStage stage : bambooPlanRequest.getStages().getStage())
             {
-               if (includeDisabledJobs || jobPlan.isEnabled())
+               for (BambooPlan jobPlan : stage.getPlans().getPlan())
                {
-                  jobs.add(new BambooRestJob(jobPlan));
+                  if (includeDisabledJobs || jobPlan.isEnabled())
+                  {
+                     jobs.add(new BambooRestJob(jobPlan));
+                  }
                }
             }
+         }
+         catch (NullPointerException e)
+         {
+            throw new RuntimeException("URL invalid: " + url + "?" + BambooRestApi.EXPAND + "=" + BambooRestApi.JOB_EXPANSION + " Check that testSuites.bambooPlanKeys is set correctly.");
          }
          return jobs;
       }

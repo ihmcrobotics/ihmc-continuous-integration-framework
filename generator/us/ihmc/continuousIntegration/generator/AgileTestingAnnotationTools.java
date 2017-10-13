@@ -12,6 +12,6 @@ public class AgileTestingAnnotationTools
    public static final String CLASS_TARGETS = "categories";
    public static final String METHOD_TARGETS = "categoriesOverride";
    
-   public static final String TEST_CLASS_FILENAME_REGEX = ".*" + TEST_CLASS_NAME_POSTFIX + "\\.java$";
+   public static final String TEST_CLASS_FILENAME_REGEX = ".*" + TEST_CLASS_NAME_POSTFIX + "s?\\.java$";
    public static final String TEST_SUITE_FILENAME_REGEX = ".*" + TEST_SUITE_NAME_POSTFIX + "\\.java$";
 }

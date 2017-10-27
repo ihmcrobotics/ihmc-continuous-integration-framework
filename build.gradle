@@ -1,119 +1,66 @@
-plugins {
-   id 'us.ihmc.gradle.ihmc-build' version '0.0.31'
-   id 'com.gradle.plugin-publish' version '0.9.7'
-}
-
-ihmc.applyJavaPlugins(project)
-
-group = 'us.ihmc'
-version = '0.16.11'
-
-if (publishMode == 'SNAPSHOT')
-{
-   version = ihmc.getSnapshotVersion(version, bambooBuildNumber)
-}
-
-project.ext.vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
-project.ext.licenseURL = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-project.ext.licenseName = "Apache License, Version 2.0"
-project.ext.companyName = "IHMC"
-project.ext.maintainer = "Duncan Calvert"
-
-ihmc.setupCommonJARConfiguration(project)
-
-repositories {
-   jcenter()
-   mavenCentral()
-   maven {
-      url "http://dl.bintray.com/ihmcrobotics/maven-release"
-   }
-}
-
-if (publishMode == 'PLUGIN')
-{
-   sourceSets {
-      main.java.srcDirs = ['src', 'plugin', 'generator']
-      main.resources.srcDirs = ['pluginResources']
-   }
-
-   dependencies {
-      compile group: 'junit', name: 'junit', version: '4.11'
-      compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
-      compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-      compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      compile group: 'com.google.guava', name: 'guava', version: '18.0'
-      compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-      compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
-      compile group: 'commons-io', name: 'commons-io', version: '2.4'
-      compile group: 'us.ihmc', name: 'euclid-core', version: '0.4.6'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
-      compile gradleApi()
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-   }
-} else
-{
-   sourceSets {
-      core.java.srcDirs = ['src']
-      generator.java.srcDirs = ['generator']
-      generatorTest.java.srcDirs = ['generatorTest']
-      generatorTest.resources.srcDirs = ['generatorTestResources']
-      main.java.srcDirs = ['plugin']
-      main.resources.srcDirs = ['pluginResources']
+buildscript {
+   repositories {
+      maven { url "https://plugins.gradle.org/m2/" }
+      mavenLocal()
    }
    dependencies {
-      coreCompile group: 'junit', name: 'junit', version: '4.11'
-
-      generatorCompile group: 'junit', name: 'junit', version: '4.11'
-      generatorCompile sourceSets.core.output
-      generatorCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
-      generatorCompile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
-      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
-      generatorCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-      generatorCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      generatorCompile group: 'com.google.guava', name: 'guava', version: '18.0'
-      generatorCompile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-      generatorCompile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
-      generatorCompile group: 'commons-io', name: 'commons-io', version: '2.4'
-      generatorCompile group: 'us.ihmc', name: 'euclid-core', version: '0.4.6'
-      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
-      generatorCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
-
-      generatorTestCompile sourceSets.core.output
-      generatorTestCompile sourceSets.generator.output
-      generatorTestCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      generatorTestCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-      generatorTestCompile('us.ihmc:ihmc-commons-testing:0.11.2')
-            {
-               exclude group: 'us.ihmc', module: 'ihmc-commons'
-               exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
-            }
-      generatorTestCompile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
-
-      compile sourceSets.core.output
-      compile sourceSets.generator.output
-      compile gradleApi()
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+      classpath "gradle.plugin.us.ihmc:ihmc-build:0.9.13"
+      classpath "com.gradle.publish:plugin-publish-plugin:0.9.9"
    }
-   
-   eclipse.classpath.plusConfigurations << configurations.coreCompile
-   eclipse.classpath.plusConfigurations << configurations.generatorCompile
-   eclipse.classpath.plusConfigurations << configurations.generatorTestCompile
+}
+apply plugin: "us.ihmc.ihmc-build"
+apply plugin: "com.gradle.plugin-publish"
 
-   if (publishMode == "SNAPSHOT")
-   {
-      ihmc.declareArtifactory(project, "snapshots")
-   } else if (publishMode == "STABLE")
-   {
-      ihmc.declareBintray(project)
-   }
+ihmc {
+   group = "us.ihmc"
+   version = "0.16.12"
+   vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
+   openSource = true
+   maintainer = "Duncan Calvert"
 
-   ihmc.declarePublication(project, project.name + '-core-api', configurations.coreCompile, sourceSets.core)
-   ihmc.declarePublication(project, project.name + '-generator', configurations.generatorCompile, sourceSets.generator, project.name + '-core-api')
-   ihmc.declarePublication(project, project.name + '-generator-test', configurations.generatorTestCompile, sourceSets.generatorTest, project.name + '-core-api', project.name + '-generator')
-   ihmc.declarePublication(project, project.name + '-plugin', configurations.compile, sourceSets.main, project.name + '-core-api', project.name + '-generator')
+   configureDependencyResolution()
+   configurePublications()
+}
+
+mainDependencies {
+   compile ihmc.sourceSetProject("core-api")
+   compile ihmc.sourceSetProject("generator")
+   compile dependencies.gradleApi()
+   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+}
+
+coreApiDependencies {
+   compile group: 'junit', name: 'junit', version: '4.11'
+}
+
+generatorDependencies {
+   compile group: 'junit', name: 'junit', version: '4.11'
+   compile ihmc.sourceSetProject("core-api")
+   compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
+   compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
+   compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
+   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+   compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
+   compile group: 'com.google.guava', name: 'guava', version: '18.0'
+   compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
+   compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
+   compile group: 'commons-io', name: 'commons-io', version: '2.4'
+   compile group: 'us.ihmc', name: 'euclid-core', version: '0.4.6'
+   compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
+   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
+}
+
+generatorTestDependencies {
+   compile ihmc.sourceSetProject("core-api")
+   compile ihmc.sourceSetProject("generator")
+   compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
+   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
+   compile('us.ihmc:ihmc-commons-testing:0.11.2')
+         {
+            exclude group: 'us.ihmc', module: 'ihmc-commons'
+            exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
+         }
+   compile group: 'us.ihmc', name: 'ihmc-commons', version: '0.10.0-alpha'
 }
 
 pluginBundle {

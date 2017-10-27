@@ -208,6 +208,32 @@ public class AgileTestingStandaloneWorkspace
       }
    }
 
+   public void checkJUnitTimeouts()
+   {
+      if (agileTestingProject.isIndependent())
+         return;
+
+
+      System.out.println("\n-- JUNIT TIMEOUT CHECK --");
+      List<String> classesWithMissingTimeouts = new ArrayList<>();
+      for (AgileTestingTestClass bambooTestClass : agileTestingProject.getTestCloud().getTestClasses())
+      {
+         int missingTimeouts = bambooTestClass.getNumberOfUnitTests() - bambooTestClass.getNumberOfTimeouts();
+
+         if (missingTimeouts > 0)
+         {
+            classesWithMissingTimeouts.add(bambooTestClass.getTestClassSimpleName() + ":" + missingTimeouts);
+
+            PrintTools.error(this, "Missing " + missingTimeouts + " timeout(s): " + bambooTestClass.getTestClassSimpleName());
+         }
+      }
+
+      if (!classesWithMissingTimeouts.isEmpty())
+      {
+         throw new RuntimeException("Classes " + classesWithMissingTimeouts + " are missing JUnit timeouts! Please add @Test(timeout = 30000)");
+      }
+   }
+
    public void checkJobConfigurationOnBamboo()
    {
       BambooRestApi bambooRestApi = new BambooRestApi(configuration.getBambooBaseUrl());
@@ -218,14 +244,13 @@ public class AgileTestingStandaloneWorkspace
       compareGeneratedTestSuitesWithBamboo(existingJobsThatShouldBeEnabledOnBamboo, emptyJobsThatShouldBeDisabledOnBamboo, bambooRestApi,
                                            configuration.getBambooPlans());
 
-      if (!existingJobsThatShouldBeEnabledOnBamboo.isEmpty())
-      {
-         throw new RuntimeException("Test suite(s) " + existingJobsThatShouldBeEnabledOnBamboo + " are not enabled in Bamboo!");
-      }
       if (!emptyJobsThatShouldBeDisabledOnBamboo.isEmpty())
       {
          PrintTools.warn(this, emptyJobsThatShouldBeDisabledOnBamboo + " might not have a matching test suite.");
-         //throw new RuntimeException("Job(s) " + emptyJobsThatShouldBeDisabledOnBamboo + " should be disabled in Bamboo!");
+      }
+      if (!existingJobsThatShouldBeEnabledOnBamboo.isEmpty())
+      {
+         throw new RuntimeException("Test suite(s) " + existingJobsThatShouldBeEnabledOnBamboo + " are not enabled in Bamboo!");
       }
 
       bambooRestApi.destroy();

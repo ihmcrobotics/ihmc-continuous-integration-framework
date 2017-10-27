@@ -67,6 +67,10 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
       workspace.loadTestCloud();
       workspace.generateAllTestSuites();
       workspace.printAllStatistics();
+      if (!testSuitesConfiguration.getDisableJUnitTimeoutCheck())
+      {
+         workspace.checkJUnitTimeouts();
+      }
       if (!testSuitesConfiguration.getDisableBambooConfigurationCheck())
       {
          workspace.checkJobConfigurationOnBamboo();

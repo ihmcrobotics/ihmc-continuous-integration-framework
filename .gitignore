@@ -17,6 +17,8 @@
 */install
 
 # directories to always ignore
+**/build
+**/out
 **/.gradle
 **/.project
 **/.classpath

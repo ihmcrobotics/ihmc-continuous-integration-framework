@@ -1,18 +1,17 @@
 package us.ihmc.continuousIntegration.testSuiteRunner;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
-
 import us.ihmc.commons.PrintTools;
-import us.ihmc.commons.Stopwatch;
+import us.ihmc.commons.time.Stopwatch;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.tools.SourceTools;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class DurationRunListener extends RunListener
 {

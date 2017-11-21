@@ -18,10 +18,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import us.ihmc.commons.PrintTools;
-import us.ihmc.commons.ThreadTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
+import us.ihmc.commons.thread.ThreadTools;
 
 public class SecurityTools
 {

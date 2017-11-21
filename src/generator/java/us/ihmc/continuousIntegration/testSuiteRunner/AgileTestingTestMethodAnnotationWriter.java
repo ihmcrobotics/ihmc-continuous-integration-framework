@@ -1,14 +1,5 @@
 package us.ihmc.continuousIntegration.testSuiteRunner;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -16,7 +7,9 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
-
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
@@ -28,6 +21,11 @@ import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AgileTestingTestMethodAnnotationWriter
 {
@@ -106,6 +104,6 @@ public class AgileTestingTestMethodAnnotationWriter
    {
       double potentialTimeout = (testDuration * 5.0);
       double timeoutInSeconds = (potentialTimeout > 30.0) ? MathTools.roundToSignificantFigures(potentialTimeout, 2) : 30.0;
-      return Conversions.secondsToMilliseconds(timeoutInSeconds);
+      return (int) Conversions.secondsToMilliseconds(timeoutInSeconds);
    }
 }

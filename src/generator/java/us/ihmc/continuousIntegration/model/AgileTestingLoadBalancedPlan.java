@@ -1,16 +1,16 @@
 package us.ihmc.continuousIntegration.model;
 
+import us.ihmc.commons.Conversions;
+import us.ihmc.commons.MathTools;
+import us.ihmc.commons.PrintTools;
+import us.ihmc.continuousIntegration.IntegrationCategory;
+
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import us.ihmc.commons.Conversions;
-import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
 public class AgileTestingLoadBalancedPlan
 {
@@ -34,38 +34,26 @@ public class AgileTestingLoadBalancedPlan
 
    public void add(AgileTestingTestClass bambooTestClass)
    {
-      if (bambooPlanType == IntegrationCategory.FAST
-            && bambooTestClass.getTotalDurationForTarget(bambooPlanType) > Conversions.minutesToSeconds(bambooEnabledProject.getConfiguration()
-                                                                                                                            .getMaximumSuiteDuration()))
+      if (bambooPlanType == IntegrationCategory.FAST && bambooTestClass.getTotalDurationForTarget(bambooPlanType) > Conversions
+            .minutesToSeconds(bambooEnabledProject.getConfiguration().getMaximumSuiteDuration()))
       {
-         PrintTools.warn(this, "classTotalDuration > MAXIMUM_SUITE_DURATION in Fast: " + bambooTestClass.getTestClassSimpleName() + " ("
-               + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
+         PrintTools.warn(this, "classTotalDuration > MAXIMUM_SUITE_DURATION in Fast: " + bambooTestClass.getTestClassSimpleName() + " (" + MathTools
+               .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
       }
-      if (bambooPlanType == IntegrationCategory.SLOW
-            && bambooTestClass.getTotalDurationForTarget(bambooPlanType) < Conversions.minutesToSeconds(bambooEnabledProject.getConfiguration()
-                                                                                                                            .getRecommendedTestClassDuration()))
+      if (bambooPlanType == IntegrationCategory.SLOW && bambooTestClass.getTotalDurationForTarget(bambooPlanType) < Conversions
+            .minutesToSeconds(bambooEnabledProject.getConfiguration().getRecommendedTestClassDuration()))
       {
-         PrintTools.warn(this, "classTotalDuration < RECOMMENDED_TEST_CLASS_DURATION in Slow. Consider moving to Fast: "
-               + bambooTestClass.getTestClassSimpleName() + " ("
-               + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
+         PrintTools.warn(this,
+                         "classTotalDuration < RECOMMENDED_TEST_CLASS_DURATION in Slow. Consider moving to Fast: " + bambooTestClass.getTestClassSimpleName()
+                               + " (" + MathTools
+                               .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
       }
 
-      if (loadBalancedDurations.containsKey(currentLetter) && (loadBalancedDurations.get(currentLetter)
-            + bambooTestClass.getTotalDurationForTarget(bambooPlanType)) > Conversions.minutesToSeconds(bambooEnabledProject.getConfiguration()
-                                                                                                                            .getMaximumSuiteDuration()))
+      if (loadBalancedDurations.containsKey(currentLetter)
+            && (loadBalancedDurations.get(currentLetter) + bambooTestClass.getTotalDurationForTarget(bambooPlanType)) > Conversions
+            .minutesToSeconds(bambooEnabledProject.getConfiguration().getMaximumSuiteDuration()))
       {
-         if (currentLetter.length() == 1 && currentLetter.charAt(0) < 'Z')
-         {
-            currentLetter = String.valueOf(currentLetter.charAt(0) + 1);
-         }
-         else if (currentLetter.length() == 1 && currentLetter.charAt(0) >= 'Z')
-         {
-            currentLetter = "AA";
-         }
-         else if (currentLetter.length() == 2 && currentLetter.charAt(1) < 'Z')
-         {
-            currentLetter = "A" + String.valueOf(currentLetter.charAt(1) + 1);
-         }
+         currentLetter = incrementCurrentLetter(currentLetter);
       }
 
       addTestClassToCurrentLetterJob(bambooTestClass);
@@ -154,5 +142,37 @@ public class AgileTestingLoadBalancedPlan
    public ArrayList<AgileTestingTestSuiteFile> getTestSuiteFiles()
    {
       return testSuiteFiles;
+   }
+
+   private static String incrementCurrentLetter(String currentLetter)
+   {
+      int indexLastLetter = currentLetter.length() - 1;
+      if (currentLetter.charAt(indexLastLetter) < 'Z')
+      {
+         currentLetter = currentLetter.substring(0, indexLastLetter) + String.valueOf((char) (currentLetter.charAt(indexLastLetter) + 1));
+      }
+      else if (currentLetter.charAt(indexLastLetter) >= 'Z')
+      {
+         if (currentLetter.length() == 1)
+         {
+            currentLetter = "AA";
+         }
+         else
+         {
+            currentLetter = String.valueOf((char) (currentLetter.charAt(0) + 1)) + "A";
+         }
+      }
+      return currentLetter;
+   }
+
+   public static void main(String[] args)
+   {
+      System.out.println(incrementCurrentLetter("A"));
+      System.out.println(incrementCurrentLetter("C"));
+      System.out.println(incrementCurrentLetter("Z"));
+      System.out.println(incrementCurrentLetter("AA"));
+      System.out.println(incrementCurrentLetter("AB"));
+      System.out.println(incrementCurrentLetter("ZA"));
+      System.out.println(incrementCurrentLetter("ZZ"));
    }
 }

@@ -17,12 +17,12 @@ public class AgileTestingLoadBalancedPlan
    private IntegrationCategory bambooPlanType;
    private AgileTestingProject bambooEnabledProject;
 
-   private Map<Character, List<Path>> loadBalancedTests = new HashMap<>();
-   private Map<Character, Double> loadBalancedDurations = new HashMap<>();
+   private Map<String, List<Path>> loadBalancedTests = new HashMap<>();
+   private Map<String, Double> loadBalancedDurations = new HashMap<>();
 
    private ArrayList<AgileTestingTestSuiteFile> testSuiteFiles = new ArrayList<AgileTestingTestSuiteFile>();
 
-   private Character currentLetter = 'A';
+   private String currentLetter = "A";
 
    private int numberOfTests = 0;
 
@@ -50,11 +50,22 @@ public class AgileTestingLoadBalancedPlan
                + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
       }
 
-      if (loadBalancedDurations.get(currentLetter) != null && (loadBalancedDurations.get(currentLetter)
+      if (loadBalancedDurations.containsKey(currentLetter) && (loadBalancedDurations.get(currentLetter)
             + bambooTestClass.getTotalDurationForTarget(bambooPlanType)) > Conversions.minutesToSeconds(bambooEnabledProject.getConfiguration()
                                                                                                                             .getMaximumSuiteDuration()))
       {
-         currentLetter++;
+         if (currentLetter.length() == 1 && currentLetter.charAt(0) < 'Z')
+         {
+            currentLetter = String.valueOf(currentLetter.charAt(0) + 1);
+         }
+         else if (currentLetter.length() == 1 && currentLetter.charAt(0) >= 'Z')
+         {
+            currentLetter = "AA";
+         }
+         else if (currentLetter.length() == 2 && currentLetter.charAt(1) < 'Z')
+         {
+            currentLetter = "A" + String.valueOf(currentLetter.charAt(1) + 1);
+         }
       }
 
       addTestClassToCurrentLetterJob(bambooTestClass);
@@ -91,7 +102,7 @@ public class AgileTestingLoadBalancedPlan
 
    private void processLoadBalancedTests(boolean generateTestSuites)
    {
-      for (Character letter : loadBalancedTests.keySet())
+      for (String letter : loadBalancedTests.keySet())
       {
          String testSuiteSimpleName = bambooEnabledProject.getModifiedProjectName() + letter + bambooPlanType.getName() + "TestSuite";
          Path suitePath = bambooEnabledProject.getGeneratedTestSuitesDirectory().resolve(testSuiteSimpleName + ".java");
@@ -130,12 +141,12 @@ public class AgileTestingLoadBalancedPlan
       return bambooPlanType;
    }
 
-   public Map<Character, List<Path>> getLoadBalancedTests()
+   public Map<String, List<Path>> getLoadBalancedTests()
    {
       return loadBalancedTests;
    }
 
-   public Map<Character, Double> getLoadBalancedDurations()
+   public Map<String, Double> getLoadBalancedDurations()
    {
       return loadBalancedDurations;
    }

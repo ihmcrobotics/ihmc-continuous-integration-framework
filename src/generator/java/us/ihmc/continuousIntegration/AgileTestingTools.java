@@ -139,7 +139,13 @@ public class AgileTestingTools
             pascalCased = pascalCased.substring(0, pascalCased.length() - integrationCategory.getName().length());
             
             if (integrationCategory.isLoadBalanced())
-               pascalCased = pascalCased.substring(0, pascalCased.length() - 1);
+            {
+               int i = pascalCased.length() - 1;
+               while (Character.isUpperCase(pascalCased.charAt(i--)))
+               {
+                  pascalCased = pascalCased.substring(0, pascalCased.length() - 1);
+               }
+            }
                
             break;
          }
@@ -151,7 +157,7 @@ public class AgileTestingTools
 
       return hyphenated;
    }
-   
+
    private static String pascalCasedToPrehyphenated(String pascalCased)
    {
       List<String> parts = new ArrayList<>();

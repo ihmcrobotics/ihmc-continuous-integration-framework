@@ -4,7 +4,7 @@ buildscript {
       mavenLocal()
    }
    dependencies {
-      classpath "us.ihmc:ihmc-build:0.12.5"
+      classpath "us.ihmc:ihmc-build:0.12.8"
       classpath "com.gradle.publish:plugin-publish-plugin:0.9.9"
    }
 }
@@ -53,7 +53,6 @@ if (Eval.me(extraSourceSets).size == 0)
       testCompile('us.ihmc:ihmc-commons-testing:0.18.0')
             {
                exclude group: 'us.ihmc', module: 'ihmc-commons'
-               exclude group: 'us.ihmc', module: 'ihmc-continuous-integration-framework'
             }
    }
 }
@@ -100,8 +99,8 @@ else
 }
 
 pluginBundle {
-   website = 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'
-   vcsUrl = 'https://github.com/ihmcrobotics/ihmc-continuous-integration-framework'
+   website = 'https://github.com/ihmcrobotics/ihmc-ci'
+   vcsUrl = 'https://github.com/ihmcrobotics/ihmc-ci'
    description = 'Use this plugin to generate load-balanced and categorized test suites for use with annotations provided in ihmc-ci-core-api.'
 
    plugins {

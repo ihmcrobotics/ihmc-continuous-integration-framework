@@ -31,7 +31,7 @@ public class BambooRestApi
    public static final String RESULT_EXPANSION = "results[0].result";
    public static final String ALL_TESTS_EXPANSION = "testResults.allTests.testResult";
 
-   public static final Path CREDENTIALS_PATH = Paths.get(System.getProperty("user.home"), ".ihmc", "bamboo-rest-login.properties");
+   public static final Path CREDENTIALS_PATH = Paths.get(System.getProperty("user.home"), "bamboo-scripts", "bamboo-rest-login.properties");
 
    private final LoginInfo loginInfo;
    private final BambooUnirestConnector unirestConnector;

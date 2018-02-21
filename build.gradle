@@ -13,7 +13,7 @@ apply plugin: "com.gradle.plugin-publish"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.17.7"
+   version = "0.17.9"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -29,7 +29,8 @@ ihmc {
    configurePublications()
 }
 
-if (Eval.me(extraSourceSets).size == 0)
+def pluginMode = Eval.me(extraSourceSets).size == 0
+if (pluginMode)
 {
    mainDependencies {
       compile dependencies.gradleApi()
@@ -98,23 +99,26 @@ else
    }
 }
 
-pluginBundle {
-   website = 'https://github.com/ihmcrobotics/ihmc-ci'
-   vcsUrl = 'https://github.com/ihmcrobotics/ihmc-ci'
-   description = 'Use this plugin to generate load-balanced and categorized test suites for use with annotations provided in ihmc-ci-core-api.'
+if (pluginMode)
+{
+   pluginBundle {
+      website = 'https://github.com/ihmcrobotics/ihmc-ci'
+      vcsUrl = 'https://github.com/ihmcrobotics/ihmc-ci'
+      description = 'Use this plugin to generate load-balanced and categorized test suites for use with annotations provided in ihmc-ci-core-api.'
 
-   plugins {
-      ihmcContinuousIntegrationPlugin {
-         id = project.group + '.' + project.name
-         displayName = 'IHMC Continuous Integration Plugin'
-         tags = ['continuous', 'integration', 'ihmc', 'robotics']
+      plugins {
+         ihmcContinuousIntegrationPlugin {
+            id = project.group + '.' + project.name
+            displayName = 'IHMC Continuous Integration Plugin'
+            tags = ['continuous', 'integration', 'ihmc', 'robotics']
+            version = project.version
+         }
+      }
+
+      mavenCoordinates {
+         groupId = project.group
+         artifactId = project.name + "-plugin"
          version = project.version
       }
-   }
-
-   mavenCoordinates {
-      groupId = project.group
-      artifactId = project.name + '-plugin'
-      version = project.version
    }
 }

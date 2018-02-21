@@ -5,6 +5,7 @@ public class TestSuiteConfiguration
    public String hyphenatedName;
    public String pascalCasedName;
    public boolean disableBambooConfigurationCheck = false;
+   public boolean crashOnEmptyJobs = true;
    public boolean disableJUnitTimeoutCheck = false;
    public boolean disableBalancing = false;
    public String bambooUrl = "https://bamboo.ihmc.us/";
@@ -15,6 +16,11 @@ public class TestSuiteConfiguration
    public boolean getDisableBambooConfigurationCheck()
    {
       return disableBambooConfigurationCheck;
+   }
+
+   public boolean getCrashOnEmptyJobs()
+   {
+      return crashOnEmptyJobs;
    }
 
    public boolean getDisableJUnitTimeoutCheck()

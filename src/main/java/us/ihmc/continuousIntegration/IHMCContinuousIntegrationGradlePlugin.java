@@ -73,7 +73,7 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
       }
       if (!testSuitesConfiguration.getDisableBambooConfigurationCheck())
       {
-         workspace.checkJobConfigurationOnBamboo();
+         workspace.checkJobConfigurationOnBamboo(testSuitesConfiguration.crashOnEmptyJobs);
       }
    }
 

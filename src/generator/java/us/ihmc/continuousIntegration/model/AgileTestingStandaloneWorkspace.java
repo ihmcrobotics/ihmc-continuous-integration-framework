@@ -234,7 +234,7 @@ public class AgileTestingStandaloneWorkspace
       }
    }
 
-   public void checkJobConfigurationOnBamboo()
+   public void checkJobConfigurationOnBamboo(boolean crashOnEmptyJobs)
    {
       BambooRestApi bambooRestApi = new BambooRestApi(configuration.getBambooBaseUrl());
 
@@ -246,7 +246,10 @@ public class AgileTestingStandaloneWorkspace
 
       if (!emptyJobsThatShouldBeDisabledOnBamboo.isEmpty())
       {
-         PrintTools.warn(this, emptyJobsThatShouldBeDisabledOnBamboo + " might not have a matching test suite.");
+         if (crashOnEmptyJobs)
+            throw new RuntimeException(emptyJobsThatShouldBeDisabledOnBamboo + " doesn't have a matching test suite.");
+         else
+            PrintTools.warn(this, emptyJobsThatShouldBeDisabledOnBamboo + " doesn't have a matching test suite.");
       }
       if (!existingJobsThatShouldBeEnabledOnBamboo.isEmpty())
       {
@@ -280,8 +283,12 @@ public class AgileTestingStandaloneWorkspace
 
          if (result.addToList)
             if (!result.jobShortName.equals("CheckLicenses"))
-               if (result.jobShortName.startsWith(agileTestingProject.getModifiedProjectName()))
+            {
+               if (result.jobShortName.matches(formMatchingPattern(agileTestingProject.getModifiedProjectName())))
+               {
                   emptyJobsThatShouldBeDisabledOnBamboo.add(result.jobShortName);
+               }
+            }
       }
 
       for (String jobShortName : existingJobsThatShouldBeEnabledOnBamboo)
@@ -293,6 +300,29 @@ public class AgileTestingStandaloneWorkspace
       {
          PrintTools.error(this, jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
       }
+   }
+
+   static String formMatchingPattern(String modifiedProjectName)
+   {
+      String matchString = modifiedProjectName + "(";
+      for (int i = 0; i < IntegrationCategory.values.length; i++)
+      {
+         IntegrationCategory category = IntegrationCategory.values[i];
+         if (i > 0)
+         {
+            matchString += "|";
+         }
+         if (category.isLoadBalanced())
+         {
+            matchString += "([A-Z]{1,}" + category.getName() + ")";
+         }
+         else
+         {
+            matchString += "(" + category.getName() + ")";
+         }
+      }
+      matchString += ")";
+      return matchString;
    }
 
    private void checkTestSuite(SortedSet<String> existingJobsThatShouldBeEnabledOnBamboo, List<BambooRestJob> allJobs,

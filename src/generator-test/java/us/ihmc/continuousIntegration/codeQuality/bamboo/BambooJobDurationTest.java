@@ -1,16 +1,8 @@
 package us.ihmc.continuousIntegration.codeQuality.bamboo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
@@ -26,8 +18,9 @@ import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooTestResu
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.testSuiteRunner.AgileTestingTestMethodAnnotationWriter;
 import us.ihmc.continuousIntegration.testSuiteRunner.AtomicTestRun;
-import us.ihmc.continuousIntegration.tools.SecurityTools;
 import us.ihmc.continuousIntegration.tools.SourceTools;
+
+import java.util.*;
 
 @ContinuousIntegrationPlan(categories = IntegrationCategory.EXCLUDE)
 public class BambooJobDurationTest
@@ -37,15 +30,9 @@ public class BambooJobDurationTest
    private static BambooRestApi bambooRestApi;
    private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
    private static final List<BambooRestPlan> planList = new ArrayList<>();
-   private static final BambooRestPlan videoPlan = new BambooRestPlan("ROB-VIDEO");
    static
    {
-      planList.add(new BambooRestPlan("ROB-FAST"));
-      planList.add(new BambooRestPlan("ROB-SLOW"));
-      planList.add(new BambooRestPlan("ROB-UI"));
-      planList.add(videoPlan);
-      planList.add(new BambooRestPlan("ROB-FLAKY"));
-      planList.add(new BambooRestPlan("ROB-INDEVELOPMENT"));
+      planList.add(new BambooRestPlan("LIBS-IHMCOPENROBOTICSSOFTWAREFAST"));
    }
    
    @BeforeClass
@@ -64,15 +51,12 @@ public class BambooJobDurationTest
    @Test(timeout = 1000000)
    public void testAllJobDurationsArePrettyEven()
    {
-      if (System.getProperty("bamboo.username") != null)
-         SecurityTools.storeLoginInfo("BambooRestConnector", System.getProperty("bamboo.username"), System.getProperty("bamboo.password"));
-      
       final Map<BambooRestJob, Double> jobToDurationMap = new HashMap<>();
       final Map<BambooRestPlan, Map<BambooRestJob, List<BambooTestResult>>> planToTestResultMap = new HashMap<>();
       
       for (BambooRestPlan plan : planList)
       {
-         if (!plan.equals(videoPlan))
+         if (!plan.getKey().contains("VIDEO"))
          {
             fillResultsMap(plan, jobToDurationMap, planToTestResultMap);
          }
@@ -82,15 +66,12 @@ public class BambooJobDurationTest
       
       List<BambooRestJob> allJobs = new ArrayList<>();
       allJobs.addAll(jobToDurationMap.keySet());
-      
-      Collections.sort(allJobs, new Comparator<BambooRestJob>()
-      {
-         @Override
-         public int compare(BambooRestJob o1, BambooRestJob o2)
+
+      Collections.sort(allJobs, (o1, o2) -> {
          {
             double o1Time = jobToDurationMap.get(o1);
             double o2Time = jobToDurationMap.get(o2);
-            
+
             if (o1Time > o2Time)
             {
                return -1;

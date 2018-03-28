@@ -20,8 +20,12 @@ import us.ihmc.continuousIntegration.testSuiteRunner.AgileTestingTestMethodAnnot
 import us.ihmc.continuousIntegration.testSuiteRunner.AtomicTestRun;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 
+import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * For AUTO_FIX, run from your repository-group directory!
+ */
 @ContinuousIntegrationPlan(categories = IntegrationCategory.EXCLUDE)
 public class BambooJobDurationTest
 {
@@ -123,7 +127,7 @@ public class BambooJobDurationTest
       
       if (AUTO_FIX)
       {
-         Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(SourceTools.getWorkspacePath());
+         Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(Paths.get("."));
          
          for (BambooRestPlan plan : planToTestResultMap.keySet())
          {

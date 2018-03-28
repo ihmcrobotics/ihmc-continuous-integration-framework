@@ -127,7 +127,7 @@ public class BambooJobDurationTest
       
       if (AUTO_FIX)
       {
-         Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(Paths.get("."));
+         Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(SourceTools.getWorkspacePath());
          
          for (BambooRestPlan plan : planToTestResultMap.keySet())
          {

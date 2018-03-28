@@ -18,8 +18,8 @@ import us.ihmc.commons.nio.PathTools;
 
 public class SourceTools
 {
-   private static final Path WORKSPACE_PATH = Paths.get("..", "..");
-   private static final Path PROJECT_PATH = Paths.get("..");
+   private static final Path WORKSPACE_PATH = Paths.get("..");
+   private static final Path PROJECT_PATH = Paths.get(".");
    public static final String NOT_COMMENTED_REGEX = "^\\s*";
    public static final String ANY_STRING_REGEX = ".*";
    public static final String ALL_JAVA_FILES_REGEX = ".*\\.java$";

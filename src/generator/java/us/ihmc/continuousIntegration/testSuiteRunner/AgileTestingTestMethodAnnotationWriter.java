@@ -54,8 +54,13 @@ public class AgileTestingTestMethodAnnotationWriter
          PrintTools.info(atomicTestRun.getClassName() + "." + atomicTestRun.getMethodName() + ": " + new DecimalFormat("0.0").format(atomicTestRun.getDuration()) + " s");
          
          MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> mutablePair = methodAnnotationMap.get(atomicTestRun.getMethodName());
-         
+
          AnnotationExpr deployableTestMethodExpr = mutablePair.getRight().get(ContinuousIntegrationTest.class.getSimpleName());
+         if (deployableTestMethodExpr == null)
+         {
+            PrintTools.warn("No @ContinuousIntegrationTest! Skipping...");
+            return;
+         }
          AnnotationExpr junitTestExpr = mutablePair.getRight().get(Test.class.getSimpleName());
          
          Map<String, MemberValuePair> deployableTestMethodAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(deployableTestMethodExpr);

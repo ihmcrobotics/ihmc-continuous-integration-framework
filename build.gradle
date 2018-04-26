@@ -42,7 +42,7 @@ if (pluginMode)
       compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
       compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
       compile group: "commons-io", name: "commons-io", version: "2.6"
-      compile group: "us.ihmc", name: "ihmc-commons", version: "0.18.0"
+      compile group: "us.ihmc", name: "ihmc-commons", version: "0.19.0"
       compile group: 'us.ihmc', name: 'euclid-core', version: '0.4.6'
       compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
       compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
@@ -51,7 +51,7 @@ if (pluginMode)
 
       testCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
       testCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-      testCompile('us.ihmc:ihmc-commons-testing:0.18.0')
+      testCompile('us.ihmc:ihmc-commons-testing:0.19.0')
             {
                exclude group: 'us.ihmc', module: 'ihmc-commons'
             }
@@ -81,7 +81,7 @@ else
       compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
       compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
       compile group: "commons-io", name: "commons-io", version: "2.6"
-      compile group: "us.ihmc", name: "ihmc-commons", version: "0.18.0"
+      compile group: "us.ihmc", name: "ihmc-commons", version: "0.19.0"
       compile group: 'us.ihmc', name: 'euclid-core', version: '0.4.6'
       compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
       compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
@@ -92,7 +92,7 @@ else
       compile ihmc.sourceSetProject("generator")
       compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
       compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-      compile('us.ihmc:ihmc-commons-testing:0.18.0')
+      compile('us.ihmc:ihmc-commons-testing:0.19.0')
             {
                exclude group: 'us.ihmc', module: 'ihmc-commons'
             }

@@ -20,8 +20,6 @@ excludeFromCompositeBuild = true
 
 Run:
 
-`gradle publish -PpublishUrl=ihmcRelease`
-
 `gradle publishPlugins`
 
 With gradle.properties:
@@ -41,5 +39,3 @@ excludeFromCompositeBuild = true
 Run:
 
 `gradle publish -PpublishUrl=ihmcRelease`
-
-That's right, you must run 3 publish tasks...

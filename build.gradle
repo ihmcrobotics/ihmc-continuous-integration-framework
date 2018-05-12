@@ -4,7 +4,7 @@ buildscript {
       mavenLocal()
    }
    dependencies {
-      classpath "us.ihmc:ihmc-build:0.13.3"
+      classpath "us.ihmc:ihmc-build:0.13.5"
       classpath "com.gradle.publish:plugin-publish-plugin:0.9.9"
    }
 }
@@ -13,7 +13,7 @@ apply plugin: "com.gradle.plugin-publish"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.17.10"
+   version = "0.17.11"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -117,7 +117,7 @@ if (pluginMode)
 
       mavenCoordinates {
          groupId = project.group
-         artifactId = project.name + "-plugin"
+         artifactId = project.name
          version = project.version
       }
    }

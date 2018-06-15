@@ -21,7 +21,9 @@ public class SourceToolsTest
    public void testDerivePackageFromPath()
    {      
       Path path = getThisTestPath();
-      
+
+      PrintTools.info(this, "test path: " + path);
+
       String packageFromPath = SourceTools.derivePackageFromPath(path);
       
       PrintTools.info(this, "Derived package: " + packageFromPath + " Actual package: " + SourceToolsTest.class.getPackage().getName());
@@ -34,7 +36,9 @@ public class SourceToolsTest
    public void testDeriveClassNameFromPath()
    {      
       Path path = getThisTestPath();
-      
+
+      PrintTools.info(this, "test path: " + path);
+
       String classNameFromPath = SourceTools.deriveClassNameFromPath(path);
       
       PrintTools.info(this, "Derived className: " + classNameFromPath + " Actual className: " + SourceToolsTest.class.getName());
@@ -44,7 +48,8 @@ public class SourceToolsTest
    
    private Path getThisTestPath()
    {
-      return SourceTools.derivePathFromClass(Paths.get("src"), SourceToolsTest.class);
+      return Paths.get("src/main/java/us/ihmc/continuousIntegration/tools/SourceToolsTest.java"); // spoofing this for now
+//      return SourceTools.derivePathFromClass(Paths.get("../..").normalize().toAbsolutePath(), SourceToolsTest.class);
    }
    
 	@ContinuousIntegrationTest(estimatedDuration = 0.0)
@@ -54,7 +59,7 @@ public class SourceToolsTest
       Class<?> subjectClass = FakeChildClass.class;
       Class<?> parentClass = FakeParentClass.class;
 
-      List<String> allLines = FileTools.readAllLines(Paths.get("generatorTestResources/us/ihmc/continuousIntegration/tools/sourceToolsTest/FakeChildClass.java.fake"),
+      List<String> allLines = FileTools.readAllLines(Paths.get("resources/FakeChildClass.java.fake"),
                                                      DefaultExceptionHandler.PRINT_STACKTRACE);
 
       String superClassName = SourceTools.extractSuperClassSimpleName(allLines, subjectClass.getSimpleName());

@@ -2,6 +2,7 @@ package us.ihmc.continuousIntegration;
 
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -24,7 +25,8 @@ public class AgileTestingToolsTest
    @Test(timeout = 53247)
    public void testFindAndLoadAllBambooEnabledProjects()
    {
-      final Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(SourceTools.getWorkspacePath());
+      Path projectPath = Paths.get("resources");
+      final Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(projectPath);
       
       Map<String, AgileTestingProject> allBambooEnabledProjects = AgileTestingTools.loadATProjects(new AgileTestingProjectLoader()
       {
@@ -40,7 +42,7 @@ public class AgileTestingToolsTest
             atProject.loadSourceClasses();
             atProject.loadTestCloud(nameToPathMap);
          }
-      }, SourceTools.getWorkspacePath());
+      }, projectPath);
       
       for (AgileTestingProject atProject : allBambooEnabledProjects.values())
       {

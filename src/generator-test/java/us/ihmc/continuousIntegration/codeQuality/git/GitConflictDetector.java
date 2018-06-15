@@ -1,13 +1,5 @@
 package us.ihmc.continuousIntegration.codeQuality.git;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -21,24 +13,29 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.junit.Assert;
-import org.junit.Test;
-
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
-import us.ihmc.continuousIntegration.model.AgileTestingProject;
-import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
+import us.ihmc.continuousIntegration.model.AgileTestingProject;
+import us.ihmc.continuousIntegration.tools.SourceTools;
 
-@ContinuousIntegrationPlan(categories = {IntegrationCategory.HEALTH})
-public class GitConflictDetectorTest
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GitConflictDetector
 {
    private final String DEVELOP_BRANCH_NAME = "develop";
    private final String MASTER_BRANCH_NAME = "master";
 
-   @ContinuousIntegrationTest(estimatedDuration = 60.0)
-   @Test(timeout = 120000)
+   public static void main(String[] args)
+   {
+      new GitConflictDetector().testNoBranchConflicts();
+   }
+
    public void testNoBranchConflicts()
    {
       Map<String, AgileTestingProject> bambooEnabledProjects = AgileTestingTools.loadATProjects(new AgileTestingProjectLoader()

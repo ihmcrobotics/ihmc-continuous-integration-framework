@@ -8,45 +8,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import us.ihmc.commons.PrintTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooResult;
 import us.ihmc.continuousIntegration.bambooRestApi.jacksonObjects.BambooTestResult;
 import us.ihmc.continuousIntegration.tools.SecurityTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
-public class BambooNoPassingTestsInInDevelopmentTest
+public class BambooNoPassingTestsInInDevelopmentCheck
 {
    private static final int MAX_SUCCESSFUL_TESTS_IN_DEVELOPMENT = 30;
 
-   private static BambooRestApi bambooRestApi;
-   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
-   
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/";
+   private static BambooRestApi bambooRestApi = new BambooRestApi(bambooBaseUrl);
+
    private BambooRestPlan inDevelopmentPlan = new BambooRestPlan("ROB-INDEVELOPMENT");
 
-   @BeforeClass
-   public static void setUp()
+   public static void main(String[] args)
    {
-      bambooRestApi = new BambooRestApi(bambooBaseUrl);
+      new BambooNoPassingTestsInInDevelopmentCheck().testNoPassingTestsInInDevelopment();
    }
 
-   @AfterClass
-   public static void tearDown()
-   {
-      bambooRestApi.destroy();
-   }
-
-   @ContinuousIntegrationTest(estimatedDuration = 30.2)
-   @Test(timeout = 150000)
    public void testNoPassingTestsInInDevelopment()
    {
       if (System.getProperty("bamboo.username") != null)
@@ -87,5 +70,7 @@ public class BambooNoPassingTestsInInDevelopmentTest
       assertTrue(successfulTests.size() + "/" + MAX_SUCCESSFUL_TESTS_IN_DEVELOPMENT
             + " successful tests exist in InDevelopment! Move them into Fast or Slow to keep them passing.\n" + Arrays.toString(successfulTestNames),
                  successfulTests.size() < MAX_SUCCESSFUL_TESTS_IN_DEVELOPMENT);
+
+      bambooRestApi.destroy();
    }
 }

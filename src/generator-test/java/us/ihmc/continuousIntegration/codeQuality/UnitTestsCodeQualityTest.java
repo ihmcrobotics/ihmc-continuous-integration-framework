@@ -31,11 +31,18 @@ import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.model.AgileTestingTestClass;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
 public class UnitTestsCodeQualityTest
 {
-   @ContinuousIntegrationTest(estimatedDuration = 16.5)
-   @Test(timeout = 83000)
+   public static void main(String[] args)
+   {
+      UnitTestsCodeQualityTest unitTestsCodeQualityTest = new UnitTestsCodeQualityTest();
+      unitTestsCodeQualityTest.testEveryClassWithAUnitTestIsCorrectlyNamedAndInTestFolder();
+      unitTestsCodeQualityTest.testEveryTestClassHasAMatchingApplicationClass();
+      unitTestsCodeQualityTest.testEveryTestClassIsInSamePackageAndProjectAsItsApplicationClass();
+      unitTestsCodeQualityTest.testEveryUnitTestHasATimeoutAndEstimatedDuration();
+      unitTestsCodeQualityTest.testIsRunningOnBamboo();
+   }
+
    public void testEveryClassWithAUnitTestIsCorrectlyNamedAndInTestFolder()
    {
       ArrayList<String> classesWithBadNames = new ArrayList<>();
@@ -86,8 +93,6 @@ public class UnitTestsCodeQualityTest
                  classesNotInTestFolder.size() < 1);
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.3, categoriesOverride = IntegrationCategory.EXCLUDE)
-   @Test(timeout = 30000)
    public void testEveryTestClassIsInSamePackageAndProjectAsItsApplicationClass()
    {
       HashSet<String> badlyNamedWhiteSet = new HashSet<>();
@@ -171,8 +176,6 @@ public class UnitTestsCodeQualityTest
    /**
     * Shouldn't run on Bamboo until green.
     */
-   @ContinuousIntegrationTest(estimatedDuration = 0.1, categoriesOverride = IntegrationCategory.EXCLUDE)
-   @Test(timeout = 30000)
    public void testEveryTestClassHasAMatchingApplicationClass()
    {
       List<AgileTestingClassPath> testClassesWithoutAMatchingApplicationClass = new ArrayList<>();
@@ -228,8 +231,6 @@ public class UnitTestsCodeQualityTest
                    testClassesWithoutAMatchingApplicationClass.size());
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 5.1)
-   @Test(timeout = 30000)
    public void testEveryUnitTestHasATimeoutAndEstimatedDuration()
    {
       List<String> classesWithMissingTimeouts = new ArrayList<>();
@@ -284,9 +285,6 @@ public class UnitTestsCodeQualityTest
       Assert.assertEquals(classesWithMissingEstimatedDurations.toString(), 0, classesWithMissingEstimatedDurations.size());
    }
 
-   @ContinuousIntegrationTest(estimatedDuration = 0.1, categoriesOverride = {IntegrationCategory.HEALTH, IntegrationCategory.FAST,
-         IntegrationCategory.SLOW, IntegrationCategory.FLAKY, IntegrationCategory.IN_DEVELOPMENT, IntegrationCategory.UI, IntegrationCategory.VIDEO})
-   @Test(timeout = 30000)
    public void testIsRunningOnBamboo()
    {
       assertTrue("ContinuousIntegrationTools.isRunningOnContinuousIntegrationServer() is false. Set RUNNING_ON_CONTINUOUS_INTEGRATION_SERVER=true",

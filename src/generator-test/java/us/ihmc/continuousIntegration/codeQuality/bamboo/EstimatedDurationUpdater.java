@@ -1,15 +1,9 @@
 package us.ihmc.continuousIntegration.codeQuality.bamboo;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
@@ -20,40 +14,29 @@ import us.ihmc.continuousIntegration.testSuiteRunner.AgileTestingTestMethodAnnot
 import us.ihmc.continuousIntegration.testSuiteRunner.AtomicTestRun;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
  * For AUTO_FIX, run from your repository-group directory!
  */
-@ContinuousIntegrationPlan(categories = IntegrationCategory.EXCLUDE)
-public class BambooJobDurationTest
+public class EstimatedDurationUpdater
 {
    private static final boolean AUTO_FIX = false;
    
-   private static BambooRestApi bambooRestApi;
-   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/";
+   private static BambooRestApi bambooRestApi = new BambooRestApi(bambooBaseUrl);
    private static final List<BambooRestPlan> planList = new ArrayList<>();
    static
    {
       planList.add(new BambooRestPlan("LIBS-IHMCOPENROBOTICSSOFTWAREFAST"));
    }
-   
-   @BeforeClass
-   public static void setUp()
+
+   public static void main(String[] args)
    {
-      bambooRestApi = new BambooRestApi(bambooBaseUrl);
+      new EstimatedDurationUpdater().checkAllDurationsOnBambooAndUpdate();
    }
-   
-   @AfterClass
-   public static void tearDown()
-   {
-      bambooRestApi.destroy();
-   }
-   
-   @ContinuousIntegrationTest(estimatedDuration = 200.0)
-   @Test(timeout = 1000000)
-   public void testAllJobDurationsArePrettyEven()
+
+   public void checkAllDurationsOnBambooAndUpdate()
    {
       final Map<BambooRestJob, Double> jobToDurationMap = new HashMap<>();
       final Map<BambooRestPlan, Map<BambooRestJob, List<BambooTestResult>>> planToTestResultMap = new HashMap<>();
@@ -147,6 +130,8 @@ public class BambooJobDurationTest
             }
          }
       }
+
+      bambooRestApi.destroy();
    }
 
    private void fillResultsMap(BambooRestPlan plan, final Map<BambooRestJob, Double> jobToDurationMap, Map<BambooRestPlan, Map<BambooRestJob, List<BambooTestResult>>> planToTestResultMap)

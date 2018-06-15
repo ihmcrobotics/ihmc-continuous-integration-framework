@@ -13,19 +13,21 @@ import org.junit.Test;
 import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
-public class PackageStructureCodeQualityTest
+public class PackageStructureCodeQualityCheck
 {
-	@ContinuousIntegrationTest(estimatedDuration = 0.2)
-   @Test(timeout = 30000)
+   public static void main(String[] args)
+   {
+      PackageStructureCodeQualityCheck packageStructureCodeQualityCheck = new PackageStructureCodeQualityCheck();
+      packageStructureCodeQualityCheck.testAllPackagesStartWithUsDotIhmc();
+      packageStructureCodeQualityCheck.testNoEmptyPackagesInWorkspace();
+   }
+
    public void testNoEmptyPackagesInWorkspace()
    {
       final List<String> emptyPackages = new ArrayList<>();
@@ -68,8 +70,6 @@ public class PackageStructureCodeQualityTest
       });
    }
    
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-   @Test(timeout = 30000)
    public void testAllPackagesStartWithUsDotIhmc()
    {
 	   Map<String, AgileTestingProject> bambooEnabledProjects = AgileTestingTools.loadATProjects(new AgileTestingProjectLoader()

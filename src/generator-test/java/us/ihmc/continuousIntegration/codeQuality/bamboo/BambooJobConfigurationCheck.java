@@ -4,16 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import us.ihmc.commons.PrintTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
@@ -25,26 +20,16 @@ import us.ihmc.continuousIntegration.model.AgileTestingTestSuiteFile;
 import us.ihmc.continuousIntegration.model.AgileTestingMultiProjectWorkspace;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.COMPILE)
-public class BambooJobConfigurationTest
+public class BambooJobConfigurationCheck
 {
-   private static BambooRestApi bambooRestApi;
-   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/"; 
+   private static final String bambooBaseUrl = "http://bamboo.ihmc.us/";
+   private static BambooRestApi bambooRestApi = new BambooRestApi(bambooBaseUrl);
 
-   @BeforeClass
-   public static void setUp()
+   public static void main(String[] args)
    {
-      bambooRestApi = new BambooRestApi(bambooBaseUrl);
+      new BambooJobConfigurationCheck().testAllGeneratedTestSuitesMatchUpWithEnabledBambooJobsAndViceVersa();
    }
 
-   @AfterClass
-   public static void tearDown()
-   {
-      bambooRestApi.destroy();
-   }
-
-   @ContinuousIntegrationTest(estimatedDuration = 0.9)
-   @Test(timeout = 100000)
    public void testAllGeneratedTestSuitesMatchUpWithEnabledBambooJobsAndViceVersa()
    {
       ArrayList<String> existingJobsThatShouldBeEnabledOnBamboo = new ArrayList<String>();
@@ -55,6 +40,8 @@ public class BambooJobConfigurationTest
       Assert.assertTrue("Test suite(s) " + existingJobsThatShouldBeEnabledOnBamboo + " are not enabled in Bamboo!",
                         existingJobsThatShouldBeEnabledOnBamboo.isEmpty());
       Assert.assertTrue("Job(s) " + emptyJobsThatShouldBeDisabledOnBamboo + " should be disabled in Bamboo!", emptyJobsThatShouldBeDisabledOnBamboo.isEmpty());
+
+      bambooRestApi.destroy();
    }
 
    public void compareGeneratedTestSuitesWithBamboo(ArrayList<String> existingJobsThatShouldBeEnabledOnBamboo,

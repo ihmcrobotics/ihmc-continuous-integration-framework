@@ -14,20 +14,22 @@ import org.junit.Test;
 import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
-public class ConfigurationsCodeQualityTest
+public class ConfigurationsCodeQualityCheck
 {
    private final static boolean AUTO_FIX = false;
-   
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-   @Test(timeout = 30000)
+
+   public static void main(String[] args)
+   {
+      ConfigurationsCodeQualityCheck configurationsCodeQualityCheck = new ConfigurationsCodeQualityCheck();
+      configurationsCodeQualityCheck.testNoIntelliJIMLFilesInProjects();
+      configurationsCodeQualityCheck.testNoEclipseProjectFilesInProjects();
+   }
+
    public void testNoIntelliJIMLFilesInProjects()
    {
       final List<Path> imlFiles = new ArrayList<>();
@@ -72,8 +74,6 @@ public class ConfigurationsCodeQualityTest
 	/**
 	 * Meant for running only on Bamboo.
 	 */
-	@ContinuousIntegrationTest(estimatedDuration = 0.0)
-   @Test(timeout = 30000)
    public void testNoEclipseProjectFilesInProjects()
    {
       final List<Path> dotProjectFiles = new ArrayList<>();

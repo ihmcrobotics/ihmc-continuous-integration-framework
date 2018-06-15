@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.model.AgileTestingTestClass;
@@ -19,13 +16,15 @@ import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.HEALTH)
-public class CodeStatisticsCodeQualityTest
+public class CodeStatisticsCodeQualityCheck
 {
    private static final double PERCENTAGE_OF_UNFINISHED_TESTS_THRESHOLD = 10.0;
-   
-	@ContinuousIntegrationTest(estimatedDuration = 16.8)
-   @Test(timeout = 84000)
+
+   public static void main(String[] args)
+   {
+      new CodeStatisticsCodeQualityCheck().testPercentOfTestClassesThatAreUnfinishedIsLessThanThreshold();
+   }
+
    public void testPercentOfTestClassesThatAreUnfinishedIsLessThanThreshold()
    {
       int numberOfTestClasses = 0;

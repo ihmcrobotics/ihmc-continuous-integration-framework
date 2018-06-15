@@ -12,30 +12,27 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.Test;
-
 import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
-import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.gradle.GradleSettingsFormatter;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
-import us.ihmc.continuousIntegration.IntegrationCategory;
 
-@ContinuousIntegrationPlan(categories = IntegrationCategory.EXCLUDE)
-public class GradleCodeQualityTest
+public class GradleCodeQualityCheck
 {
    public static final boolean DEBUG = false;
    public static final boolean AUTO_FIX = false;
    
    private static final String INCLUDE_FLAT_REGEX = SourceTools.NOT_COMMENTED_REGEX + "include.*";
 
-	@ContinuousIntegrationTest(estimatedDuration = 7.6)
-   @Test(timeout = 38000)
+   public static void main(String[] args)
+   {
+      new GradleCodeQualityCheck().testEveryProjectDependencyIncludesFlatInSettingsDotGradle();
+   }
+
    public void testEveryProjectDependencyIncludesFlatInSettingsDotGradle()
    {
       Map<AgileTestingProject, SortedSet<AgileTestingProject>> projectDependencyMap = AgileTestingTools.loadProjectDependencyMap(true);

@@ -38,4 +38,4 @@ excludeFromCompositeBuild = true
 
 Run:
 
-`gradle publish -PpublishUrl=ihmcRelease`
+`gradle publish -PpublishUrl=ihmcRelease` # upload to Bintray

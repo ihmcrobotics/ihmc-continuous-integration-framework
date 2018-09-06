@@ -62,4 +62,22 @@ public class TestSuiteConfiguration
    {
       return pascalCasedName;
    }
+
+   /**
+    * @deprecated Use convertJobNameToKebabCasedName instead.
+    */
+   public String convertJobNameToHyphenatedName(String jobName)
+   {
+      return convertJobNameToKebabCasedName(jobName);
+   }
+
+   /**
+    * Used for artifact-test-runner to keep easy Bamboo configuration.
+    * Job names are pascal cased on Bamboo and use this method to
+    * resolve their kebab cased artifact counterparts.
+    */
+   public String convertJobNameToKebabCasedName(String jobName)
+   {
+      return AgileTestingTools.pascalCasedToHyphenatedWithoutJob(jobName);
+   }
 }

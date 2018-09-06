@@ -33,5 +33,5 @@ mainDependencies {
 }
 
 testDependencies {
-   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.17.14'
+   compile group: 'us.ihmc', name: 'ihmc-ci-core-api', version: '0.18.0'
 }

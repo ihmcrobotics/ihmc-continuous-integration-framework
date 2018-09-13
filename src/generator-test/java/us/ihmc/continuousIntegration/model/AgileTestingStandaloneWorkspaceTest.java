@@ -3,10 +3,9 @@ package us.ihmc.continuousIntegration.model;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
+import us.ihmc.continuousIntegration.ContinuousIntegrationTools;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 public class AgileTestingStandaloneWorkspaceTest
 {
+   public static String buildsDir = ContinuousIntegrationTools.isRunningOnContinuousIntegrationServer() ? "src/generator-test/builds/" : "builds/";
+   public static String gradleCommand = SystemUtils.IS_OS_WINDOWS ? "gradlew.bat" : "gradlew";
+   public static String gradleExe = Paths.get(buildsDir + gradleCommand).toAbsolutePath().toString();
+
    @Test(timeout = 30000)
    public void testDisableJobPatternMatching()
    {
@@ -34,7 +37,7 @@ public class AgileTestingStandaloneWorkspaceTest
    public void testGradleIsInstalled()
    {
       System.out.println("Gradle install location: " + gradleExe);
-      System.out.println("basicProject location: " + Paths.get("builds/example-project-one").toAbsolutePath().toString());
+      System.out.println("basicProject location: " + Paths.get(buildsDir + "example-project-one").toAbsolutePath().toString());
 
       String output = runGradleTask("--version", "example-project-one");
       assertTrue(output.contains("Gradle ") && output.contains("Build time") && output.contains("JVM:"));
@@ -76,15 +79,12 @@ public class AgileTestingStandaloneWorkspaceTest
       }
    }
 
-   public static String gradleCommand = SystemUtils.IS_OS_WINDOWS ? "gradlew.bat" : "gradlew";
-   public static String gradleExe = Paths.get("builds/" + gradleCommand).toAbsolutePath().toString();
-
    public String runGradleTask(String command, String project)
    {
-      System.out.println("Running " + gradleExe + " in " + Paths.get("builds/" + project).toAbsolutePath());
+      System.out.println("Running " + gradleExe + " in " + Paths.get(buildsDir + project).toAbsolutePath());
       if (command == null || command.isEmpty())
          return runCommand(gradleExe, Paths.get("builds/" + project).toAbsolutePath());
       else
-         return runCommand(gradleExe + " " + command, Paths.get("builds/" + project).toAbsolutePath());
+         return runCommand(gradleExe + " " + command, Paths.get(buildsDir + project).toAbsolutePath());
    }
 }

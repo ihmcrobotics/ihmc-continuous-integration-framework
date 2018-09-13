@@ -56,7 +56,7 @@ public class AgileTestingJavaParserTools
                for(AnnotationExpr expr : methodDeclaration.getAnnotations())
                {
                   String[] split = expr.getNameAsString().split("\\.");
-                  methodAnnotationMap.get(methodDeclaration.getName()).getRight().put(split[split.length - 1], expr);
+                  methodAnnotationMap.get(methodDeclaration.getNameAsString()).getRight().put(split[split.length - 1], expr);
                }
             }
             
@@ -64,7 +64,7 @@ public class AgileTestingJavaParserTools
             public void visit(ClassOrInterfaceDeclaration n, Object arg)
             {
                super.visit(n, arg);
-               if (n.getName().equals(classPath.getSimpleName()))
+               if (n.getNameAsString().equals(classPath.getSimpleName()))
                {
                   pair.setValue(n);
                }
@@ -100,6 +100,6 @@ public class AgileTestingJavaParserTools
    
    public static boolean classOrInterfaceExtends(ClassOrInterfaceDeclaration classOrInterfaceDeclaration)
    {
-      return !(classOrInterfaceDeclaration.getExtendedTypes() == null) && !classOrInterfaceDeclaration.getExtendedTypes().isEmpty();
+      return classOrInterfaceDeclaration != null && classOrInterfaceDeclaration.getExtendedTypes() != null && classOrInterfaceDeclaration.getExtendedTypes().isNonEmpty();
    }
 }

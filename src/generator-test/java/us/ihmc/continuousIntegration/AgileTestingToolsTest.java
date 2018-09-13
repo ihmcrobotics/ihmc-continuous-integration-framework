@@ -25,7 +25,7 @@ public class AgileTestingToolsTest
    @Test(timeout = 53247)
    public void testFindAndLoadAllBambooEnabledProjects()
    {
-      Path projectPath = Paths.get("resources");
+      Path projectPath = Paths.get("builds");
       final Map<String, AgileTestingClassPath> nameToPathMap = AgileTestingTools.mapAllClassNamesToClassPaths(projectPath);
       
       Map<String, AgileTestingProject> allBambooEnabledProjects = AgileTestingTools.loadATProjects(new AgileTestingProjectLoader()

@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.expr.*;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
@@ -15,12 +16,6 @@ import org.junit.Test;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.ArrayInitializerExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.MemberValuePair;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import us.ihmc.commons.PrintTools;
 import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
@@ -73,7 +68,7 @@ public class AgileTestingTestClass
       addPlanTargetsFromClassAnnotationFields();
 
       isExtendingTest = AgileTestingJavaParserTools.classOrInterfaceExtends(pair.getRight());
-      isAbstractTest = pair.getRight().getModifiers().contains(Modifier.ABSTRACT);
+      isAbstractTest = pair.getRight().isAbstract();
 
       totalDuration += addAllEstimatedDurationsInFile(pair, methodAnnotationMap);
       if (isExtendingTest)
@@ -93,7 +88,7 @@ public class AgileTestingTestClass
       double totalDuration = 0.0;
       for (MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> method : methodAnnotationMap.values())
       {
-         if (!atTestMethods.containsKey(method.getLeft().getName()))
+         if (!atTestMethods.containsKey(method.getLeft().getNameAsString()))
          {
             numberOfUnitTests++;
 
@@ -102,8 +97,8 @@ public class AgileTestingTestClass
                Map<String, MemberValuePair> deployableTestAnnotationFields = AgileTestingJavaParserTools.mapAnnotationFields(method.getRight()
                                                                                                                                    .get(ContinuousIntegrationTest.class.getSimpleName()));
 
-               Double methodDuration = Double.valueOf(((StringLiteralExpr) deployableTestAnnotationFields.get(AgileTestingAnnotationTools.ESTIMATED_DURATION)
-                                                                                                         .getValue()).getValue());
+               Double methodDuration = Double.valueOf(deployableTestAnnotationFields.get(AgileTestingAnnotationTools.ESTIMATED_DURATION)
+                                                                                                          .getValue().toString());
 
                atTestMethods.put(method.getLeft().getNameAsString(), new AgileTestingTestMethod(method.getLeft().getNameAsString(), methodDuration, pair.getRight().getNameAsString()));
                totalDuration += methodDuration;
@@ -116,7 +111,7 @@ public class AgileTestingTestClass
                      FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expression;
                      IntegrationCategory integrationCategory = IntegrationCategory.fromString(fieldAccessExpr.getNameAsString());
                      addDurationToMap(integrationCategory, methodDuration);
-                     atTestMethods.get(method.getLeft().getName()).addCategory(integrationCategory);
+                     atTestMethods.get(method.getLeft().getNameAsString()).addCategory(integrationCategory);
                   }
                   else if (expression instanceof ArrayInitializerExpr)
                   {
@@ -127,7 +122,7 @@ public class AgileTestingTestClass
                         FieldAccessExpr arrayFieldAccessExpr = (FieldAccessExpr) arrayField;
                         IntegrationCategory integrationCategory = IntegrationCategory.fromString(arrayFieldAccessExpr.getNameAsString());
                         addDurationToMap(integrationCategory, methodDuration);
-                        atTestMethods.get(method.getLeft().getName()).addCategory(integrationCategory);
+                        atTestMethods.get(method.getLeft().getNameAsString()).addCategory(integrationCategory);
                      }
                   }
                }
@@ -136,17 +131,17 @@ public class AgileTestingTestClass
                   for (IntegrationCategory classTarget : classPlanTargets)
                   {
                      addDurationToMap(classTarget, methodDuration);
-                     atTestMethods.get(method.getLeft().getName()).addCategory(classTarget);
+                     atTestMethods.get(method.getLeft().getNameAsString()).addCategory(classTarget);
                   }
 
-                  if (atTestMethods.get(method.getLeft().getName()).getCategories().isEmpty())
+                  if (atTestMethods.get(method.getLeft().getNameAsString()).getCategories().isEmpty())
                   {
                      addDurationToMap(IntegrationCategory.defaultCategory, methodDuration);
-                     atTestMethods.get(method.getLeft().getName()).addCategory(IntegrationCategory.defaultCategory);
+                     atTestMethods.get(method.getLeft().getNameAsString()).addCategory(IntegrationCategory.defaultCategory);
                   }
                }
 
-               for (IntegrationCategory integrationCategory : atTestMethods.get(method.getLeft().getName()).getCategories())
+               for (IntegrationCategory integrationCategory : atTestMethods.get(method.getLeft().getNameAsString()).getCategories())
                {
                   allPlanTargets.add(integrationCategory);
                }

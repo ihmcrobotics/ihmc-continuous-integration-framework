@@ -26,6 +26,9 @@ ihmc {
       resourceDirectory("main", "../generator/resources")
       sourceSetProject("main").sourceSets.test.java.srcDirs = ["src/generator-test/java"]
    }
+   else {
+      resourceDirectory("generator-test", "builds")
+   }
    configurePublications()
 }
 

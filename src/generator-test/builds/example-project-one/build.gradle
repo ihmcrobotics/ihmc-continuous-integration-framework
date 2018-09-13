@@ -5,9 +5,11 @@ buildscript {
    }
    dependencies {
       classpath "us.ihmc:ihmc-build:0.15.1"
+      classpath "us.ihmc:ihmc-ci-plugin:0.18.0"
    }
 }
 apply plugin: "us.ihmc.ihmc-build"
+apply plugin: "us.ihmc.ihmc-ci-plugin"
 
 testSuites {
    disableBambooConfigurationCheck = true

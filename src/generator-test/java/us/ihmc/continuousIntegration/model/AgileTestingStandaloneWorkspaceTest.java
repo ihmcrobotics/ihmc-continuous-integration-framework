@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 public class AgileTestingStandaloneWorkspaceTest
 {
-   public static String buildsDir = ContinuousIntegrationTools.isRunningOnContinuousIntegrationServer() ? "src/generator-test/builds/" : "builds/";
+   public static String buildsDir = "builds/";
    public static String gradleCommand = SystemUtils.IS_OS_WINDOWS ? "gradlew.bat" : "gradlew";
    public static String gradleExe = Paths.get(buildsDir + gradleCommand).toAbsolutePath().toString();
 

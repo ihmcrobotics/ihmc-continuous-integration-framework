@@ -4,15 +4,20 @@ public class ContinuousIntegrationTools
 {
    public static boolean isRunningOnContinuousIntegrationServer()
    {
-      String runningOnContinuousIntegrationServer = System.getProperty("runningOnCIServer");
+      String property = System.getProperty("runningOnCIServer");
+      String environmentVariable = System.getenv("RUNNING_ON_CONTINUOUS_INTEGRATION_SERVER");
 
-      if (runningOnContinuousIntegrationServer == null || !runningOnContinuousIntegrationServer.equals("true"))
+      if (property != null && property.trim().toLowerCase().contains("true"))
       {
-         return false;
+         return true;
+      }
+      else if (environmentVariable != null && environmentVariable.trim().toLowerCase().contains("true"))
+      {
+         return true;
       }
       else
       {
-         return true;
+         return false;
       }
    }
 }

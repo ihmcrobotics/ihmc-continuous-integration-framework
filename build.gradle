@@ -29,32 +29,44 @@ ihmc {
    configurePublications()
 }
 
+def junit = "junit:junit:4.12"
+def unirestJava = "com.mashape.unirest:unirest-java:1.4.9"
+def commonsLang = "org.apache.commons:commons-lang3:3.8"
+def commonsIo = "commons-io:commons-io:2.6"
+def javaparser = "com.github.javaparser:javaparser-core:3.6.20"
+def guava = "com.google.guava:guava:26.0-jre"
+def snakeYaml = "org.yaml:snakeyaml:1.23"
+def jung2 = "net.sf.jung:jung2:2.0.1"
+def ihmcCommons = "us.ihmc:ihmc-commons:0.23.0"
+def ihmcCommonsTesting = "us.ihmc:ihmc-commons-testing:0.23.0"
+def euclidCore = "us.ihmc:euclid-core:0.6.1"
+def jacksonCore = "com.fasterxml.jackson.core:jackson-core:2.9.6"
+def jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
+def jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
+def jgit = "org.eclipse.jgit:org.eclipse.jgit:5.0.3.201809091024-r"
+
 def pluginMode = Eval.me(extraSourceSets).size == 0
 if (pluginMode)
 {
    mainDependencies {
       compile dependencies.gradleApi()
-      compile group: "junit", name: "junit", version: "4.12"
-      compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-      compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      compile group: 'com.google.guava', name: 'guava', version: '18.0'
-      compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-      compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
-      compile group: "commons-io", name: "commons-io", version: "2.6"
-      compile group: "us.ihmc", name: "ihmc-commons", version: "0.19.1"
-      compile group: 'us.ihmc', name: 'euclid-core', version: '0.5.1'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
+      compile junit
+      compile unirestJava
+      compile commonsLang
+      compile javaparser
+      compile guava
+      compile snakeYaml
+      compile jung2
+      compile commonsIo
+      compile ihmcCommons
+      compile euclidCore
+      compile jacksonDatabind
+      compile jacksonAnnotations
+      compile jacksonCore
 
-
-      testCompile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      testCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-      testCompile('us.ihmc:ihmc-commons-testing:0.19.1')
-            {
-               exclude group: 'us.ihmc', module: 'ihmc-commons'
-            }
+      testCompile javaparser
+      testCompile jgit
+      testCompile ihmcCommonsTesting
    }
 }
 else
@@ -63,39 +75,36 @@ else
       compile ihmc.sourceSetProject("core-api")
       compile ihmc.sourceSetProject("generator")
       compile dependencies.gradleApi()
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+      compile commonsLang
    }
 
    coreApiDependencies {
-      compile group: "junit", name: "junit", version: "4.12"
+      compile junit
    }
 
    generatorDependencies {
-      compile group: "junit", name: "junit", version: "4.12"
+      compile junit
       compile ihmc.sourceSetProject("core-api")
-      compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.8'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.3'
-      compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-      compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      compile group: 'com.google.guava', name: 'guava', version: '18.0'
-      compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-      compile group: 'net.sf.jung', name: 'jung2', version: '2.0.1'
-      compile group: "commons-io", name: "commons-io", version: "2.6"
-      compile group: "us.ihmc", name: "ihmc-commons", version: "0.19.1"
-      compile group: 'us.ihmc', name: 'euclid-core', version: '0.5.1'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.0'
-      compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.3'
+      compile unirestJava
+      compile commonsLang
+      compile javaparser
+      compile guava
+      compile snakeYaml
+      compile jung2
+      compile commonsIo
+      compile ihmcCommons
+      compile euclidCore
+      compile jacksonDatabind
+      compile jacksonAnnotations
+      compile jacksonCore
    }
 
    generatorTestDependencies {
       compile ihmc.sourceSetProject("core-api")
       compile ihmc.sourceSetProject("generator")
-      compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.3.0'
-      compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.4.1.201607150455-r'
-      compile('us.ihmc:ihmc-commons-testing:0.19.1')
-            {
-               exclude group: 'us.ihmc', module: 'ihmc-commons'
-            }
+      compile javaparser
+      compile jgit
+      compile ihmcCommonsTesting
    }
 }
 

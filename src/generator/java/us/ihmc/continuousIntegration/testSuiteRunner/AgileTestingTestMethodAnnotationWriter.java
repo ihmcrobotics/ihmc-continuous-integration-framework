@@ -38,7 +38,7 @@ public class AgileTestingTestMethodAnnotationWriter
       {
          try
          {
-            String superClassName = pair.getRight().getExtends().get(0).getName();
+            String superClassName = pair.getRight().getExtendedTypes(0).getNameAsString();
             PrintTools.error(path.getClassName() + " has a super class with tests. Super class name: " + superClassName);
             
             writeAnnotationsForTestRun(atomicTestRun, nameToFileMap, AgileTestingTools.getFirstMatchInMap(nameToFileMap, superClassName));
@@ -71,7 +71,7 @@ public class AgileTestingTestMethodAnnotationWriter
          
          try
          {
-            if (durationMemberValuePair.getBeginLine() != durationMemberValuePair.getEndLine() || timeoutMemberValuePair.getBeginLine() != timeoutMemberValuePair.getEndLine())
+            if (durationMemberValuePair.getBegin().get().line != durationMemberValuePair.getEnd().get().line || timeoutMemberValuePair.getBegin().get().line != timeoutMemberValuePair.getEnd().get().line)
             {
                PrintTools.error(AgileTestingAnnotationTools.ESTIMATED_DURATION + " or " + AgileTestingAnnotationTools.TIMEOUT + " spans multiple lines. Skipping.");
                return;
@@ -82,8 +82,8 @@ public class AgileTestingTestMethodAnnotationWriter
             PrintTools.error("Something wrong with this annotation.");
          }
          
-         int durationLineNumber = durationMemberValuePair.getBeginLine() - 1;
-         int timeoutLineNumber = timeoutMemberValuePair.getBeginLine() - 1;
+         int durationLineNumber = durationMemberValuePair.getBegin().get().line - 1;
+         int timeoutLineNumber = timeoutMemberValuePair.getBegin().get().line - 1;
          String originalDurationPair = durationMemberValuePair.toString();
          String originalTimeoutPair = timeoutMemberValuePair.toString();
          

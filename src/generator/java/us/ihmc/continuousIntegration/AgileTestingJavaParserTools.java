@@ -39,7 +39,7 @@ public class AgileTestingJavaParserTools
                boolean isATestMethod = false;
                for(AnnotationExpr expr : methodDeclaration.getAnnotations())
                {
-                  if (expr.getName().getName().equals(Test.class.getSimpleName()) || expr.getName().getName().equals(Test.class.getName()))
+                  if (expr.getNameAsString().equals(Test.class.getSimpleName()) || expr.getNameAsString().equals(Test.class.getName()))
                   {
                      isATestMethod = true;
                      break;
@@ -51,11 +51,11 @@ public class AgileTestingJavaParserTools
                   return;
                }
                
-               methodAnnotationMap.put(methodDeclaration.getName(), MutablePair.of(methodDeclaration, new HashMap<String, AnnotationExpr>()));
+               methodAnnotationMap.put(methodDeclaration.getNameAsString(), MutablePair.of(methodDeclaration, new HashMap<String, AnnotationExpr>()));
                
                for(AnnotationExpr expr : methodDeclaration.getAnnotations())
                {
-                  String[] split = expr.getName().getName().split("\\.");
+                  String[] split = expr.getNameAsString().split("\\.");
                   methodAnnotationMap.get(methodDeclaration.getName()).getRight().put(split[split.length - 1], expr);
                }
             }
@@ -75,7 +75,7 @@ public class AgileTestingJavaParserTools
          
          return pair;
       }
-      catch (ParseException | IOException e)
+      catch (IOException e)
       {
          e.printStackTrace();
          return null;
@@ -86,12 +86,12 @@ public class AgileTestingJavaParserTools
    {
       Map<String, MemberValuePair> nameToFieldMap = new HashMap<>();
       
-      for (Node node : annotationExpr.getChildrenNodes())
+      for (Node node : annotationExpr.getChildNodes())
       {
          if (node instanceof MemberValuePair)
          {
             MemberValuePair memberValuePair = (MemberValuePair) node;
-            nameToFieldMap.put(memberValuePair.getName(), memberValuePair);
+            nameToFieldMap.put(memberValuePair.getNameAsString(), memberValuePair);
          }
       }
       
@@ -100,6 +100,6 @@ public class AgileTestingJavaParserTools
    
    public static boolean classOrInterfaceExtends(ClassOrInterfaceDeclaration classOrInterfaceDeclaration)
    {
-      return !(classOrInterfaceDeclaration.getExtends() == null) && !classOrInterfaceDeclaration.getExtends().isEmpty();
+      return !(classOrInterfaceDeclaration.getExtendedTypes() == null) && !classOrInterfaceDeclaration.getExtendedTypes().isEmpty();
    }
 }

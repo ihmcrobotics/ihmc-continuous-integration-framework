@@ -39,6 +39,7 @@ public class AgileTestingTestClass
    private int numberOfUnitTests = 0;
    private boolean isExtendingTest = false;
    private boolean isAbstractTest = false;
+   private String superClassName = null;
 
    private final Map<String, AgileTestingClassPath> nameToPathMap;
    private final SortedSet<IntegrationCategory> allPlanTargets = new TreeSet<>();
@@ -67,7 +68,8 @@ public class AgileTestingTestClass
       parseLocalMethodsForCodeQualityTests();
       addPlanTargetsFromClassAnnotationFields();
 
-      isExtendingTest = AgileTestingJavaParserTools.classOrInterfaceExtends(pair.getRight());
+      superClassName = AgileTestingJavaParserTools.classOrInterfaceExtends(pair.getRight());
+      isExtendingTest = superClassName != null;
       isAbstractTest = pair.getRight().isAbstract();
 
       totalDuration += addAllEstimatedDurationsInFile(pair, methodAnnotationMap);
@@ -174,7 +176,7 @@ public class AgileTestingTestClass
       Pair<CompilationUnit, ClassOrInterfaceDeclaration> superClassPair = AgileTestingJavaParserTools.parseForTestAnnotations(superClassPath,
                                                                                                                               superClassMethodAnnotationMap);
 
-      boolean isExtendingSuperClass = AgileTestingJavaParserTools.classOrInterfaceExtends(superClassPair.getRight());
+      boolean isExtendingSuperClass = AgileTestingJavaParserTools.classOrInterfaceExtends(superClassPair.getRight()) != null;
 
       if (isExtendingSuperClass)
       {
@@ -328,5 +330,10 @@ public class AgileTestingTestClass
    public Path getPath()
    {
       return classPath.getPath();
+   }
+
+   public String getSuperClassName()
+   {
+      return superClassName;
    }
 }

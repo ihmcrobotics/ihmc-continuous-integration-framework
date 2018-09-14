@@ -33,4 +33,15 @@ public class TestSuiteGeneratorTest
       assertTrue(output.contains("BUILD FAILED") && output.contains("are missing JUnit timeouts"));
       assertTrue(Files.exists(testSuiteFilePath));
    }
+
+   @Test(timeout = 30000)
+   public void testAbstractTests()
+   {
+      String projectName = "abstract-tests";
+      Path testSuiteFilePath = Paths.get("builds/" + projectName + "/src/test/java/us/ihmc/generatedTestSuites/AbstractTestsAFastTestSuite.java");
+      FileTools.deleteQuietly(testSuiteFilePath);
+      String output = GradleSubBuildTools.runGradleTask("generateTestSuites", projectName);
+      assertTrue(output.contains("BUILD SUCCESSFUL"));
+      assertTrue(Files.exists(testSuiteFilePath));
+   }
 }

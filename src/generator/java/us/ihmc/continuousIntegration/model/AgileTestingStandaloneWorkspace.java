@@ -153,9 +153,31 @@ public class AgileTestingStandaloneWorkspace
 
    public void printAllStatistics()
    {
+      printIncludedClassesWithTests();
       sortAndPrintSuiteDurationsByPlanType();
       printOutTopOnePercentHighestDurationTests();
       printOutTopTwoPercentHighestDurationTestClasses();
+   }
+
+   public void printIncludedClassesWithTests()
+   {
+      System.out.println("\n-- ALL LOADED TEST CLASSES --");
+      for (AgileTestingTestClass classPath : agileTestingProject.getTestCloud().getTestClasses())
+      {
+         String prefix = "[INFO] " + classPath.getTestClassName();
+         if (classPath.isAbstractTest())
+         {
+            System.out.println(prefix + (classPath.isAbstractTest() ? " (abstract)" : ""));
+         }
+         else if (classPath.isExtendingTest())
+         {
+            System.out.println(prefix + " (extends " + classPath.getSuperClassName() + ")");
+         }
+         else
+         {
+            System.out.println(prefix);
+         }
+      }
    }
 
    public void sortAndPrintSuiteDurationsByPlanType()
@@ -178,14 +200,14 @@ public class AgileTestingStandaloneWorkspace
    {
       System.out.println("\n-- LONGEST RUNNING TESTS --");
 
-      for (int i = 0; i < ((double) allTestsSortedByDuration.size() * 0.01); i++)
+      for (int i = 0; i < ((double) allTestsSortedByDuration.size() * 0.10); i++)
       {
          AgileTestingTestMethod bambooTestMethod = allTestsSortedByDuration.get(i);
 
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestMethod.getDuration()), 2) + " min) ";
 
          PrintTools.info(this,
-                         "Test in top 1% longest: " + durationMessage + bambooTestMethod.getTestClassSimpleName() + ":" + bambooTestMethod.getMethodName());
+                         "Test in top 10% longest: " + durationMessage + bambooTestMethod.getTestClassSimpleName() + ":" + bambooTestMethod.getMethodName());
       }
    }
 
@@ -193,14 +215,14 @@ public class AgileTestingStandaloneWorkspace
    {
       System.out.println("\n-- LONGEST RUNNING CLASSES --");
 
-      for (int i = 0; i < ((double) allTestClassesSortedByDuration.size() * 0.02); i++)
+      for (int i = 0; i < ((double) allTestClassesSortedByDuration.size() * 0.1); i++)
       {
          AgileTestingTestClass bambooTestClass = allTestClassesSortedByDuration.get(i);
 
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForAllPlans()), 2)
                + " min) ";
 
-         PrintTools.info(this, "Class in top 2% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
+         PrintTools.info(this, "Class in top 10% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
       }
    }
 

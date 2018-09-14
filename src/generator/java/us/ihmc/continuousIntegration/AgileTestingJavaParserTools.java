@@ -98,8 +98,11 @@ public class AgileTestingJavaParserTools
       return nameToFieldMap;
    }
    
-   public static boolean classOrInterfaceExtends(ClassOrInterfaceDeclaration classOrInterfaceDeclaration)
+   public static String classOrInterfaceExtends(ClassOrInterfaceDeclaration classOrInterfaceDeclaration)
    {
-      return classOrInterfaceDeclaration != null && classOrInterfaceDeclaration.getExtendedTypes() != null && classOrInterfaceDeclaration.getExtendedTypes().isNonEmpty();
+      if (classOrInterfaceDeclaration != null && classOrInterfaceDeclaration.getExtendedTypes() != null && classOrInterfaceDeclaration.getExtendedTypes().isNonEmpty())
+         return classOrInterfaceDeclaration.getExtendedTypes(0).getNameAsString();
+      else
+         return null;
    }
 }

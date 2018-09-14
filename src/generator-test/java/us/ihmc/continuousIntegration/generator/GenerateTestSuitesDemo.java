@@ -16,7 +16,7 @@ public class GenerateTestSuitesDemo
    public static void main(String[] args)
    {
       TestSuiteConfiguration testSuitesConfiguration = new TestSuiteConfiguration();
-      testSuitesConfiguration.disableBambooConfigurationCheck = true;
+      testSuitesConfiguration.disableJobCheck = true;
       String projectName = "abstract-tests";
       testSuitesConfiguration.hyphenatedName = projectName;
       testSuitesConfiguration.pascalCasedName = "AbstractTests";
@@ -26,11 +26,11 @@ public class GenerateTestSuitesDemo
       workspace.loadTestCloud();
       workspace.generateAllTestSuites();
       workspace.printAllStatistics();
-      if (!testSuitesConfiguration.getDisableJUnitTimeoutCheck())
+      if (testSuitesConfiguration.getCrashOnMissingTimeouts())
       {
          workspace.checkJUnitTimeouts();
       }
-      if (!testSuitesConfiguration.getDisableBambooConfigurationCheck())
+      if (!testSuitesConfiguration.getDisableJobCheck())
       {
          workspace.checkJobConfigurationOnBamboo(testSuitesConfiguration.crashOnEmptyJobs);
       }

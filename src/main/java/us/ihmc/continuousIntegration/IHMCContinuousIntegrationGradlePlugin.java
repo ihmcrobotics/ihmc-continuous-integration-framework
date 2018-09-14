@@ -14,11 +14,8 @@ import us.ihmc.continuousIntegration.model.AgileTestingStandaloneWorkspace;
 
 /**
  * TODO
- * 
- * - disableBalancing
- * - disableBambooConfigurationCheck
+ *
  * - bambooPlansToCheck
- * - targetSuiteDuration
  * - remove src folder check
  * 
  * Possible
@@ -39,13 +36,12 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
       projectPath = project.getProjectDir().toPath();
       multiProjectPath = project.getRootDir().toPath().resolve("..");
 
-      testSuitesConfiguration = createExtension("testSuites", new TestSuiteConfiguration());
+      testSuitesConfiguration = new TestSuiteConfiguration(project.getProperties());
       testSuitesConfiguration.hyphenatedName = project.getName();
       testSuitesConfiguration.pascalCasedName = AgileTestingTools.hyphenatedToPascalCased(project.getName());
 
       createTask(project, "generateTestSuites");
       createTask(project, "generateTestSuitesMultiProject");
-      createTask(project, "testConfiguration");
    }
 
    @SuppressWarnings("unchecked")
@@ -67,11 +63,11 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
       workspace.loadTestCloud();
       workspace.generateAllTestSuites();
       workspace.printAllStatistics();
-      if (!testSuitesConfiguration.getDisableJUnitTimeoutCheck())
+      if (testSuitesConfiguration.getCrashOnMissingTimeouts())
       {
          workspace.checkJUnitTimeouts();
       }
-      if (!testSuitesConfiguration.getDisableBambooConfigurationCheck())
+      if (!testSuitesConfiguration.getDisableJobCheck())
       {
          workspace.checkJobConfigurationOnBamboo(testSuitesConfiguration.crashOnEmptyJobs);
       }
@@ -83,7 +79,7 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
       bambooTestSuiteGenerator.createForMultiProjectBuild(multiProjectPath);
       bambooTestSuiteGenerator.generateAllTestSuites();
       bambooTestSuiteGenerator.printAllStatistics();
-      if (!testSuitesConfiguration.getDisableBambooConfigurationCheck())
+      if (!testSuitesConfiguration.getDisableJobCheck())
       {
          List<BambooRestPlan> bambooPlanList = new ArrayList<>();
          for (String planKey : testSuitesConfiguration.getBambooPlanKeys())
@@ -92,10 +88,5 @@ public class IHMCContinuousIntegrationGradlePlugin implements Plugin<Project>
          }
          bambooTestSuiteGenerator.checkJobConfigurationOnBamboo(testSuitesConfiguration.getBambooUrl(), bambooPlanList);
       }
-   }
-
-   public void testConfiguration()
-   {
-      System.out.println("disable: " + testSuitesConfiguration.getDisableBambooConfigurationCheck());
    }
 }

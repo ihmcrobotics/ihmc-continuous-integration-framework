@@ -40,14 +40,6 @@ public class AgileTestingLoadBalancedPlan
          PrintTools.warn(this, "classTotalDuration > MAXIMUM_SUITE_DURATION in Fast: " + bambooTestClass.getTestClassSimpleName() + " (" + MathTools
                .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
       }
-      if (bambooPlanType == IntegrationCategory.SLOW && bambooTestClass.getTotalDurationForTarget(bambooPlanType) < Conversions
-            .minutesToSeconds(bambooEnabledProject.getConfiguration().getRecommendedTestClassDuration()))
-      {
-         PrintTools.warn(this,
-                         "classTotalDuration < RECOMMENDED_TEST_CLASS_DURATION in Slow. Consider moving to Fast: " + bambooTestClass.getTestClassSimpleName()
-                               + " (" + MathTools
-                               .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
-      }
 
       if (loadBalancedDurations.containsKey(currentLetter)
             && (loadBalancedDurations.get(currentLetter) + bambooTestClass.getTotalDurationForTarget(bambooPlanType)) > Conversions

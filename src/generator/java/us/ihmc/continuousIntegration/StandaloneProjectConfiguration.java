@@ -15,7 +15,6 @@ public class StandaloneProjectConfiguration
    private final String bambooUrl;
    private final List<BambooRestPlan> bambooPlans = new ArrayList<>();
    private final double maximumSuiteDuration;
-   private final double recommendedTestClassDuration;
 
    public StandaloneProjectConfiguration(Path projectPath, TestSuiteConfiguration testSuiteConfiguration)
    {
@@ -28,8 +27,7 @@ public class StandaloneProjectConfiguration
          PrintTools.info("[ihmc-ci] Adding plan to check: " + planKey);
          bambooPlans.add(new BambooRestPlan(planKey));
       }
-      this.maximumSuiteDuration = testSuiteConfiguration.getMaximumSuiteDuration();
-      this.recommendedTestClassDuration = testSuiteConfiguration.getRecommendedTestClassDuration();
+      this.maximumSuiteDuration = testSuiteConfiguration.getMaxSuiteDuration();
    }
 
    public Path getProjectPath()
@@ -62,11 +60,6 @@ public class StandaloneProjectConfiguration
       return maximumSuiteDuration;
    }
    
-   public double getRecommendedTestClassDuration()
-   {
-      return recommendedTestClassDuration;
-   }
-
    public static StandaloneProjectConfiguration defaultConfiguration(Path pathToProject)
    {
       TestSuiteConfiguration testSuiteConfiguration = new TestSuiteConfiguration();

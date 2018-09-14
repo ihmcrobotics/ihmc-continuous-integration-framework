@@ -13,7 +13,7 @@ apply plugin: "com.gradle.plugin-publish"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.18.0"
+   version = "0.19.6"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -47,6 +47,7 @@ def jacksonCore = "com.fasterxml.jackson.core:jackson-core:2.9.6"
 def jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
 def jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
 def jgit = "org.eclipse.jgit:org.eclipse.jgit:5.0.3.201809091024-r"
+def groovy = "org.codehaus.groovy:groovy:2.3.11"
 
 def pluginMode = Eval.me(extraSourceSets).size == 0
 if (pluginMode)
@@ -100,6 +101,7 @@ else
       compile jacksonDatabind
       compile jacksonAnnotations
       compile jacksonCore
+      compile groovy
    }
 
    generatorTestDependencies {

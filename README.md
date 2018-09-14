@@ -2,40 +2,10 @@
 
 Parallelization tools for long-running robot simulation tests.
 
-## Publishing
+#### Publish to Bintray
 
-With gradle.properties:
-```groovy
-publishUrl = local
-pascalCasedName = IHMCCIPlugin
-kebabCasedName = ihmc-ci-plugin
-extraSourceSets = []
-#pascalCasedName = IHMCCI
-#kebabCasedName = ihmc-ci
-#extraSourceSets = ["core-api", "generator", "generator-test"]
-groupDependencyVersion = source
-compositeSearchHeight = 0
-excludeFromCompositeBuild = true
-```
+`gradle publish -PpublishUrl=ihmcRelease`
 
-Run:
+#### Publish to Gradle plugins site
 
-`gradle publishPlugins`
-
-With gradle.properties:
-```groovy
-publishUrl = local
-#pascalCasedName = IHMCCIPlugin
-#kebabCasedName = ihmc-ci-plugin
-#extraSourceSets = []
-pascalCasedName = IHMCCI
-kebabCasedName = ihmc-ci
-extraSourceSets = ["core-api", "generator", "generator-test"]
-groupDependencyVersion = source
-compositeSearchHeight = 0
-excludeFromCompositeBuild = true
-```
-
-Run:
-
-`gradle publish -PpublishUrl=ihmcRelease` # upload to Bintray
+`gradle publishPlugins -PpascalCasedName=IHMCCIPlugin -PkebabCasedName=ihmc-ci-plugin -PextraSourceSets=[]`

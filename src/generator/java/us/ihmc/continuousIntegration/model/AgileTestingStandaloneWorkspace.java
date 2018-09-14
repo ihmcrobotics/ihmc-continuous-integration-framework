@@ -1,15 +1,5 @@
 package us.ihmc.continuousIntegration.model;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
@@ -20,6 +10,9 @@ import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
+
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class AgileTestingStandaloneWorkspace
 {
@@ -169,11 +162,14 @@ public class AgileTestingStandaloneWorkspace
    {
       for (IntegrationCategory bambooPlanType : IntegrationCategory.includedCategories)
       {
-         System.out.println("\n-- SORTED TESTS FOR " + bambooPlanType.getName().toUpperCase() + " --");
-         for (AgileTestingTestSuiteFile bambooTestSuiteFile : sortedTestSuitesByDurationMap.get(bambooPlanType))
+         if (!sortedTestSuitesByDurationMap.get(bambooPlanType).isEmpty())
          {
-            PrintTools.info(this, bambooTestSuiteFile.getPlanShortName() + ": "
-                  + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestSuiteFile.getDuration()), 2) + " m");
+            System.out.println("\n-- SORTED TESTS FOR " + bambooPlanType.getName().toUpperCase() + " --");
+            for (AgileTestingTestSuiteFile bambooTestSuiteFile : sortedTestSuitesByDurationMap.get(bambooPlanType))
+            {
+               PrintTools.info(this, bambooTestSuiteFile.getPlanShortName() + ": " + MathTools
+                     .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestSuiteFile.getDuration()), 2) + " m");
+            }
          }
       }
    }
@@ -213,8 +209,7 @@ public class AgileTestingStandaloneWorkspace
       if (agileTestingProject.isIndependent())
          return;
 
-
-      System.out.println("\n-- JUNIT TIMEOUT CHECK --");
+      List<String> missingTimeoutMessages = new ArrayList<>();
       List<String> classesWithMissingTimeouts = new ArrayList<>();
       for (AgileTestingTestClass bambooTestClass : agileTestingProject.getTestCloud().getTestClasses())
       {
@@ -224,7 +219,16 @@ public class AgileTestingStandaloneWorkspace
          {
             classesWithMissingTimeouts.add(bambooTestClass.getTestClassSimpleName() + ":" + missingTimeouts);
 
-            PrintTools.error(this, "Missing " + missingTimeouts + " timeout(s): " + bambooTestClass.getTestClassSimpleName());
+            missingTimeoutMessages.add("Missing " + missingTimeouts + " timeout(s): " + bambooTestClass.getTestClassSimpleName());
+         }
+      }
+
+      if (!missingTimeoutMessages.isEmpty())
+      {
+         System.out.println("\n-- JUNIT TIMEOUT CHECK --");
+         for (String message : missingTimeoutMessages)
+         {
+            PrintTools.error(this, message);
          }
       }
 

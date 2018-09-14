@@ -101,7 +101,7 @@ public class AgileTestingJavaParserTools
    public static String classOrInterfaceExtends(ClassOrInterfaceDeclaration classOrInterfaceDeclaration)
    {
       if (classOrInterfaceDeclaration != null && classOrInterfaceDeclaration.getExtendedTypes() != null && classOrInterfaceDeclaration.getExtendedTypes().isNonEmpty())
-         return classOrInterfaceDeclaration.getExtendedTypes(0).getNameAsString();
+         return classOrInterfaceDeclaration.getExtendedTypes(0).getName().asString();
       else
          return null;
    }

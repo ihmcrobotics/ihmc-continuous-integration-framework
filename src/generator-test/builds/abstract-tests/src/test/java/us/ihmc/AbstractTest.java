@@ -8,4 +8,10 @@ public abstract class AbstractTest
    {
 
    }
+
+   @Test(timeout = 30000)
+   public void someNonExtendedTest()
+   {
+
+   }
 }

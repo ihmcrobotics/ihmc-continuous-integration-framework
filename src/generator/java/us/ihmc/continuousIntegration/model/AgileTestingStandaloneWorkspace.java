@@ -1,5 +1,6 @@
 package us.ihmc.continuousIntegration.model;
 
+import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
 import us.ihmc.commons.PrintTools;
@@ -164,14 +165,14 @@ public class AgileTestingStandaloneWorkspace
       System.out.println("\n-- ALL LOADED TEST CLASSES --");
       for (AgileTestingTestClass classPath : agileTestingProject.getTestCloud().getTestClasses())
       {
-         String prefix = "[INFO] " + classPath.getTestClassName();
+         String prefix = "[INFO] " + classPath.getTestClassName() + ", " + classPath.getNumberOfUnitTests() + " @Test(s)";
          if (classPath.isAbstractTest())
          {
-            System.out.println(prefix + (classPath.isAbstractTest() ? " (abstract)" : ""));
+            System.out.println(prefix + ", abstract");
          }
          else if (classPath.isExtendingTest())
          {
-            System.out.println(prefix + " (extends " + classPath.getSuperClassName() + ")");
+            System.out.println(prefix + ", extends " + classPath.getSuperClassName());
          }
          else
          {

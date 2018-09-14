@@ -1,18 +1,19 @@
 package us.ihmc.continuousIntegration.model;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import org.apache.commons.lang3.tuple.MutablePair;
 import us.ihmc.commons.PrintTools;
+import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
+import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.generator.AgileTestingAnnotationTools;
 import us.ihmc.continuousIntegration.tools.SourceTools;
+
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.util.*;
 
 public class AgileTestingProjectTestCloud
 {
@@ -86,12 +87,43 @@ public class AgileTestingProjectTestCloud
    private List<AgileTestingTestClass> loadAllBambooTestClasses()
    {
       final List<AgileTestingTestClass> bambooTestClasses = new ArrayList<>();
-      
-      List<Path> testPaths = PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceTools.TEST_SOURCE_FOLDER.getMavenPath()), AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX);
-      
-      for (Path testPath : testPaths)
+
+      final SortedSet<AgileTestingTestClass> testClassPaths = new TreeSet<>(Comparator.comparing(AgileTestingTestClass::getTestClassName));
+
+      // Add paths ending in *Test.java
+      for (Path path : PathTools.findAllPathsRecursivelyThatMatchRegex(projectPath.resolve(SourceTools.TEST_SOURCE_FOLDER.getMavenPath()),
+                                                                       AgileTestingAnnotationTools.TEST_CLASS_FILENAME_REGEX))
       {
-         bambooTestClasses.add(new AgileTestingTestClass(new AgileTestingClassPath(testPath), nameToPathMap));
+         testClassPaths.add(new AgileTestingTestClass(new AgileTestingClassPath(path), nameToPathMap));
+      }
+
+      // Add everything with an active @Test annotation
+      PathTools.walkRecursively(projectPath.resolve(SourceTools.TEST_SOURCE_FOLDER.getMavenPath()), new BasicPathVisitor()
+      {
+         @Override
+         public FileVisitResult visitPath(Path path, PathType pathType)
+         {
+            if (pathType == PathType.FILE)
+            {
+               Map<String, MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>>> methodAnnotationMap = new HashMap<>();
+               AgileTestingClassPath classPath = new AgileTestingClassPath(path);
+               AgileTestingJavaParserTools.parseForTestAnnotations(classPath, methodAnnotationMap);
+
+               for (MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> method : methodAnnotationMap.values())
+               {
+                  if (method.getRight().containsKey("Test"))
+                  {
+                     testClassPaths.add(new AgileTestingTestClass(classPath, nameToPathMap));
+                  }
+               }
+            }
+            return FileVisitResult.CONTINUE;
+         }
+      });
+
+      for (AgileTestingTestClass testPath : testClassPaths)
+      {
+         bambooTestClasses.add(testPath);
       }
       
       return bambooTestClasses;

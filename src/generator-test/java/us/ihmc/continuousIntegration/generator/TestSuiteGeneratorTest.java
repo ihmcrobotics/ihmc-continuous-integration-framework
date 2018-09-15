@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestSuiteGeneratorTest
 {
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testGenerateTestSuites()
    {
       String projectName = "example-project-one";
@@ -23,7 +23,7 @@ public class TestSuiteGeneratorTest
       assertTrue(Files.exists(testSuiteFilePath));
    }
 
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testMissingTimeouts()
    {
       String projectName = "missing-timeouts";
@@ -34,7 +34,7 @@ public class TestSuiteGeneratorTest
       assertTrue(Files.exists(testSuiteFilePath));
    }
 
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testAbstractTests()
    {
       String projectName = "abstract-tests";
@@ -42,6 +42,8 @@ public class TestSuiteGeneratorTest
       FileTools.deleteQuietly(testSuiteFilePath);
       String output = GradleSubBuildTools.runGradleTask("generateTestSuites", projectName);
       assertTrue(output.contains("BUILD SUCCESSFUL"));
+      assertTrue(output.contains("us.ihmc.AbstractTest, 1 @Test(s), abstract"));
+      assertTrue(output.contains("us.ihmc.ExtendingTest, 0 @Test(s), extends AbstractTest"));
       assertTrue(Files.exists(testSuiteFilePath));
    }
 }

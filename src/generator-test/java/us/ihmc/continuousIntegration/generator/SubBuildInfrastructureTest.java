@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 public class SubBuildInfrastructureTest
 {
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testGradleIsInstalled()
    {
       System.out.println("Gradle install location: " + GradleSubBuildTools.gradleExe);
@@ -19,7 +19,7 @@ public class SubBuildInfrastructureTest
       assertTrue(output.contains("Gradle ") && output.contains("Build time") && output.contains("JVM:"));
    }
 
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testBasicProjectSucceeds()
    {
       String output = GradleSubBuildTools.runGradleTask("compileJava", "example-project-one");
@@ -27,7 +27,7 @@ public class SubBuildInfrastructureTest
       assertTrue(output.contains("BUILD SUCCESSFUL"));
    }
 
-   @Test(timeout = 30000)
+   @Test(timeout = 60000)
    public void testBrokenProjectFails()
    {
       String output = GradleSubBuildTools.runGradleTask("compileJava", "brokenProject");

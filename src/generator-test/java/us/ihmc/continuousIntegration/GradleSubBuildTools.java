@@ -1,13 +1,14 @@
 package us.ihmc.continuousIntegration;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.base.Charsets;
+import org.apache.commons.io.input.TeeInputStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 public class GradleSubBuildTools
 {
@@ -20,12 +21,23 @@ public class GradleSubBuildTools
       try
       {
          String[] parts = command.split("\\s");
-         Process proc = new ProcessBuilder(parts).directory(workingDir.toFile()).redirectOutput(ProcessBuilder.Redirect.PIPE)
-                                                 .redirectError(ProcessBuilder.Redirect.PIPE).start();
+         Process proc = new ProcessBuilder(parts)
+               .directory(workingDir.toFile())
+               .redirectOutput(ProcessBuilder.Redirect.PIPE)
+               .redirectError(ProcessBuilder.Redirect.PIPE)
+               .start();
 
-         proc.waitFor(60, TimeUnit.MINUTES);
-         String output = IOUtils.toString(proc.getInputStream(), StandardCharsets.UTF_8) + IOUtils.toString(proc.getErrorStream(), StandardCharsets.UTF_8);
-         System.out.println(output);
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         TeeOutputStream teeOutputStream = new TeeOutputStream(System.out, baos);
+         TeeInputStream teeSysOut = new TeeInputStream(proc.getInputStream(), teeOutputStream);
+         TeeInputStream teeSysErr = new TeeInputStream(proc.getErrorStream(), teeOutputStream);
+         while (proc.isAlive())
+         {
+            readAllFromTee(teeSysOut, teeSysErr);
+         }
+         readAllFromTee(teeSysOut, teeSysErr);
+
+         String output = baos.toString(Charsets.UTF_8);
          return output;
       }
       catch (IOException | InterruptedException e)
@@ -33,6 +45,12 @@ public class GradleSubBuildTools
          e.printStackTrace();
          return null;
       }
+   }
+
+   private static void readAllFromTee(TeeInputStream teeSysOut, TeeInputStream teeSysErr) throws IOException, InterruptedException
+   {
+      while (teeSysOut.read() > -1 || teeSysErr.read() > -1);
+      Thread.sleep(200);
    }
 
    public static String runGradleTask(String command, String project)

@@ -32,7 +32,10 @@ ihmc {
    configurePublications()
 }
 
-def junit = "junit:junit:4.12"
+def junit5Version = "5.3.1"
+def junitVintage = "org.junit.vintage:junit-vintage-engine:$junit5Version"
+def junitJupiterApi = "org.junit.jupiter:junit-jupiter-api:$junit5Version"
+def junitJupiterRuntime = "org.junit.jupiter:junit-jupiter-engine:$junit5Version"
 def unirestJava = "com.mashape.unirest:unirest-java:1.4.9"
 def commonsLang = "org.apache.commons:commons-lang3:3.8"
 def commonsIo = "commons-io:commons-io:2.6"
@@ -54,7 +57,7 @@ if (pluginMode)
 {
    mainDependencies {
       compile dependencies.gradleApi()
-      compile junit
+      compile junitVintage
       compile unirestJava
       compile commonsLang
       compile javaparser
@@ -83,11 +86,13 @@ else
    }
 
    coreApiDependencies {
-      compile junit
+      compile junitVintage
+      compile junitJupiterApi
+
+      runtimeOnly junitJupiterRuntime
    }
 
    generatorDependencies {
-      compile junit
       compile ihmc.sourceSetProject("core-api")
       compile unirestJava
       compile commonsLang
@@ -105,6 +110,7 @@ else
    }
 
    generatorTestDependencies {
+      compile junitVintage
       compile ihmc.sourceSetProject("core-api")
       compile ihmc.sourceSetProject("generator")
       compile javaparser

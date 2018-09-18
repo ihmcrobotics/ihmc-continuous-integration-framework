@@ -13,7 +13,7 @@ apply plugin: "com.gradle.plugin-publish"
 
 ihmc {
    group = "us.ihmc"
-   version = "0.19.6"
+   version = "0.20.6"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -110,6 +110,14 @@ else
       compile javaparser
       compile jgit
       compile ihmcCommonsTesting
+   }
+
+   junitfiveTestDependencies {
+      implementation "org.junit.jupiter:junit-jupiter-api:5.3.1"
+      runtimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.1"
+      compile commonsLang
+      compile commonsIo
+      compile ihmcCommons
    }
 }
 

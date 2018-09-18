@@ -1,4 +1,4 @@
-package us.ihmc.continuousIntegration;
+package us.ihmc.ci;
 
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.io.output.ByteArrayOutputStream;

@@ -121,6 +121,8 @@ else
    }
 }
 
+ihmc.sourceSetProject("junitfive-test").test.useJUnitPlatform()
+
 if (pluginMode)
 {
    pluginBundle {

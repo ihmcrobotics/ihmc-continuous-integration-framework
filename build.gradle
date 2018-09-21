@@ -11,6 +11,8 @@ buildscript {
 apply plugin: "us.ihmc.ihmc-build"
 apply plugin: "com.gradle.plugin-publish"
 
+def pluginMode = Eval.me(extraSourceSets).size == 0
+
 ihmc {
    group = "us.ihmc"
    version = "0.20.6"
@@ -19,7 +21,7 @@ ihmc {
    maintainer = "Duncan Calvert"
 
    configureDependencyResolution()
-   if (Eval.me(extraSourceSets).size == 0)
+   if (pluginMode)
    {
       javaDirectory("main", "../core-api/java")
       javaDirectory("main", "../generator/java")
@@ -49,7 +51,6 @@ def jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
 def jgit = "org.eclipse.jgit:org.eclipse.jgit:5.0.3.201809091024-r"
 def groovy = "org.codehaus.groovy:groovy:2.3.11"
 
-def pluginMode = Eval.me(extraSourceSets).size == 0
 if (pluginMode)
 {
    mainDependencies {

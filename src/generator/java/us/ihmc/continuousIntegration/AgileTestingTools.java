@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
@@ -263,7 +263,7 @@ public class AgileTestingTools
                   projectName = line.split("\"")[1].substring(1);
                AgileTestingProject correspondingProject = gradleProjects.get(projectName);
                if (correspondingProject == null)
-                  PrintTools.error(projectName + " in " + dependenciesGradlePath + " could not be found!");
+                  LogTools.error(projectName + " in " + dependenciesGradlePath + " could not be found!");
                else
                   projectDependencies.get(gradleProject).add(correspondingProject);
             }
@@ -341,7 +341,7 @@ public class AgileTestingTools
       
       if (runAllFastTestSuitesPath == null)
       {
-         PrintTools.error(SourceTools.class, "Please create a file RunAllFastTestSuites.java in RunAllBambooTestSuites");
+         LogTools.error("Please create a file RunAllFastTestSuites.java in RunAllBambooTestSuites");
          return null;
       }
       

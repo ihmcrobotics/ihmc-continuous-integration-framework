@@ -2,7 +2,7 @@ package us.ihmc.continuousIntegration.codeQuality.bamboo;
 
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
@@ -120,7 +120,7 @@ public class EstimatedDurationUpdater
                {
                   AtomicTestRun atomicTestRun = new AtomicTestRun(testResult.getClassName(), testResult.getMethodName(), testResult.getDurationSeconds(), testResult.getStatus());
                   AgileTestingClassPath atClassPath = nameToPathMap.get(testResult.getClassName());
-                  PrintTools.info("Writing annotation for " + testResult.getClassName() + ". ATClassPath ref: " + atClassPath);
+                  LogTools.info("Writing annotation for " + testResult.getClassName() + ". ATClassPath ref: " + atClassPath);
                   
                   if (atClassPath != null && atomicTestRun.isSuccessful())
                   {

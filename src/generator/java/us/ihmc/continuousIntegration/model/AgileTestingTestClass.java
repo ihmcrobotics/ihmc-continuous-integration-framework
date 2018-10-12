@@ -17,7 +17,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
@@ -224,7 +224,7 @@ public class AgileTestingTestClass
       }
       catch (NullPointerException e)
       {
-         PrintTools.error("Error parsing class: " + classPath.getClassName());
+         LogTools.error("Error parsing class: " + classPath.getClassName());
       }
    }
 

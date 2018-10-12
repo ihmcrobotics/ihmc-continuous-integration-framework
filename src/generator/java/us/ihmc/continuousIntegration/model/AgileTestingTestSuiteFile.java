@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.List;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
@@ -75,7 +75,7 @@ public class AgileTestingTestSuiteFile
          }
          else
          {
-            PrintTools.debug(this, "Produced empty className: " + pathsToPutInTestSuite.get(i).toString());
+            LogTools.debug("Produced empty className: " + pathsToPutInTestSuite.get(i).toString());
          }
       }
 

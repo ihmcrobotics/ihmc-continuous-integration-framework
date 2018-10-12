@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
 
@@ -31,7 +31,7 @@ public class SourceTools
 
    public static Map<String, Path> mapAllClassNamesToPaths(Path workspacePath)
    {
-      PrintTools.info(SourceTools.class, "Mapping all class names to Paths in " + workspacePath.toAbsolutePath());
+      LogTools.info("Mapping all class names to Paths in " + workspacePath.toAbsolutePath());
 
       Map<String, Path> javaNameToPathMap = new LinkedHashMap<>();
 
@@ -45,7 +45,7 @@ public class SourceTools
          }
       }
 
-      PrintTools.info(SourceTools.class, "Map size: " + javaNameToPathMap.values().size() + " paths.");
+      LogTools.info("Map size: " + javaNameToPathMap.values().size() + " paths.");
 
       return javaNameToPathMap;
    }

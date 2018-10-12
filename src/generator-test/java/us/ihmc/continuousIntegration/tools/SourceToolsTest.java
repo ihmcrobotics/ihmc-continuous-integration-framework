@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
@@ -22,11 +22,11 @@ public class SourceToolsTest
    {      
       Path path = getThisTestPath();
 
-      PrintTools.info(this, "test path: " + path);
+      LogTools.info("test path: " + path);
 
       String packageFromPath = SourceTools.derivePackageFromPath(path);
       
-      PrintTools.info(this, "Derived package: " + packageFromPath + " Actual package: " + SourceToolsTest.class.getPackage().getName());
+      LogTools.info("Derived package: " + packageFromPath + " Actual package: " + SourceToolsTest.class.getPackage().getName());
       
       assertTrue("Derived package not equal to actual package.", packageFromPath.equals(SourceToolsTest.class.getPackage().getName()));
    }
@@ -37,11 +37,11 @@ public class SourceToolsTest
    {      
       Path path = getThisTestPath();
 
-      PrintTools.info(this, "test path: " + path);
+      LogTools.info("test path: " + path);
 
       String classNameFromPath = SourceTools.deriveClassNameFromPath(path);
       
-      PrintTools.info(this, "Derived className: " + classNameFromPath + " Actual className: " + SourceToolsTest.class.getName());
+      LogTools.info("Derived className: " + classNameFromPath + " Actual className: " + SourceToolsTest.class.getName());
       
       assertTrue("Derived className not equal to actual className.", classNameFromPath.equals(SourceToolsTest.class.getName()));
    }
@@ -64,7 +64,7 @@ public class SourceToolsTest
 
       String superClassName = SourceTools.extractSuperClassSimpleName(allLines, subjectClass.getSimpleName());
       
-      PrintTools.info(this, "Super class name: " + superClassName);
+      LogTools.info("Super class name: " + superClassName);
       
       assertTrue("Parent class name does not match extracted super class name.", superClassName.equals(parentClass.getSimpleName()));
    }

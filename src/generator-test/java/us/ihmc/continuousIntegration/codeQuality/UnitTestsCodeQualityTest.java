@@ -17,7 +17,7 @@ import org.junit.Test;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
@@ -75,14 +75,14 @@ public class UnitTestsCodeQualityTest
                {
                   classesWithBadNames.add(classPath.getSimpleName());
 
-                  PrintTools.warn("Bad name: " + classPath.getClassName());
+                  LogTools.warn("Bad name: " + classPath.getClassName());
                }
 
                if (classPath.getSourceFolder().name() != SourceTools.TEST_SOURCE_FOLDER.name())
                {
                   classesNotInTestFolder.add(classPath.getSimpleName());
 
-                  PrintTools.warn("Not in test folder: " + classPath.getClassName());
+                  LogTools.warn("Not in test folder: " + classPath.getClassName());
                }
             }
          }
@@ -165,7 +165,7 @@ public class UnitTestsCodeQualityTest
          }
       }
 
-      PrintTools.info("Test classes with matching application classes: " + testClassesWithAMatchingApplicationClass.size());
+      LogTools.info("Test classes with matching application classes: " + testClassesWithAMatchingApplicationClass.size());
 
       assertEquals("Tests classes are not in same package as application class: " + testClassesNotInSamePackageAsApplicationClass, 0,
                    testClassesNotInSamePackageAsApplicationClass.values().size());
@@ -225,7 +225,7 @@ public class UnitTestsCodeQualityTest
          }
       }
 
-      PrintTools.info("Test classes without matching application classes: " + testClassesWithoutAMatchingApplicationClass.size());
+      LogTools.info("Test classes without matching application classes: " + testClassesWithoutAMatchingApplicationClass.size());
 
       assertEquals("Tests classes do not have a matching application class: " + testClassesWithoutAMatchingApplicationClass, 0,
                    testClassesWithoutAMatchingApplicationClass.size());
@@ -269,14 +269,14 @@ public class UnitTestsCodeQualityTest
             {
                classesWithMissingTimeouts.add(bambooTestClass.getTestClassSimpleName() + ":" + (numberOfTests - numberOfTimeouts));
 
-               PrintTools.warn(this, "Missing " + missingTimeouts + " timeout(s): " + bambooTestClass.getTestClassSimpleName());
+               LogTools.warn("Missing " + missingTimeouts + " timeout(s): " + bambooTestClass.getTestClassSimpleName());
             }
 
             if (numberOfTests > numberOfEstimatedDurations)
             {
                classesWithMissingEstimatedDurations.add(bambooTestClass.getTestClassSimpleName() + ":" + (numberOfTests - numberOfEstimatedDurations));
 
-               PrintTools.warn(this, "Missing " + missingEstimatedDurations + " estimatedDuration parameter(s): " + bambooTestClass.getTestClassSimpleName());
+               LogTools.warn("Missing " + missingEstimatedDurations + " estimatedDuration parameter(s): " + bambooTestClass.getTestClassSimpleName());
             }
          }
       }

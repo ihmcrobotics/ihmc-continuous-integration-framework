@@ -2,7 +2,7 @@ package us.ihmc.continuousIntegration.model;
 
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 
 import java.nio.file.Path;
@@ -37,7 +37,7 @@ public class AgileTestingLoadBalancedPlan
       if (bambooPlanType == IntegrationCategory.FAST && bambooTestClass.getTotalDurationForTarget(bambooPlanType) > Conversions
             .minutesToSeconds(bambooEnabledProject.getConfiguration().getMaximumSuiteDuration()))
       {
-         PrintTools.warn(this, "classTotalDuration > MAXIMUM_SUITE_DURATION in Fast: " + bambooTestClass.getTestClassSimpleName() + " (" + MathTools
+         LogTools.warn("classTotalDuration > MAXIMUM_SUITE_DURATION in Fast: " + bambooTestClass.getTestClassSimpleName() + " (" + MathTools
                .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForTarget(bambooPlanType)), 2) + " m)");
       }
 
@@ -100,13 +100,13 @@ public class AgileTestingLoadBalancedPlan
 
          if (generateTestSuites)
          {
-            PrintTools.info(this, "Generating: " + "(" + formattedDuration + " min) " + planShortName);
+            LogTools.info("Generating: " + "(" + formattedDuration + " min) " + planShortName);
 
             bambooTestSuiteFile.generateTestSuite(testSuiteSimpleName, packageName, testPathsToPutInTestSuite);
          }
          else
          {
-            PrintTools.info(this, "Loading: " + "(" + formattedDuration + " min) " + planShortName);
+            LogTools.info("Loading: " + "(" + formattedDuration + " min) " + planShortName);
          }
       }
    }

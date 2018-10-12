@@ -3,7 +3,7 @@ package us.ihmc.continuousIntegration.model;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import org.apache.commons.lang3.tuple.MutablePair;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.AgileTestingJavaParserTools;
@@ -153,7 +153,7 @@ public class AgileTestingProjectTestCloud
          AgileTestingTestSuiteFile bambooTestSuiteFile = new AgileTestingTestSuiteFile(getSingletonTestSuitePath(bambooPlanType), bambooPlanType, shortName, 0.0);
          singletonTestSuiteFiles.put(bambooPlanType, bambooTestSuiteFile);
          
-         PrintTools.info(this, "Generating: " + "(? min) " + shortName);
+         LogTools.info("Generating: " + "(? min) " + shortName);
          
          bambooTestSuiteFile.generateTestSuite(testSuiteSimpleName, packageName, testPaths);
       }

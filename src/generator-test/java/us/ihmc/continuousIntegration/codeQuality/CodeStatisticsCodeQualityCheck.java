@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.Assert;
 
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.model.AgileTestingTestClass;
@@ -68,19 +68,19 @@ public class CodeStatisticsCodeQualityCheck
          }
       }
       
-      PrintTools.info(this, "Number of test classes: " + numberOfTestClasses);
-      PrintTools.info(this, "Number of tests: " + numberOfTests);
+      LogTools.info("Number of test classes: " + numberOfTestClasses);
+      LogTools.info("Number of tests: " + numberOfTests);
       
       for (IntegrationCategory category : IntegrationCategory.values)
       {
-         PrintTools.info(this, "Number of tests in " + category.getName() + ": " + numberOfTestsInTargets.get(category));
+         LogTools.info("Number of tests in " + category.getName() + ": " + numberOfTestsInTargets.get(category));
       }
       
       int numberOfUnfinishedTests = numberOfTestsInTargets.get(IntegrationCategory.EXCLUDE) + numberOfTestsInTargets.get(IntegrationCategory.IN_DEVELOPMENT) + numberOfTestsInTargets.get(IntegrationCategory.FLAKY);
-      PrintTools.info(this, "Number of tests in Exclude, InDevelopment, Flaky (Unfinished): " + numberOfUnfinishedTests);
+      LogTools.info("Number of tests in Exclude, InDevelopment, Flaky (Unfinished): " + numberOfUnfinishedTests);
       double perecentageOfTestClassesThatAreUnfinished = (double) numberOfUnfinishedTests / (double) numberOfTests * 100.0;
       
-      PrintTools.info(this, "Percentage of unfinished test classes: " + MathTools.roundToSignificantFigures(perecentageOfTestClassesThatAreUnfinished, 2) + " %");
+      LogTools.info("Percentage of unfinished test classes: " + MathTools.roundToSignificantFigures(perecentageOfTestClassesThatAreUnfinished, 2) + " %");
       
       Assert.assertFalse("Percentage of unfinished test classes is greater than " + PERCENTAGE_OF_UNFINISHED_TESTS_THRESHOLD + " %.", perecentageOfTestClassesThatAreUnfinished > PERCENTAGE_OF_UNFINISHED_TESTS_THRESHOLD);
    }

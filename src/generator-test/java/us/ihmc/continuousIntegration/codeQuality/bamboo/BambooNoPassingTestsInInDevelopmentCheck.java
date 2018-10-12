@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestApi;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestJob;
 import us.ihmc.continuousIntegration.bambooRestApi.BambooRestPlan;
@@ -53,7 +53,7 @@ public class BambooNoPassingTestsInInDevelopmentCheck
          {
             if (testResult.getStatus().equals("successful"))
             {
-               PrintTools.info(job.getKey() + ": (" + testResult.getStatus() + ") " + testResult.getClassName() + ":" + testResult.getMethodName());
+               LogTools.info(job.getKey() + ": (" + testResult.getStatus() + ") " + testResult.getClassName() + ":" + testResult.getMethodName());
 
                successfulTests.add(testResult);
             }

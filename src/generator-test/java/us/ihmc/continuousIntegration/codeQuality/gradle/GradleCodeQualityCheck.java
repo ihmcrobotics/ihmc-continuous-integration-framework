@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
@@ -20,6 +19,7 @@ import us.ihmc.continuousIntegration.gradle.GradleSettingsFormatter;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.tools.SourceTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
+import us.ihmc.log.LogTools;
 
 public class GradleCodeQualityCheck
 {
@@ -89,7 +89,7 @@ public class GradleCodeQualityCheck
                }
                catch (NullPointerException e)
                {
-                  PrintTools.error(projectName + " does not exist in " + settingsGradlePath);                  
+                  LogTools.error(projectName + " does not exist in " + settingsGradlePath);
                   fail(projectName + " does not exist in " + settingsGradlePath);
                }
             }

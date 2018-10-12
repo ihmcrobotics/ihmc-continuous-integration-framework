@@ -13,7 +13,7 @@ public class LocalTestSuiteGenerator
 //      bambooTestSuiteGenerator.generateSpecificTestSuites(projectNameWhiteList);
 //      bambooTestSuiteGenerator.printAllStatistics();
 //
-//      PrintTools.info(BambooTestSuiteGenerator.class,
+//      LogTools.info(BambooTestSuiteGenerator.class,
 //                      "Finished generating test suites. Please refresh your IDE's file system and commit the new generated test suites. You must also confirm bamboo plans match the generated test suites!");
    }
 }

@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
@@ -71,7 +71,7 @@ public class BambooTestSuiteGenerator
          }
       }
 
-      PrintTools.info(this, "Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
+      LogTools.info("Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
 
       workspace.buildMaps();
    }
@@ -87,7 +87,7 @@ public class BambooTestSuiteGenerator
          totalDuration += bambooEnabledProject.getFastTotalDuration();
       }
 
-      PrintTools.info(this, "Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
+      LogTools.info("Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
 
       workspace.buildMaps();
    }
@@ -101,7 +101,7 @@ public class BambooTestSuiteGenerator
 
       for (IntegrationCategory bambooPlanType : IntegrationCategory.includedCategories)
       {
-         PrintTools.info(this, "Generating: RunAll" + bambooPlanType.getName() + "TestSuites");
+         LogTools.info("Generating: RunAll" + bambooPlanType.getName() + "TestSuites");
 
          ArrayList<AgileTestingTestSuiteFile> bambooTestSuiteFiles = new ArrayList<AgileTestingTestSuiteFile>();
 
@@ -122,7 +122,7 @@ public class BambooTestSuiteGenerator
          for (AgileTestingTestSuiteFile suiteFile : bambooTestSuiteFiles)
          {
             if (suiteFile.getPath().toString().matches(".*bin.*"))
-               PrintTools.debug(this, "matches bin: " + suiteFile.getPath().toString());
+               LogTools.debug("matches bin: " + suiteFile.getPath().toString());
          }
 
          String shortName = "RunAll" + bambooPlanType.getName();
@@ -151,7 +151,7 @@ public class BambooTestSuiteGenerator
          System.out.println("\n-- SORTED TESTS FOR " + bambooPlanType.getName().toUpperCase() + " --");
          for (AgileTestingTestSuiteFile bambooTestSuiteFile : sortedTestSuitesByDurationMap.get(bambooPlanType))
          {
-            PrintTools.info(this, bambooTestSuiteFile.getPlanShortName() + ": "
+            LogTools.info( bambooTestSuiteFile.getPlanShortName() + ": "
                   + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestSuiteFile.getDuration()), 2) + " m");
          }
       }
@@ -169,7 +169,7 @@ public class BambooTestSuiteGenerator
 
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestMethod.getDuration()), 2) + " min) ";
 
-         PrintTools.info(this,
+         LogTools.info(
                          "Test in top 1% longest: " + durationMessage + bambooTestMethod.getTestClassSimpleName() + ":" + bambooTestMethod.getMethodName());
       }
    }
@@ -187,7 +187,7 @@ public class BambooTestSuiteGenerator
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForAllPlans()), 2)
                + " min) ";
 
-         PrintTools.info(this, "Class in top 2% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
+         LogTools.info("Class in top 2% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
       }
    }
 
@@ -250,12 +250,12 @@ public class BambooTestSuiteGenerator
 
       for (String jobShortName : existingJobsThatShouldBeEnabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " is not enabled in Bamboo!");
+         LogTools.error( jobShortName + " is not enabled in Bamboo!");
       }
 
       for (String jobShortName : emptyJobsThatShouldBeDisabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
+         LogTools.error( jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
       }
    }
 
@@ -344,9 +344,9 @@ public class BambooTestSuiteGenerator
       //      }
       //      else
       //      {
-      //         PrintTools.error("Test suites are no longer generated locally.");
-      //         PrintTools.error("It's automatic on the server side now.");
-      //         PrintTools.error("Please run BambooJobConfigurationTest to see which jobs to enable/disable.");
+      //         LogTools.error("Test suites are no longer generated locally.");
+      //         LogTools.error("It's automatic on the server side now.");
+      //         LogTools.error("Please run BambooJobConfigurationTest to see which jobs to enable/disable.");
       //      }
       //      
 //      BambooTestSuiteGenerator bambooTestSuiteGenerator = new BambooTestSuiteGenerator();

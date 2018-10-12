@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 
@@ -60,7 +60,7 @@ public class JavaLineCounter
             
             if (line.matches(COMMENT_REGEX) || insideBlockComment)
             {
-               PrintTools.debug(DEBUG, this, "Comment line: " + line);
+               LogTools.debug("Comment line: " + line);
                if (countComments)
                {
                   ++count;
@@ -68,7 +68,7 @@ public class JavaLineCounter
             }
             else if (line.matches(STRUCTURAL_REGEX))
             {
-               PrintTools.debug(DEBUG, this, "Structural line: " + line);
+               LogTools.debug("Structural line: " + line);
                if (countStructuralSymbols)
                {
                   ++count;
@@ -76,7 +76,7 @@ public class JavaLineCounter
             }
             else if (line.matches(BLANK_LINES_REGEX))
             {
-               PrintTools.debug(DEBUG, this, "Blank line: " + line);
+               LogTools.debug("Blank line: " + line);
                if (countBlankLines)
                {
                   ++count;
@@ -90,7 +90,7 @@ public class JavaLineCounter
       }
       catch (NullPointerException nullPointerException)
       {
-         PrintTools.error("On " + javaPath + ": " + nullPointerException.getMessage());
+         LogTools.error("On " + javaPath + ": " + nullPointerException.getMessage());
       }
       
       return count;

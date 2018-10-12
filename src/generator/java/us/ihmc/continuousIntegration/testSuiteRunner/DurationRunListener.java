@@ -3,7 +3,7 @@ package us.ihmc.continuousIntegration.testSuiteRunner;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.RunListener;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.time.Stopwatch;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
@@ -60,6 +60,6 @@ public class DurationRunListener extends RunListener
          AgileTestingTestMethodAnnotationWriter.writeAnnotationsForTestRun(atomicTestRun, nameToPathMap, nameToPathMap.get(atomicTestRun.getClassName()));
       }
       
-      PrintTools.info(this, "Total run time: " + new DecimalFormat("0.0").format(((double) result.getRunTime()) / 1000.0) + " s");
+      LogTools.info("Total run time: " + new DecimalFormat("0.0").format(((double) result.getRunTime()) / 1000.0) + " s");
    }
 }

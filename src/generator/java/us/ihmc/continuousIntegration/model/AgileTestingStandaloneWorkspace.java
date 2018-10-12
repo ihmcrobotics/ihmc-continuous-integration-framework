@@ -3,7 +3,7 @@ package us.ihmc.continuousIntegration.model;
 import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
 import us.ihmc.continuousIntegration.StandaloneProjectConfiguration;
@@ -52,7 +52,7 @@ public class AgileTestingStandaloneWorkspace
 
       double totalDuration = agileTestingProject.getFastTotalDuration();
 
-      PrintTools.info(this, "Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
+      LogTools.info("Fast total duration: " + new DecimalFormat("0.0").format(Conversions.secondsToMinutes(totalDuration)) + " minutes.");
 
       buildMaps();
    }
@@ -190,7 +190,7 @@ public class AgileTestingStandaloneWorkspace
             System.out.println("\n-- SORTED TESTS FOR " + bambooPlanType.getName().toUpperCase() + " --");
             for (AgileTestingTestSuiteFile bambooTestSuiteFile : sortedTestSuitesByDurationMap.get(bambooPlanType))
             {
-               PrintTools.info(this, bambooTestSuiteFile.getPlanShortName() + ": " + MathTools
+               LogTools.info( bambooTestSuiteFile.getPlanShortName() + ": " + MathTools
                      .roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestSuiteFile.getDuration()), 2) + " m");
             }
          }
@@ -207,7 +207,7 @@ public class AgileTestingStandaloneWorkspace
 
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestMethod.getDuration()), 2) + " min) ";
 
-         PrintTools.info(this,
+         LogTools.info(
                          "Test in top 10% longest: " + durationMessage + bambooTestMethod.getTestClassSimpleName() + ":" + bambooTestMethod.getMethodName());
       }
    }
@@ -223,7 +223,7 @@ public class AgileTestingStandaloneWorkspace
          String durationMessage = "(" + MathTools.roundToSignificantFigures(Conversions.secondsToMinutes(bambooTestClass.getTotalDurationForAllPlans()), 2)
                + " min) ";
 
-         PrintTools.info(this, "Class in top 10% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
+         LogTools.info("Class in top 10% longest: " + durationMessage + bambooTestClass.getTestClassSimpleName());
       }
    }
 
@@ -251,7 +251,7 @@ public class AgileTestingStandaloneWorkspace
          System.out.println("\n-- JUNIT TIMEOUT CHECK --");
          for (String message : missingTimeoutMessages)
          {
-            PrintTools.error(this, message);
+            LogTools.error(message);
          }
       }
 
@@ -276,7 +276,7 @@ public class AgileTestingStandaloneWorkspace
          if (crashOnEmptyJobs)
             throw new RuntimeException(emptyJobsThatShouldBeDisabledOnBamboo + " doesn't have a matching test suite.");
          else
-            PrintTools.warn(this, emptyJobsThatShouldBeDisabledOnBamboo + " doesn't have a matching test suite.");
+            LogTools.warn(emptyJobsThatShouldBeDisabledOnBamboo + " doesn't have a matching test suite.");
       }
       if (!existingJobsThatShouldBeEnabledOnBamboo.isEmpty())
       {
@@ -305,7 +305,7 @@ public class AgileTestingStandaloneWorkspace
 
       for (BambooRestJob job : allJobsFromBambooRestApi)
       {
-         PrintTools.info("Found job: " + job.getName() + " Enabled: " + job.isEnabled());
+         LogTools.info("Found job: " + job.getName() + " Enabled: " + job.isEnabled());
          Result result = checkThatEnabledJobHasAMatchingTestSuite(job, allMappedTestSuites);
 
          if (result.addToList)
@@ -320,12 +320,12 @@ public class AgileTestingStandaloneWorkspace
 
       for (String jobShortName : existingJobsThatShouldBeEnabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " is not enabled in Bamboo!");
+         LogTools.error( jobShortName + " is not enabled in Bamboo!");
       }
 
       for (String jobShortName : emptyJobsThatShouldBeDisabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
+         LogTools.error( jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
       }
    }
 

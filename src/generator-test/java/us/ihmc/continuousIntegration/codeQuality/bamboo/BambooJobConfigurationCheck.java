@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.IntegrationCategory;
@@ -95,12 +95,12 @@ public class BambooJobConfigurationCheck
 
       for (String jobShortName : existingJobsThatShouldBeEnabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " is not enabled in Bamboo!");
+         LogTools.error( jobShortName + " is not enabled in Bamboo!");
       }
 
       for (String jobShortName : emptyJobsThatShouldBeDisabledOnBamboo)
       {
-         PrintTools.error(this, jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
+         LogTools.error( jobShortName + " in Bamboo does not have a matching test suite and should be disabled.");
       }
    }
 

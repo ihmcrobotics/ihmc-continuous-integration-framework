@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationPlan;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
 import us.ihmc.continuousIntegration.model.AgileTestingClassPath;
@@ -46,7 +46,7 @@ public class AgileTestingToolsTest
       
       for (AgileTestingProject atProject : allBambooEnabledProjects.values())
       {
-         PrintTools.info("Project: " + atProject.getRawProjectName());
+         LogTools.info("Project: " + atProject.getRawProjectName());
       }
       
       assertTrue("Didn't load any projects. Current directory: " + Paths.get("").toAbsolutePath().toString(), !allBambooEnabledProjects.isEmpty());

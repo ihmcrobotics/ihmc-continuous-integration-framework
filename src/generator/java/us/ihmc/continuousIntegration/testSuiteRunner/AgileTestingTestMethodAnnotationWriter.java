@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import us.ihmc.commons.Conversions;
 import us.ihmc.commons.MathTools;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
@@ -39,26 +39,26 @@ public class AgileTestingTestMethodAnnotationWriter
          try
          {
             String superClassName = pair.getRight().getExtendedTypes(0).getNameAsString();
-            PrintTools.error(path.getClassName() + " has a super class with tests. Super class name: " + superClassName);
+            LogTools.error(path.getClassName() + " has a super class with tests. Super class name: " + superClassName);
             
             writeAnnotationsForTestRun(atomicTestRun, nameToFileMap, AgileTestingTools.getFirstMatchInMap(nameToFileMap, superClassName));
          }
          catch (IndexOutOfBoundsException e)
          {
-            PrintTools.error(path.getClassName() + " has serious issues. Please give it some love.");
+            LogTools.error(path.getClassName() + " has serious issues. Please give it some love.");
             return;
          }
       }
       else
       {
-         PrintTools.info(atomicTestRun.getClassName() + "." + atomicTestRun.getMethodName() + ": " + new DecimalFormat("0.0").format(atomicTestRun.getDuration()) + " s");
+         LogTools.info(atomicTestRun.getClassName() + "." + atomicTestRun.getMethodName() + ": " + new DecimalFormat("0.0").format(atomicTestRun.getDuration()) + " s");
          
          MutablePair<MethodDeclaration, HashMap<String, AnnotationExpr>> mutablePair = methodAnnotationMap.get(atomicTestRun.getMethodName());
 
          AnnotationExpr deployableTestMethodExpr = mutablePair.getRight().get(ContinuousIntegrationTest.class.getSimpleName());
          if (deployableTestMethodExpr == null)
          {
-            PrintTools.warn("No @ContinuousIntegrationTest! Skipping...");
+            LogTools.warn("No @ContinuousIntegrationTest! Skipping...");
             return;
          }
          AnnotationExpr junitTestExpr = mutablePair.getRight().get(Test.class.getSimpleName());
@@ -73,13 +73,13 @@ public class AgileTestingTestMethodAnnotationWriter
          {
             if (durationMemberValuePair.getBegin().get().line != durationMemberValuePair.getEnd().get().line || timeoutMemberValuePair.getBegin().get().line != timeoutMemberValuePair.getEnd().get().line)
             {
-               PrintTools.error(AgileTestingAnnotationTools.ESTIMATED_DURATION + " or " + AgileTestingAnnotationTools.TIMEOUT + " spans multiple lines. Skipping.");
+               LogTools.error(AgileTestingAnnotationTools.ESTIMATED_DURATION + " or " + AgileTestingAnnotationTools.TIMEOUT + " spans multiple lines. Skipping.");
                return;
             }
          }
          catch (NullPointerException e)
          {
-            PrintTools.error("Something wrong with this annotation.");
+            LogTools.error("Something wrong with this annotation.");
          }
          
          int durationLineNumber = durationMemberValuePair.getBegin().get().line - 1;

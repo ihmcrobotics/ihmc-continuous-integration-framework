@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
@@ -122,7 +122,7 @@ public class SecurityTools
       catch (IOException e)
       {
 
-         PrintTools.info("No login found at " + loginInfoPath);
+         LogTools.info("No login found at " + loginInfoPath);
 
          LoginInfo loginInfo = showLoginDialog();
 

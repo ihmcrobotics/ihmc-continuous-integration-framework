@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import us.ihmc.commons.PrintTools;
 import us.ihmc.commons.exception.DefaultExceptionHandler;
 import us.ihmc.commons.nio.FileTools;
 import us.ihmc.commons.nio.WriteOption;
@@ -16,6 +15,7 @@ import us.ihmc.continuousIntegration.AgileTestingProjectLoader;
 import us.ihmc.continuousIntegration.AgileTestingTools;
 import us.ihmc.continuousIntegration.model.AgileTestingProject;
 import us.ihmc.continuousIntegration.tools.SourceTools;
+import us.ihmc.log.LogTools;
 
 public class GradleSettingsFormatter
 {
@@ -52,7 +52,7 @@ public class GradleSettingsFormatter
             {
                if (!line.matches(handledRegex))
                {
-                  PrintTools.warn(project.getRawProjectName()+ "\\" + AgileTestingTools.SETTINGS_GRADLE_NAME + " does not conform: " + line);
+                  LogTools.warn(project.getRawProjectName()+ "\\" + AgileTestingTools.SETTINGS_GRADLE_NAME + " does not conform: " + line);
                   doTheWrite = false;
                   break;
                }

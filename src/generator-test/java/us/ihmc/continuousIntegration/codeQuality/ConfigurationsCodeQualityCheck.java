@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
@@ -53,7 +53,7 @@ public class ConfigurationsCodeQualityCheck
 
       for (Path imlFile : imlFiles)
       {
-         PrintTools.warn("IML File found: " + imlFile);
+         LogTools.warn("IML File found: " + imlFile);
 
          if (AUTO_FIX)
          {
@@ -97,7 +97,7 @@ public class ConfigurationsCodeQualityCheck
 
       for (Path dotProjectFile : dotProjectFiles)
       {
-         PrintTools.warn("Eclipse .project file found: " + dotProjectFile);
+         LogTools.warn("Eclipse .project file found: " + dotProjectFile);
 
          if (AUTO_FIX)
          {

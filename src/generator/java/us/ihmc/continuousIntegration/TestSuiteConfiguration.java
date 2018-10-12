@@ -1,7 +1,7 @@
 package us.ihmc.continuousIntegration;
 
 import groovy.util.Eval;
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,37 +30,37 @@ public class TestSuiteConfiguration
       if (propertyIsSet("disableJobCheck", properties))
       {
          disableJobCheck = ((String) properties.get("disableJobCheck")).trim().toLowerCase().contains("true");
-         PrintTools.info(this, "Set disableJobCheck to " + disableJobCheck + " from property: " + properties.get("disableJobCheck"));
+         LogTools.info("Set disableJobCheck to " + disableJobCheck + " from property: " + properties.get("disableJobCheck"));
       }
       if (propertyIsSet("crashOnEmptyJobs", properties))
       {
          crashOnEmptyJobs = ((String) properties.get("crashOnEmptyJobs")).trim().toLowerCase().contains("true");
-         PrintTools.info(this, "Set crashOnEmptyJobs to " + crashOnEmptyJobs + " from property: " + properties.get("crashOnEmptyJobs"));
+         LogTools.info("Set crashOnEmptyJobs to " + crashOnEmptyJobs + " from property: " + properties.get("crashOnEmptyJobs"));
       }
       if (propertyIsSet("crashOnMissingTimeouts", properties))
       {
          crashOnMissingTimeouts = ((String) properties.get("crashOnMissingTimeouts")).trim().toLowerCase().contains("true");
-         PrintTools.info(this, "Set crashOnMissingTimeouts to " + crashOnMissingTimeouts + " from property: " + properties.get("crashOnMissingTimeouts"));
+         LogTools.info("Set crashOnMissingTimeouts to " + crashOnMissingTimeouts + " from property: " + properties.get("crashOnMissingTimeouts"));
       }
       if (propertyIsSet("disableSuiteBalancing", properties))
       {
          disableSuiteBalancing = ((String) properties.get("disableSuiteBalancing")).trim().toLowerCase().contains("true");
-         PrintTools.info(this, "Set disableSuiteBalancing to " + disableSuiteBalancing + " from property: " + properties.get("disableSuiteBalancing"));
+         LogTools.info("Set disableSuiteBalancing to " + disableSuiteBalancing + " from property: " + properties.get("disableSuiteBalancing"));
       }
       if (propertyIsSet("maxSuiteDuration", properties))
       {
          maxSuiteDuration = Double.valueOf(((String) properties.get("maxSuiteDuration")).trim());
-         PrintTools.info(this, "Set maxSuiteDuration to " + maxSuiteDuration + " from property: " + properties.get("maxSuiteDuration"));
+         LogTools.info("Set maxSuiteDuration to " + maxSuiteDuration + " from property: " + properties.get("maxSuiteDuration"));
       }
       if (propertyIsSet("bambooUrl", properties))
       {
          bambooUrl = ((String) properties.get("bambooUrl")).trim();
-         PrintTools.info(this, "Set bambooUrl to " + bambooUrl + " from property: " + properties.get("bambooUrl"));
+         LogTools.info("Set bambooUrl to " + bambooUrl + " from property: " + properties.get("bambooUrl"));
       }
       if (propertyIsSet("bambooPlanKeys", properties))
       {
          bambooPlanKeys = (ArrayList<String>) Eval.me(((String) properties.get("bambooPlanKeys")).trim());
-         PrintTools.info(this, "Set bambooPlanKeys to " + bambooPlanKeys + " from property: " + properties.get("bambooPlanKeys"));
+         LogTools.info("Set bambooPlanKeys to " + bambooPlanKeys + " from property: " + properties.get("bambooPlanKeys"));
       }
    }
 

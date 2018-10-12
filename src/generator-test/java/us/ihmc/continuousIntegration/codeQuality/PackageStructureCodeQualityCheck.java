@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import us.ihmc.commons.PrintTools;
+import us.ihmc.log.LogTools;
 import us.ihmc.commons.nio.BasicPathVisitor;
 import us.ihmc.commons.nio.PathTools;
 import us.ihmc.continuousIntegration.ContinuousIntegrationAnnotations.ContinuousIntegrationTest;
@@ -60,7 +60,7 @@ public class PackageStructureCodeQualityCheck
             {
                if (path.toFile().list().length < 1 && !path.endsWith("generatedTestSuites") && !path.endsWith("testResources") && !path.endsWith("resources"))
                {
-                  PrintTools.error("Empty package in src: " + path);
+                  LogTools.error("Empty package in src: " + path);
                   emptyPackages.add(path.toString());
                }
             }
@@ -108,7 +108,7 @@ public class PackageStructureCodeQualityCheck
       {
          if (pathType == PathType.FILE)
          {
-            PrintTools.warn("File shouldn't be here: " + path);
+            LogTools.warn("File shouldn't be here: " + path);
             misplacedFiles.add(path);
          }
          
@@ -119,7 +119,7 @@ public class PackageStructureCodeQualityCheck
               
                if (path.toFile().list().length < 1)
                {
-                  PrintTools.warn(".ihmc package should be here: " + path);
+                  LogTools.warn(".ihmc package should be here: " + path);
                   missingIHMCPackage.add(path);
                }
                else
@@ -131,7 +131,7 @@ public class PackageStructureCodeQualityCheck
                      {
                         if (!path.getFileName().toString().equals("ihmc"))
                         {
-                           PrintTools.warn("Package should not be here: " + path);
+                           LogTools.warn("Package should not be here: " + path);
                            misplacedPackages.add(path);
                         }
                         else
@@ -147,10 +147,10 @@ public class PackageStructureCodeQualityCheck
                                  ++count;
                                  
                                  if (count == 2)
-                                    PrintTools.warn("us.ihmc contains multiple packages: " + firstPath);
+                                    LogTools.warn("us.ihmc contains multiple packages: " + firstPath);
                                  
                                  if (count > 1)
-                                    PrintTools.warn("us.ihmc contains multiple packages: " + path);
+                                    LogTools.warn("us.ihmc contains multiple packages: " + path);
                                  else
                                     firstPath = path;
 
@@ -166,7 +166,7 @@ public class PackageStructureCodeQualityCheck
             }
             else
             {
-               PrintTools.warn("Package shouldn't be here or has bad name: " + path);
+               LogTools.warn("Package shouldn't be here or has bad name: " + path);
                misplacedPackages.add(path);
             }
          }

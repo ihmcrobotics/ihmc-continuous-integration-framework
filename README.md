@@ -2,13 +2,15 @@
 
 Tools for running large amounts of tests with special requirements.
 
-#### Tutorial
+### User Guide
 
 This plugin defines a concept of `categories`. Categories are communicated via the `category` Gradle
-property and are used to set up a test process to run sets of tests based on tags, with specific parallel
-execution settings and Java properties.
+property (i.e. `gradle test -Pcategory=fast`)and are used to set up a test process to run tests based on tags, parallel
+execution settings, and JVM arguments.
 
-Built in categories:
+#### Built in categories
+
+The default settings can be scaled via the `cpuThreads` property (i.e. `-PcpuThreads=8`). The default value is `8`.
 
 |Category|Configuration|Summary|
 |---|---|---|
@@ -16,9 +18,28 @@ Built in categories:
 |`allocation`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = allocation`<br>`jvmArgs += allocationAgentJVMArg`|Run only 1 test per JVM process so allocations don't overlap.<br>Uses provided special accessor, `allocationAgentJVMArg`,<br>to get `-javaagent:[..]java-allocation-instrumenter[..].jar`|
 |`scs`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = scs`<br>`jvmArgs += -Dcreate.scs.gui=false`<br>`jvmArgs += -Dshow.scs.windows=false`<br>`jvmArgs += -Dshow.scs.yographics=false`<br>`jvmArgs += -Djava.awt.headless=true`<br>`jvmArgs += -Dcreate.videos=false`<br>`jvmArgs += -Dopenh264.license=accept`<br>`jvmArgs += -Ddisable.joint.subsystem.publisher=true`<br>`jvmArgs += -Dscs.dataBuffer.size=8142`|Run SCS tests.<br>(Will eventually move SCS Gradle plugin)|
 |`video`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = video`<br>`jvmArgs += -Dcreate.scs.gui=true`<br>`jvmArgs += -Dshow.scs.windows=true`<br>`jvmArgs += -Dcreate.videos.dir=/home/shadylady/bamboo-videos/`<br>`jvmArgs += -Dshow.scs.yographics=true`<br>`jvmArgs += -Djava.awt.headless=false`<br>`jvmArgs += -Dcreate.videos=true`<br>`jvmArgs += -Dopenh264.license=accept`<br>`jvmArgs += -Ddisable.joint.subsystem.publisher=true`<br>`jvmArgs += -Dscs.dataBuffer.size=8142`|Run SCS video recordings.<br>(Will eventually move SCS Gradle plugin)|
-Note: The above numbers are assuming 8 CPU threads per job.
  
-It is possible to set up custom categories in your project's build.gradle.
+#### Custom categories
+
+In your project's `build.gradle`:
+```kotlin
+categories.create("slow-scs")
+{
+   classesPerJVM = 1   // default: 1
+   maxJVMs = 2   // default: 2
+   maxParallelTests = 1   // default: 4
+   excludeTags = none   // default: none
+   includeTags = [slow, scs]   // default: all
+   jvmArgs += "-Dsome.arg=value"   // default: empty List
+   minHeapSizeGB = 1   // default: 1
+   maxHeapSizeGB = 8   // default: 4
+}
+```
+
+Special JVM argument accessors:
+
+- `allocationAgentJVMArg` - Find location of `-javaagent:[..]java-allocation-instrumenter[..].jar`
+- `scsDefaultJVMArgs` - Default settings for SCS
 
 The plugin will do a few other things too:
 
@@ -31,16 +52,16 @@ The plugin will do a few other things too:
 $ gradle test -Pcategory=fast   // run fast tests
 ```
 
-```
+```java
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Test
-public void fastTest() { ... } // runs in fast category
+public void fastTest() { ... }   // runs in fast category
 
 @Tag("allocation")
 @Test
-public void allocationTest() { ... } // runs in allocation category
+public void allocationTest() { ... }   // runs in allocation category
 ```
 
 #### Implementation notes

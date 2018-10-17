@@ -64,6 +64,15 @@ public void fastTest() { ... }   // runs in fast category
 public void allocationTest() { ... }   // runs in allocation category
 ```
 
+#### Running tests locally in your IDE
+
+It is possible to run tests in parallel in your IDE, just pass these VM arguments:
+
+```
+-Djunit.jupiter.execution.parallel.enabled=true
+-Djunit.jupiter.execution.parallel.config.strategy=dynamic
+```
+
 #### Implementation notes
 
 - This plugin assumes use of ihmc-build?

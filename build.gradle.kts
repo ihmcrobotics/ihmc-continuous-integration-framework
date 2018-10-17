@@ -32,6 +32,7 @@ val jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
 val jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
 val jgit = "org.eclipse.jgit:org.eclipse.jgit:5.0.3.201809091024-r"
 val groovy = "org.codehaus.groovy:groovy:2.3.11"
+val allocationInstrumenter = "com.google.code.java-allocation-instrumenter:java-allocation-instrumenter:3.1.0"
 
 ihmc.sourceSetProject("core-api").dependencies {
    compile(junit)
@@ -61,6 +62,7 @@ ihmc.sourceSetProject("generator-test").dependencies {
    compile(javaparser)
    compile(jgit)
    compile(ihmcCommonsTesting)
+   compile(allocationInstrumenter)
 }
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
@@ -69,6 +71,7 @@ ihmc.sourceSetProject("junitfive-test").dependencies {
    compile(commonsLang)
    compile(commonsIo)
    compile(ihmcCommons)
+   compile(allocationInstrumenter)
 }
 
 ihmc.sourceSetProject("junitfive-test").tasks.withType<Test> {

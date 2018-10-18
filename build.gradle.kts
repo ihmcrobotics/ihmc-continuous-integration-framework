@@ -16,6 +16,11 @@ ihmc {
    configurePublications()
 }
 
+categories.create("slow")
+{
+   includeTags += "slow"
+}
+
 val junit = "junit:junit:4.12"
 val unirestJava = "com.mashape.unirest:unirest-java:1.4.9"
 val commonsLang = "org.apache.commons:commons-lang3:3.8.1"
@@ -66,14 +71,12 @@ ihmc.sourceSetProject("generator-test").dependencies {
 }
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
-   implementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
-   runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
    compile(commonsLang)
    compile(commonsIo)
    compile(ihmcCommons)
    compile(allocationInstrumenter)
 }
 
-ihmc.sourceSetProject("junitfive-test").tasks.withType<Test> {
-    useJUnitPlatform()
-}
+//ihmc.sourceSetProject("junitfive-test").tasks.withType<Test> {
+//    useJUnitPlatform()
+//}

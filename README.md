@@ -43,7 +43,7 @@ Special JVM argument accessors:
 
 The plugin will do a few other things too:
 
-- If `-PrunningOnCIServer=true`, set `-Drunning.on.ci.server=true`.
+- If `-PrunningOnCIServer=true`, set `-DPrunningOnCIServer=true`.
 - Pass `-Dresources.dir` that points to your resources folder on disk.
 
 #### Examples

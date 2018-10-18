@@ -1,6 +1,27 @@
 # IHMC CI
 
-Tools for running large amounts of tests with special requirements.
+Gradle plugin for running groups of tests with complex runtime requirements.
+
+**IMPORTANT: This plugin assumes the use of the ihmc-build plugin!!!**
+
+### Features
+
+- Easily define and run categories of tests
+- Uses the standard `gradle test` task
+- IDE support for running tests in parallel
+- Built-in allocation testing category to test realtime safety
+- Built on JUnit 5
+- Load resources from file or classpath, using `resource.dir` JVM property
+- Know if you're running on CI server with `runningOnCIServer` JVM property
+
+### Download
+
+```kotlin
+plugins {
+   id("us.ihmc.ihmc-build") version "0.15.1"
+   id("us.ihmc.ihmc-ci") version "1.0.2"
+}
+```
 
 ### User Guide
 
@@ -43,7 +64,7 @@ Special JVM argument accessors:
 
 The plugin will do a few other things too:
 
-- If `-PrunningOnCIServer=true`, set `-DPrunningOnCIServer=true`.
+- If `-PrunningOnCIServer=true`, set `-DrunningOnCIServer=true`.
 - Pass `-Dresources.dir` that points to your resources folder on disk.
 
 #### Examples
@@ -72,15 +93,3 @@ It is possible to run tests in parallel in your IDE, just pass these VM argument
 -Djunit.jupiter.execution.parallel.enabled=true
 -Djunit.jupiter.execution.parallel.config.strategy=dynamic
 ```
-
-#### Implementation notes
-
-- This plugin assumes use of ihmc-build?
-
-#### Publish to Bintray
-
-`gradle publish -PpublishUrl=ihmcRelease`
-
-#### Publish to Gradle plugins site
-
-`gradle publishPlugins -PpascalCasedName=IHMCCIPlugin -PkebabCasedName=ihmc-ci-plugin -PextraSourceSets=[]`

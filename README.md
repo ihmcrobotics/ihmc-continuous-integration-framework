@@ -19,7 +19,7 @@ Gradle plugin for running groups of tests with complex runtime requirements.
 ```kotlin
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.1"
-   id("us.ihmc.ihmc-ci") version "1.0.7"
+   id("us.ihmc.ihmc-ci") version "1.0.8"
 }
 ```
 
@@ -79,6 +79,7 @@ The plugin will do a few other things too:
 
 - If `-PrunningOnCIServer=true`, set `-DrunningOnCIServer=true`.
 - Pass `-Dresources.dir` that points to your resources folder on disk.
+- Pass `-ea` JVM argument to enable JVM assertions
 
 #### Examples
 

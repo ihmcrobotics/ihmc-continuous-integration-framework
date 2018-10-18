@@ -1,22 +1,17 @@
 # Top level directories to ignore
-/build
-/classes
-/bin
-/out
-/target
 /pit-reports
 /install
 
 # Top level directories in sub-projects
-*/classes
-*/bin
-*/out
 */target
-*/build
 */pit-reports
 */install
 
 # directories to always ignore
+**/bin
+**/classes
+**/build
+**/out
 **/.gradle
 **/.project
 **/.classpath
@@ -40,7 +35,6 @@
 
 
 # File types to ignore
-**/*.jar
 **/cookies.txt
 **/*.iml
 **/*.hprof

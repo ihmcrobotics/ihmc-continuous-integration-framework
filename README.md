@@ -19,7 +19,7 @@ Gradle plugin for running groups of tests with complex runtime requirements.
 ```kotlin
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.1"
-   id("us.ihmc.ihmc-ci") version "1.0.5"
+   id("us.ihmc.ihmc-ci") version "1.0.6"
 }
 ```
 
@@ -35,10 +35,22 @@ The default settings can be scaled via the `cpuThreads` property (i.e. `-PcpuThr
 
 |Category|Configuration|Summary|
 |---|---|---|
-|`fast`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 4`<br>`excludeTags = ["all"]`|Run untagged tests as fast as possible.<br>Assume no special runtime requirements.|
-|`allocation`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = ["allocation"]`<br>`jvmArgs += getAllocationAgentJVMArg()`|Run only 1 test per JVM process so allocations don't overlap.<br>Uses provided special accessor, `allocationAgentJVMArg`,<br>to get `-javaagent:[..]java-allocation-instrumenter[..].jar`|
-|`scs`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = ["scs"]`<br>`jvmArgs += "-Dcreate.scs.gui=false"`<br>`jvmArgs += "-Dshow.scs.windows=false"`<br>`jvmArgs += "-Dshow.scs.yographics=false"`<br>`jvmArgs += "-Djava.awt.headless=true"`<br>`jvmArgs += "-Dcreate.videos=false"`<br>`jvmArgs += "-Dopenh264.license=accept"`<br>`jvmArgs += "-Ddisable.joint.subsystem.publisher=true"`<br>`jvmArgs += "-Dscs.dataBuffer.size=8142"`|Run SCS tests.<br>(Will eventually move SCS Gradle plugin)<br>These are the default settings for SCS. Accessible via `getSCSDefaultJVMArgs()`.|
-|`video`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags = ["video"]`<br>`jvmArgs += "-Dcreate.scs.gui=true"`<br>`jvmArgs += "-Dshow.scs.windows=true"`<br>`jvmArgs += "-Dcreate.videos.dir=/home/shadylady/bamboo-videos/"`<br>`jvmArgs += "-Dshow.scs.yographics=true"`<br>`jvmArgs += "-Djava.awt.headless=false"`<br>`jvmArgs += "-Dcreate.videos=true"`<br>`jvmArgs += "-Dopenh264.license=accept"`<br>`jvmArgs += "-Ddisable.joint.subsystem.publisher=true"`<br>`jvmArgs += "-Dscs.dataBuffer.size=8142"`|Run SCS video recordings.<br>(Will eventually move SCS Gradle plugin)|
+|`fast`|`classesPerJVM = 0 // no limit`<br>`maxJVMs = 2`<br>`maxParallelTests = 4`|Run untagged tests as fast as possible.<br>Assume no special runtime requirements.|
+|`allocation`|`classesPerJVM = 0`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "allocation"`<br>`jvmArgs += getAllocationAgentJVMArg()`|Run only 1 test per JVM process so allocations don't overlap.<br>Uses provided special accessor, `allocationAgentJVMArg`,<br>to get `-javaagent:[..]java-allocation-instrumenter[..].jar`|
+|`scs`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "scs"`<br>`jvmProperties.putAll(getScsDefaultJVMProps())`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS tests.<br>(Will eventually move SCS Gradle plugin)<br>These are the default settings for SCS. Accessible via `getSCSDefaultJVMArgs()`.|
+|`video`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "video"`<br>`jvmProperties["create.scs.gui"] = "true"`<br>`jvmProperties["show.scs.windows"] = "true"`<br>`jvmProperties["create.videos.dir"] = "/home/shadylady/bamboo-videos/"`<br>`jvmProperties["show.scs.yographics"] = "true"`<br>`jvmProperties["java.awt.headless"] = "false"`<br>`jvmProperties["create.videos"] = "true"`<br>`jvmProperties["openh264.license"] = "accept"`<br>`jvmProperties["disable.joint.subsystem.publisher"] = "true"`<br>`jvmProperties["scs.dataBuffer.size"] = "8142"`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS video recordings.<br>(Will eventually move SCS Gradle plugin)|
+ 
+Default SCS properties:
+```kotlin
+mapOf("create.scs.gui" to "false",
+      "show.scs.windows" to "false",
+      "show.scs.yographics" to "false",
+      "java.awt.headless" to "true",
+      "create.videos" to "false",
+      "openh264.license" to "accept",
+      "disable.joint.subsystem.publisher" to "true",
+      "scs.dataBuffer.size" to "8142")
+```
  
 #### Custom categories
 
@@ -51,7 +63,8 @@ categories.create("slow-scs")
    maxParallelTests = 1   // default: 4
    excludeTags += "none"   // default: all
    includeTags += ["slow", "scs"]   // default: empty
-   jvmArgs += "-Dsome.arg=value"   // default: empty List
+   jvmProperties += "some.arg" to "value"   // default: empty List
+   jvmArguments += "-Dsome.arg=value"   // default: empty List
    minHeapSizeGB = 1   // default: 1
    maxHeapSizeGB = 8   // default: 4
 }

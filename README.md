@@ -19,7 +19,7 @@ Gradle plugin for running groups of tests with complex runtime requirements.
 ```kotlin
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.1"
-   id("us.ihmc.ihmc-ci") version "1.1.3"
+   id("us.ihmc.ihmc-ci") version "1.1.4"
 }
 ```
 
@@ -54,8 +54,8 @@ mapOf("create.scs.gui" to "false",
  
 #### Custom categories
 
-In your project's `build.gradle`:
-```groovy
+In your project's `build.gradle.kts` (Kotlin):
+```kotlin
 categories.create("slow-scs")
 {
    classesPerJVM = 1   // default: 1
@@ -68,6 +68,14 @@ categories.create("slow-scs")
    minHeapSizeGB = 1   // default: 1
    maxHeapSizeGB = 8   // default: 4
 }
+```
+
+In your project's `build.gradle` (Groovy):
+```groovy
+def fast = categories.create("fast")
+fast.jvmProperties.putAll(fast.getScsDefaultJVMProps())
+fast.minHeapSizeGB = 6
+fast.maxHeapSizeGB = 8
 ```
 
 Special JVM argument accessors:

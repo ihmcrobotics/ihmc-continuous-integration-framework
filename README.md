@@ -2,8 +2,6 @@
 
 Gradle plugin for running groups of tests with complex runtime requirements.
 
-**IMPORTANT: This plugin assumes the use of the ihmc-build plugin!!!**
-
 ### Features
 
 - Easily define and run categories of tests
@@ -13,13 +11,15 @@ Gradle plugin for running groups of tests with complex runtime requirements.
 - Built on JUnit 5
 - Load resources from file or classpath, using `resource.dir` JVM property
 - Know if you're running on CI server with `runningOnCIServer` JVM property
+- Supports for projects using [ihmc-build](https://github.com/ihmcrobotics/ihmc-build) plugin
+- Generate phony test result so projects with no tests will pass on CI servers
 
 ### Download
 
 ```kotlin
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.1"
-   id("us.ihmc.ihmc-ci") version "1.0.9"
+   id("us.ihmc.ihmc-ci") version "1.1.0"
 }
 ```
 

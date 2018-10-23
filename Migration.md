@@ -33,16 +33,21 @@ ihmc-ci-core-api
 
 ### Switch all annotations:
 ```
-fast
-(@[a-zA-Z\.\s]*ContinuousIntegrationPlan\s*\(\s*categories[ \t\x0B\S]+FAST.*\R)
-@Tag\("fast"\)\R$1
-
-([ \t\x0B]+)(@[a-zA-Z\.\s]*ContinuousIntegrationTest\s*\(\s*categoriesOverride[ \t\x0B\S]+FAST.*\R)
-$1@Tag\("fast"\)\R$1$2
-
+add Tag import
 ((import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*)+)
 $1\Rimport org.junit.jupiter.api.Tag;\R
 
+fast
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FAST.*\R)
+$1@Tag\("fast"\)\R$1$2
+
+slow
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+SLOW.*\R)
+$1@Tag\("slow"\)\R$1$2
+
+video
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+VIDEO.*\R)
+$1@Tag\("video"\)\R$1$2
 
 
 \Rimport\s+us\.ihmc\.continuousIntegration\.IntegrationCategory;

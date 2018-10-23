@@ -121,6 +121,9 @@ remove custom imports
 import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*\R
 import us\.ihmc\.continuousIntegration\.IntegrationCategory[ \t\x0B\S]*;\s*\R
 
+remove junit4 annotations
+[ \t\x0B]*import[ \t\x0B]+org\.junit\.Ignore[ \t\x0B]*;[ \t\x0B]*\R
+
 ```
 
 ### Switch all assertions
@@ -128,15 +131,26 @@ import us\.ihmc\.continuousIntegration\.IntegrationCategory[ \t\x0B\S]*;\s*\R
 create AssertionTools in ihmc-robotics-toolkit-test with
 import static org.junit.jupiter.api.Assertions.*;
 
-switch to assertiontools
+switch assertiontools from junit
 ((import\s*static\s*org\.junit\.Assert[ \t\x0B\S]*;\s*)+)
-import static us.ihmc.robotics.AssertionTools.*;\R\R
+import static us.ihmc.robotics.Assert.*;\R\R
+
+switch assertiontools from junit framework
+((import\s*static\s*junit\.framework\.[ \t\x0B\S\.]*;\s*)+)
+import static us.ihmc.robotics.Assert.*;\R\R
+
+switch non-static assert
+((import\s*org\.junit\.Assert[ \t\x0B\S]*;\s*)+)
+import us.ihmc.robotics.Assert;\R
 
 add to a few projects
 compile group: "us.ihmc", name: "ihmc-robotics-toolkit-test", version: "source"
 
+switch to ihmc-commons CITools
+import us.ihmc.continuousIntegration.ContinuousIntegrationTools;
+import us.ihmc.commons.ContinuousIntegrationTools;
 
-
+disable on debug thing
 
 ```
 

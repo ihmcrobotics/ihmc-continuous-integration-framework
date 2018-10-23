@@ -125,12 +125,18 @@ import us\.ihmc\.continuousIntegration\.IntegrationCategory[ \t\x0B\S]*;\s*\R
 
 ### Switch all assertions
 ```
-Remove imports:
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-Add these:
+create AssertionTools in ihmc-robotics-toolkit-test with
 import static org.junit.jupiter.api.Assertions.*;
+
+switch to assertiontools
+((import\s*static\s*org\.junit\.Assert[ \t\x0B\S]*;\s*)+)
+import static us.ihmc.robotics.AssertionTools.*;\R\R
+
+add to a few projects
+compile group: "us.ihmc", name: "ihmc-robotics-toolkit-test", version: "source"
+
+
+
 
 ```
 
@@ -142,7 +148,8 @@ remove junit4
 \R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
 
 remove ihmc-ci-core-api
-\R[ \t\x0B]+compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
+(\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*\R
+$1compile "us.ihmc:ihmc-java-toolkit-test:source"\R
 
 ### Useful regexes
 
@@ -153,3 +160,7 @@ remove ihmc-ci-core-api
 \R\s+@Tag\("fast"\)
 @Continuous[ \t\x0B\S]+VIDEO[ \t\x0B\S]*\)
 
+import static org.junit.Assert.*;\R\R
+import static org\.junit\.Assert\.\*[ \t\x0B]*;
+
+import static org.junit.jupiter.api.Assertions.*;

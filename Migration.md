@@ -19,7 +19,7 @@ id("us.ihmc.ihmc-ci-plugin") version "0.18.0"
 
 plugin
 id\("us\.ihmc\.ihmc-ci"\)\s+version\s+"1\.1\.6"
-id("us.ihmc.ihmc-ci") version "1.2.1"
+id("us.ihmc.ihmc-ci") version "1.2.2"
 
 ihmc-commons
 0\.24\.0
@@ -76,7 +76,7 @@ add Disabled import
 (import org\.junit\.jupiter\.api\.Tag[ \t\x0B\S]*;\s*)
 $1import org.junit.jupiter.api.Disabled;\R
 
-fast
+fast (actually probably dont add these)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FAST.*\R)
 $1@Tag\("fast"\)\R$1$2
 
@@ -163,3 +163,10 @@ remove junit4
 remove ihmc-ci-core-api
 (\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*\R
 $1compile "us.ihmc:ihmc-java-toolkit-test:source"\R
+
+### Get tests running
+
+add scs args to fast category, allocation
+
+remove fast tags
+[ \t\x0B]*@Tag\("fast"\)[ \t\x0B]*\R

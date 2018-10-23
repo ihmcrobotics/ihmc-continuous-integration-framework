@@ -25,17 +25,52 @@ ihmc-commons
 0\.24\.0
 0.25.0
 
-junit4
-\R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
-
-ihmc-ci-core-api
-\R[ \t\x0B]+compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
-
 ### Switch all annotations:
 ```
-add Tag import
+add JUnit 5 imports
+
+replace test import
+import org\.junit\.Test[ \t\x0B]*;
+import org.junit.jupiter.api.Test;
+
+test
+([ \t\x0B]*)(@Test)[ \t\x0B]*\((.*)\)
+$1$2// $3
+
+replace beforeeach import
+import org\.junit\.Before[ \t\x0B]*;
+import org.junit.jupiter.api.BeforeEach;
+
+beforeeach
+([ \t\x0B]*)@Before[ \t\x0B]*\R
+$1@BeforeEach\R
+
+replace beforeall import
+import org\.junit\.BeforeClass[ \t\x0B]*;
+import org.junit.jupiter.api.BeforeAll;
+
+beforeall
+([ \t\x0B]*)@BeforeClass[ \t\x0B]*\R
+$1@BeforeAll\R
+
+replace aftereach import
+import org\.junit\.After[ \t\x0B]*;
+import org.junit.jupiter.api.AfterEach;
+
+aftereach
+([ \t\x0B]*)@After[ \t\x0B]*\R
+$1@AfterEach\R
+
+replace afterall import
+import org\.junit\.AfterClass[ \t\x0B]*;
+import org.junit.jupiter.api.AfterAll;
+
+afterall
+([ \t\x0B]*)@AfterClass[ \t\x0B]*\R
+$1@AfterAll\R
+
 ((import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*)+)
-$1import org.junit.jupiter.api.Tag;\R
+$1import org.junit.jupiter.api.Tag;\Rimport org.junit.jupiter.api.Disabled;\R
 
 add Disabled import
 (import org\.junit\.jupiter\.api\.Tag[ \t\x0B\S]*;\s*)
@@ -78,38 +113,14 @@ exclude
 $1@Disabled\R$1$2
 
 remove custom annotations
-[ \t\x0B]*@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories[ \t\x0B\S]*\).*\R
+[ \t\x0B]*@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*\).*\R
 
+delete existing test suites
 
+remove custom imports
+import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*\R
+import us\.ihmc\.continuousIntegration\.IntegrationCategory[ \t\x0B\S]*;\s*\R
 
-\Rimport\s+us\.ihmc\.continuousIntegration\.IntegrationCategory;
-\Rimport\s+us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations\.ContinuousIntegrationPlan;
-\Rimport\s+us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations\.ContinuousIntegrationTest;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import org.junit.Test;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
-
-@ContinuousIntegrationPlan(categories = {IntegrationCategory.FAST})
-@ContinuousIntegrationTest(estimatedDuration = 46.9)
-@Test(timeout = 230000)
-@Ignore
-
-@Tag("slow")
-@Test
-@Disabled
-
-@Test(timeout = 30000, expected = RuntimeException.class)
-preserve timeouts somehow? maybe in a comment
-preserve expected exception in comment
 ```
 
 ### Switch all assertions
@@ -125,6 +136,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 Messages are now the last parameter in assertion methods.
 
+### Remove JUnit 4
+
+remove junit4
+\R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
+
+remove ihmc-ci-core-api
+\R[ \t\x0B]+compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
 
 ### Useful regexes
 

@@ -49,12 +49,12 @@ public class Assert
 
    static public void assertNotEquals(String message, double first, double second, double delta)
    {
-      org.junit.jupiter.api.Assertions.assertNotEquals(first, second, delta, message);
+      org.junit.jupiter.api.Assertions.assertNotEquals(first, second, message);
    }
 
    static public void assertNotEquals(double first, double second, double delta)
    {
-      org.junit.jupiter.api.Assertions.assertNotEquals(first, second, delta);
+      org.junit.jupiter.api.Assertions.assertNotEquals(first, second);
    }
 
    public static void assertArrayEquals(Object[] expecteds, Object[] actuals)

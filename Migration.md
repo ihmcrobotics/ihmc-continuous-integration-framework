@@ -53,12 +53,23 @@ Add these:
 @Disabled
 ```
 
+@Test(timeout = 30000, expected = RuntimeException.class)
 preserve timeouts somehow? maybe in a comment
-
-preserve throws exception in comment
+preserve expected exception in comment
 
 
 ### Switch all assertions
+```
+Remove imports:
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+Add these:
+import static org.junit.jupiter.api.Assertions.*;
+
+```
+
+Messages are now the last parameter in assertion methods.
 
 
 ### Useful regexes

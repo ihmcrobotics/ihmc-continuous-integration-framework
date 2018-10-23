@@ -35,7 +35,11 @@ ihmc-ci-core-api
 ```
 add Tag import
 ((import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*)+)
-$1\Rimport org.junit.jupiter.api.Tag;\R
+$1import org.junit.jupiter.api.Tag;\R
+
+add Disabled import
+(import org\.junit\.jupiter\.api\.Tag[ \t\x0B\S]*;\s*)
+$1import org.junit.jupiter.api.Disabled;\R
 
 fast
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FAST.*\R)
@@ -48,6 +52,34 @@ $1@Tag\("slow"\)\R$1$2
 video
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+VIDEO.*\R)
 $1@Tag\("video"\)\R$1$2
+
+ui
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+UI.*\R)
+$1@Tag\("ui"\)\R$1$2
+
+flaky
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FLAKY.*\R)
+$1@Tag\("flaky"\)\R$1$2
+
+indev
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+IN_DEVELOPMENT.*\R)
+$1@Tag\("in-development"\)\R$1$2
+
+manual
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+MANUAL.*\R)
+$1@Tag\("manual"\)\R$1$2
+
+replace ignore keeping message
+([ \t\x0B]*)(@Ignore)(.*)\R
+$1@Disabled$3\R
+
+exclude
+([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+EXCLUDE.*\R)
+$1@Disabled\R$1$2
+
+remove custom annotations
+[ \t\x0B]*@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories[ \t\x0B\S]*\).*\R
+
 
 
 \Rimport\s+us\.ihmc\.continuousIntegration\.IntegrationCategory;

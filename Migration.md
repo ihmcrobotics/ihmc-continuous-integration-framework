@@ -19,7 +19,7 @@ id("us.ihmc.ihmc-ci-plugin") version "0.18.0"
 
 plugin
 id\("us\.ihmc\.ihmc-ci"\)\s+version\s+"1\.1\.6"
-id("us.ihmc.ihmc-ci") version "1.2.0"
+id("us.ihmc.ihmc-ci") version "1.2.1"
 
 ihmc-commons
 0\.24\.0
@@ -128,33 +128,32 @@ remove junit4 annotations
 
 ### Switch all assertions
 ```
-create AssertionTools in ihmc-robotics-toolkit-test with
-import static org.junit.jupiter.api.Assertions.*;
+create Assert.java in ihmc-robotics-toolkit-test from included file
 
-switch assertiontools from junit
+switch junit to Assert.java
 ((import\s*static\s*org\.junit\.Assert[ \t\x0B\S]*;\s*)+)
 import static us.ihmc.robotics.Assert.*;\R\R
 
-switch assertiontools from junit framework
+switch junit framework to Assert.java
 ((import\s*static\s*junit\.framework\.[ \t\x0B\S\.]*;\s*)+)
 import static us.ihmc.robotics.Assert.*;\R\R
 
-switch non-static assert
+switch non-static junit to Assert
 ((import\s*org\.junit\.Assert[ \t\x0B\S]*;\s*)+)
 import us.ihmc.robotics.Assert;\R
 
 add to a few projects
 compile group: "us.ihmc", name: "ihmc-robotics-toolkit-test", version: "source"
 
-switch to ihmc-commons CITools
+switch ContinuousIntegrationTools source
 import us.ihmc.continuousIntegration.ContinuousIntegrationTools;
 import us.ihmc.commons.ContinuousIntegrationTools;
 
 disable on debug thing
+a few asserts in footstep planning
+a few misc items (<20)
 
 ```
-
-Messages are now the last parameter in assertion methods.
 
 ### Remove JUnit 4
 
@@ -164,17 +163,3 @@ remove junit4
 remove ihmc-ci-core-api
 (\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*\R
 $1compile "us.ihmc:ihmc-java-toolkit-test:source"\R
-
-### Useful regexes
-
-@ContinuousIntegrationTest[ \t\x0B\S]+[ \t\x0B]*\)
-\R[ \t\x0B]+@ContinuousIntegrationTest\s*\(\s*estimatedDuration[ \t\x0B\S]*=[ \t\x0B0-9\.^A-Z]+\)
-\Rimport us\.ihmc\.continuousIntegration\.IntegrationCategory;
-\Rimport us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations\.ContinuousIntegrationPlan;
-\R\s+@Tag\("fast"\)
-@Continuous[ \t\x0B\S]+VIDEO[ \t\x0B\S]*\)
-
-import static org.junit.Assert.*;\R\R
-import static org\.junit\.Assert\.\*[ \t\x0B]*;
-
-import static org.junit.jupiter.api.Assertions.*;

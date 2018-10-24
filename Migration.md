@@ -162,11 +162,10 @@ remove junit4
 
 remove ihmc-ci-core-api
 (\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*\R
-$1compile "us.ihmc:ihmc-java-toolkit-test:source"\R
 
 ### Get tests running
 
-add scs args to fast category, allocation
 
-remove fast tags
-[ \t\x0B]*@Tag\("fast"\)[ \t\x0B]*\R
+### Later
+
+Refactor away Assert class

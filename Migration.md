@@ -100,7 +100,7 @@ indev
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+IN_DEVELOPMENT.*\R)
 $1@Tag\("in-development"\)\R$1$2
 
-manual
+manual (disabled or converted to demo)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+MANUAL.*\R)
 $1@Tag\("manual"\)\R$1$2
 
@@ -165,7 +165,14 @@ remove ihmc-ci-core-api
 
 ### Get tests running
 
+Problem tests:
+us.ihmc.atlas.behaviorTests.AtlasBehaviorDispatcherTest > testDispatchPelvisPoseBehavior()
+
 
 ### Later
 
 Refactor away Assert class
+Add scs tag to all scs tests
+Add network tag?
+Add expected exception assertions
+

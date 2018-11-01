@@ -1,18 +1,18 @@
 # IHMC CI
 
-Gradle plugin for running groups of tests with complex runtime requirements.
+Gradle plugin for running groups of tests with varied runtime requirements.
 
 ### Features
 
 - Easily define and run categories of tests
 - Uses the standard `gradle test` task
 - IDE support for running tests in parallel
-- Built-in allocation testing category to test realtime safety
-- Built on JUnit 5
-- Load resources from file or classpath, using `resource.dir` JVM property
-- Know if you're running on CI server with `runningOnCIServer` JVM property
-- Supports for projects using [ihmc-build](https://github.com/ihmcrobotics/ihmc-build) plugin
-- Generate phony test result so projects with no tests will pass on CI servers
+- Built-in allocation testing support for realtime safety
+- Built on JUnit 5, Gradle, and JVM
+- Load resources using file APIs with the `resource.dir` JVM property
+- `runningOnCIServer` boolean JVM property to improve running tests locally
+- Support for projects using [ihmc-build](https://github.com/ihmcrobotics/ihmc-build) plugin
+- Generate empty test results when no tests are present to avoid false negative builds
 
 ### Download
 

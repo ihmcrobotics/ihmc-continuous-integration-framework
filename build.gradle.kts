@@ -11,7 +11,6 @@ ihmc {
    maintainer = "Duncan Calvert"
 
    configureDependencyResolution()
-   resourceDirectory("generator-test", "builds")
    resourceDirectory("junitfive-test", "builds")
    configurePublications()
 }
@@ -22,61 +21,15 @@ categories.create("slow")
 }
 
 val junit = "junit:junit:4.12"
-val unirestJava = "com.mashape.unirest:unirest-java:1.4.9"
-val commonsLang = "org.apache.commons:commons-lang3:3.8.1"
-val commonsIo = "commons-io:commons-io:2.6"
 val javaparser = "com.github.javaparser:javaparser-core:3.6.20"
-val guava = "com.google.guava:guava:26.0-jre"
-val snakeYaml = "org.yaml:snakeyaml:1.23"
-val jung2 = "net.sf.jung:jung2:2.0.1"
-val ihmcCommons = "us.ihmc:ihmc-commons:0.24.0"
 val ihmcCommonsTesting = "us.ihmc:ihmc-commons-testing:0.24.0"
-val euclidCore = "us.ihmc:euclid-core:0.6.1"
 val jacksonCore = "com.fasterxml.jackson.core:jackson-core:2.9.6"
 val jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
-val jacksonAnnotations = "com.fasterxml.jackson.core:jackson-annotations:2.9.6"
-val jgit = "org.eclipse.jgit:org.eclipse.jgit:5.0.3.201809091024-r"
-val groovy = "org.codehaus.groovy:groovy:2.3.11"
-val allocationInstrumenter = "com.google.code.java-allocation-instrumenter:java-allocation-instrumenter:3.1.0"
 
-ihmc.sourceSetProject("core-api").dependencies {
-   compile(junit)
-}
 
-ihmc.sourceSetProject("generator").dependencies {
-   compile(junit)
-   compile(ihmc.sourceSetProject("core-api"))
-   compile(unirestJava)
-   compile(commonsLang)
-   compile(javaparser)
-   compile(guava)
-   compile(snakeYaml)
-   compile(jung2)
-   compile(commonsIo)
-   compile(ihmcCommons)
-   compile(euclidCore)
-   compile(jacksonDatabind)
-   compile(jacksonAnnotations)
-   compile(jacksonCore)
-   compile(groovy)
-}
-
-ihmc.sourceSetProject("generator-test").dependencies {
-   compile(ihmc.sourceSetProject("core-api"))
-   compile(ihmc.sourceSetProject("generator"))
-   compile(javaparser)
-   compile(jgit)
-   compile(ihmcCommonsTesting)
-   compile(allocationInstrumenter)
-}
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
-   compile(commonsLang)
-   compile(commonsIo)
-   compile(ihmcCommons)
-   compile(allocationInstrumenter)
+   compile("org.apache.commons:commons-lang3:3.8.1")
+   compile("commons-io:commons-io:2.6")
+   compile("us.ihmc:ihmc-commons:0.24.0")
 }
-
-//ihmc.sourceSetProject("junitfive-test").tasks.withType<Test> {
-//    useJUnitPlatform()
-//}

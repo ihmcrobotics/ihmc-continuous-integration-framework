@@ -1,5 +1,7 @@
 import com.gradle.publish.MavenCoordinates
 import com.gradle.publish.PluginConfig
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 plugins {
    `java-gradle-plugin`
@@ -13,12 +15,29 @@ version = "1.2.4"
 repositories {
    mavenCentral()
    jcenter()
+   maven{
+      url = uri("https://dl.bintray.com/ihmcrobotics/maven-release")
+   }
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType<KotlinJvmCompile> {
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 dependencies {
    compile(gradleApi())
-   compile(kotlin("stdlib"))
-//   runtimeOnly(kotlin("runtime"))
+   compile(kotlin("stdlib-jdk8"))
+   compile("com.github.javaparser:javaparser-core:3.6.20")
+   compile("com.xebialabs.overthere:overthere:5.0.2")
+   compile("org.junit.platform:junit-platform-console:1.3.1")
+   compile("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+   compile("org.ow2.asm:asm:7.0")
+   compile("us.ihmc:encrypted-properties:0.1.0") {
+      exclude("org.slf4j", "slf4j-simple")
+   }
 }
 
 gradlePlugin {

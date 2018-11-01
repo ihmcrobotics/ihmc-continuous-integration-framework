@@ -39,18 +39,7 @@ The default settings can be scaled via the `cpuThreads` property (i.e. `-PcpuThr
 |`allocation`|`classesPerJVM = 0`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "allocation"`<br>`jvmArgs += getAllocationAgentJVMArg()`|Run only 1 test per JVM process so allocations don't overlap.<br>Uses provided special accessor, `allocationAgentJVMArg`,<br>to get `-javaagent:[..]java-allocation-instrumenter[..].jar`|
 |`scs`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "scs"`<br>`jvmProperties.putAll(getScsDefaultJVMProps())`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS tests.<br>(Will eventually move SCS Gradle plugin)<br>These are the default settings for SCS. Accessible via `getSCSDefaultJVMArgs()`.|
 |`video`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "video"`<br>`jvmProperties["create.scs.gui"] = "true"`<br>`jvmProperties["show.scs.windows"] = "true"`<br>`jvmProperties["create.videos.dir"] = "/home/shadylady/bamboo-videos/"`<br>`jvmProperties["show.scs.yographics"] = "true"`<br>`jvmProperties["java.awt.headless"] = "false"`<br>`jvmProperties["create.videos"] = "true"`<br>`jvmProperties["openh264.license"] = "accept"`<br>`jvmProperties["disable.joint.subsystem.publisher"] = "true"`<br>`jvmProperties["scs.dataBuffer.size"] = "8142"`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS video recordings.<br>(Will eventually move SCS Gradle plugin)|
- 
-Default SCS properties:
-```kotlin
-mapOf("create.scs.gui" to "false",
-      "show.scs.windows" to "false",
-      "show.scs.yographics" to "false",
-      "java.awt.headless" to "true",
-      "create.videos" to "false",
-      "openh264.license" to "accept",
-      "disable.joint.subsystem.publisher" to "true",
-      "scs.dataBuffer.size" to "8142")
-```
+
  
 #### Custom categories
 

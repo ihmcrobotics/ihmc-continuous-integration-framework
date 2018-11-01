@@ -1,35 +1,33 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+
 plugins {
-   id("us.ihmc.ihmc-build") version "0.15.1"
+   id("us.ihmc.ihmc-build") version "0.15.3"
    id("us.ihmc.ihmc-ci")
+   id("us.ihmc.log-tools") version "0.2.2"
+   kotlin("jvm") version "1.2.61"
+}
+
+subprojects {
+   this.apply<KotlinPlatformJvmPlugin>()
 }
 
 ihmc {
    group = "us.ihmc"
-   version = "1.1.6"
+   version = "2.0"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
 
    configureDependencyResolution()
-   resourceDirectory("junitfive-test", "builds")
    configurePublications()
 }
-
-categories.create("slow")
-{
-   includeTags += "slow"
-}
-
-val junit = "junit:junit:4.12"
-val javaparser = "com.github.javaparser:javaparser-core:3.6.20"
-val ihmcCommonsTesting = "us.ihmc:ihmc-commons-testing:0.24.0"
-val jacksonCore = "com.fasterxml.jackson.core:jackson-core:2.9.6"
-val jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:2.9.6"
-
-
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
    compile("org.apache.commons:commons-lang3:3.8.1")
    compile("commons-io:commons-io:2.6")
-   compile("us.ihmc:ihmc-commons:0.24.0")
+   compile("us.ihmc:ihmc-commons:0.25.0")
+   compile("us.ihmc:ihmc-commons-testing:0.25.0")
+   compile("us.ihmc:categories-test:source")
 }

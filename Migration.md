@@ -20,6 +20,8 @@ id("us.ihmc.ihmc-ci-plugin") version "0.18.0"
 plugin
 id\("us\.ihmc\.ihmc-ci"\)\s+version\s+"1\.1\.6"
 id("us.ihmc.ihmc-ci") version "1.2.2"
+([ \t\x0B]*)(id\("us\.ihmc\.log-tools"\) version "0\.2\.2")
+$1$2\R$1id("us.ihmc.scs") version "0.1"
 
 ihmc-commons
 0\.24\.0

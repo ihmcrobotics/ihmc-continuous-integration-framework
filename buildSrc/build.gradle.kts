@@ -30,14 +30,10 @@ tasks.withType<KotlinJvmCompile> {
 dependencies {
    compile(gradleApi())
    compile(kotlin("stdlib-jdk8"))
-   compile("com.github.javaparser:javaparser-core:3.6.20")
-   compile("com.xebialabs.overthere:overthere:5.0.2")
    compile("org.junit.platform:junit-platform-console:1.3.1")
    compile("org.junit.jupiter:junit-jupiter-engine:5.3.1")
-   compile("org.ow2.asm:asm:7.0")
-   compile("us.ihmc:encrypted-properties:0.1.0") {
-      exclude("org.slf4j", "slf4j-simple")
-   }
+   compile("com.github.kittinunf.fuel:fuel:1.15.1")
+   compile("org.json:json:20180813")
 }
 
 gradlePlugin {

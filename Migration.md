@@ -173,6 +173,8 @@ remove ihmc-ci-core-api
 Problem tests:
 us.ihmc.atlas.behaviorTests.AtlasBehaviorDispatcherTest > testDispatchPelvisPoseBehavior()
 
+Go through and fing the expected exceptions and add the JUnit 5 assertThrows
+
 
 ### Later
 

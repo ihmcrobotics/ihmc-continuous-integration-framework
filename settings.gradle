@@ -15,4 +15,4 @@ def ihmcSettingsConfigurator = new IHMCSettingsConfigurator(settings, logger, ex
 ihmcSettingsConfigurator.checkRequiredPropertiesAreSet()
 ihmcSettingsConfigurator.configureExtraSourceSets()
 
-includeBuild("src/junitfive-test/builds/categories")
+// includeBuild("src/junitfive-test/builds/categories")  // for testing discovery of external classpath tests

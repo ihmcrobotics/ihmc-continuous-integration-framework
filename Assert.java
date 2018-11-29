@@ -42,6 +42,11 @@ public class Assert
       org.junit.jupiter.api.Assertions.assertEquals(expected, actual);
    }
 
+   static public void assertNotEquals(Object expected, Object actual)
+   {
+      org.junit.jupiter.api.Assertions.assertNotEquals(expected, actual);
+   }
+
    static public void assertNotEquals(long first, long second)
    {
       org.junit.jupiter.api.Assertions.assertNotEquals(first, second);
@@ -63,6 +68,11 @@ public class Assert
    }
 
    public static void assertArrayEquals(int[] expecteds, int[] actuals)
+   {
+      org.junit.jupiter.api.Assertions.assertArrayEquals(expecteds, actuals);
+   }
+
+   public static void assertArrayEquals(byte[] expecteds, byte[] actuals)
    {
       org.junit.jupiter.api.Assertions.assertArrayEquals(expecteds, actuals);
    }

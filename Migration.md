@@ -1,6 +1,5 @@
 # Migration Guide
 
-
 ## In place migration
 
 Add empty generateTestSuites task
@@ -9,7 +8,7 @@ Add empty generateTestSuites task
 
 Add ihmc-ci plugin
 
-remove testSuites block
+Integrated projects: Remove testSuites block
 
 ### Upgrade build scripts w/o new ci plugin
 
@@ -19,7 +18,7 @@ id("us.ihmc.ihmc-ci-plugin") version "0.18.0"
 
 plugin
 id\("us\.ihmc\.ihmc-ci"\)\s+version\s+"1\.1\.6"
-id("us.ihmc.ihmc-ci") version "1.2.2"
+id("us.ihmc.ihmc-ci") version "2.4"
 ([ \t\x0B]*)(id\("us\.ihmc\.log-tools"\) version "0\.2\.2")
 $1$2\R$1id("us.ihmc.scs") version "0.1"
 
@@ -31,11 +30,11 @@ ihmc-commons
 ```
 add JUnit 5 imports
 
-replace test import
+Switch test import statements to JUnit 5
 import org\.junit\.Test[ \t\x0B]*;
 import org.junit.jupiter.api.Test;
 
-test
+Switch test annotations, leaving parameters in a comment; i.e. timeout, expected
 ([ \t\x0B]*)(@Test)[ \t\x0B]*\((.*)\)
 $1$2// $3
 
@@ -78,37 +77,41 @@ add Disabled import
 (import org\.junit\.jupiter\.api\.Tag[ \t\x0B\S]*;\s*)
 $1import org.junit.jupiter.api.Disabled;\R
 
-fast (actually probably dont add these)
+fast (actually probably dont add these) (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FAST.*\R)
 $1@Tag\("fast"\)\R$1$2
 
-slow
+slow (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+SLOW.*\R)
 $1@Tag\("slow"\)\R$1$2
 
-video
+video (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+VIDEO.*\R)
 $1@Tag\("video"\)\R$1$2
 
-ui
+ui (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+UI.*\R)
 $1@Tag\("ui"\)\R$1$2
 
-flaky
+flaky (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+FLAKY.*\R)
 $1@Tag\("flaky"\)\R$1$2
 
-indev
+indev (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+IN_DEVELOPMENT.*\R)
 $1@Tag\("in-development"\)\R$1$2
 
-manual (disabled or converted to demo)
+manual (disabled or converted to demo) (integrated)
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+MANUAL.*\R)
 $1@Tag\("manual"\)\R$1$2
 
 replace ignore keeping message
 ([ \t\x0B]*)(@Ignore)(.*)\R
 $1@Disabled$3\R
+
+switch ignore with disabled import (standalone)
+import[ \t\x0B]+org\.junit\.Ignore[ \t\x0B]*;[ \t\x0B]*
+import org.junit.jupiter.api.Disabled;
 
 exclude
 ([ \t\x0B]*)(@[a-zA-Z\.\s]*ContinuousIntegration\w{4}\s*\([ \t\x0B\S]*categories\w*[ \t\x0B\S]+EXCLUDE.*\R)
@@ -123,7 +126,7 @@ remove custom imports
 import us\.ihmc\.continuousIntegration\.ContinuousIntegrationAnnotations[ \t\x0B\S]*;\s*\R
 import us\.ihmc\.continuousIntegration\.IntegrationCategory[ \t\x0B\S]*;\s*\R
 
-remove junit4 annotations
+remove junit4 Ignore statement
 [ \t\x0B]*import[ \t\x0B]+org\.junit\.Ignore[ \t\x0B]*;[ \t\x0B]*\R
 
 ```
@@ -160,10 +163,10 @@ a few misc items (<20)
 ### Remove JUnit 4
 
 remove junit4
-\R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*
+\R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*
 
 remove ihmc-ci-core-api
-(\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+"[ \t\x0B\S]*\R
+(\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*\R
 
 ### Get tests running
 
@@ -177,4 +180,5 @@ Refactor away Assert class
 Add scs tag to all scs tests
 Add network tag?
 Add expected exception assertions
+Add assertTimeouts
 

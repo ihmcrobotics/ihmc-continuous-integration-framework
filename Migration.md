@@ -16,12 +16,13 @@ id("us.ihmc.ihmc-ci-plugin") version "0.18.0"
 
 ### Junit 5 dependencies
 
-plugin
+Upgrade plugins
 id\("us\.ihmc\.ihmc-ci"\)\s+version\s+"1\.1\.6"
 id("us.ihmc.ihmc-ci") version "2.4"
 ([ \t\x0B]*)(id\("us\.ihmc\.log-tools"\) version "0\.2\.2")
 $1$2\R$1id("us.ihmc.scs") version "0.1"
 
+Upgrade ihmc-commons to at least 0.25.0
 ihmc-commons
 0\.24\.0
 0.25.0

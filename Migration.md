@@ -166,6 +166,9 @@ a few misc items (<20)
 remove junit4
 \R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*
 
+remove junit 5 vintage
+([ \t\x0B]+)(compile[ \t\x0B\S]*vintage[ \t\x0B\S]*junit-vintage-engine[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*)
+
 remove ihmc-ci-core-api
 (\R[ \t\x0B]+)compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*\R
 

@@ -163,6 +163,7 @@ a few misc items (<20)
 
 ### Remove JUnit 4
 
+```
 remove junit4
 \R[ \t\x0B]+compile[ \t\x0B\S]*junit[ \t\x0B\S]*junit[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*
 
@@ -172,19 +173,70 @@ remove junit 5 vintage
 remove ihmc-ci-core-api
 \R[ \t\x0B]+compile[ \t\x0B\S]*us\.ihmc[ \t\x0B\S]*ihmc-ci-core-api[ \t\x0B\S]*[0-9\.]+("|')[ \t\x0B\S]*
 
+```
 ### Get tests running
 
+```
 Problem tests:
 us.ihmc.atlas.behaviorTests.AtlasBehaviorDispatcherTest > testDispatchPelvisPoseBehavior()
 
 Go through and fing the expected exceptions and add the JUnit 5 assertThrows
 
 
+	   Assertions.assertThrows(NoSuchElementException.class, () -> 
+	   {
+       });
+	   Assertions.assertThrows(RuntimeException.class, () -> 
+	   {
+       });
+
+```
+### Inlining Assert.java
+```
+In Assert.java, remove all unused methods.
+
+In Eclipse, inline all methods except the deltas.
+
+Rename all delta methods, adding Delta
+
+Add an XJUnitTools class containing the deltas.
+
+switch Assert import to jupiter plus your custom delta class
+((import\s*static\s*us\.ihmc\.robotics\.Assert[ \t\x0B\S]*;\s*)+)
+import static org.junit.jupiter.api.Assertions.*;\Rimport static us.ihmc.euclid.tools.EuclidJUnitTools.*;\R\R
+
+switch non-static Assert to jupiter
+((import\s*us\.ihmc\.robotics\.Assert[ \t\x0B\S]*;\s*)+)
+import org.junit.jupiter.api.Assertions;\R
+
+Delete Assert.java
+
+remove the prefix from all non-imports
+org\.junit\.jupiter\.api\.Assertions\.([^*])
+$1
+
+remove long casts - run twice
+(assert\w+.*)(\(long\) )
+$1
+
+remove Object casts - run twice
+(assert\w+.*)(\(Object\) )
+$1
+
+remove Assert. prefixes
+Assert\.assert
+assert
+
+```
+
 ### Later
 
+```
 Refactor away Assert class
 Add scs tag to all scs tests
 Add network tag?
 Add expected exception assertions
 Add assertTimeouts
 
+
+```

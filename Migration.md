@@ -195,7 +195,9 @@ Go through and fing the expected exceptions and add the JUnit 5 assertThrows
 ```
 In Assert.java, remove all unused methods.
 
-In Eclipse, inline all methods except the deltas.
+Try removing the == 0.0 check and inlining them first.
+
+In Eclipse, inline all methods except the deltas. (try inlining all first, if too many errors, go to next step)
 
 Rename all delta methods, adding Delta
 

@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 plugins {
    id("us.ihmc.ihmc-build") version "0.15.5"

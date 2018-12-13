@@ -5,6 +5,7 @@ plugins {
    id("us.ihmc.ihmc-ci")
    id("us.ihmc.log-tools") version "0.2.2"
    kotlin("jvm") version "1.2.61"
+   id("us.ihmc.scs") version "0.3"
 }
 
 subprojects {
@@ -13,7 +14,7 @@ subprojects {
 
 ihmc {
    group = "us.ihmc"
-   version = "3.5"
+   version = "4.1"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -21,6 +22,9 @@ ihmc {
    configureDependencyResolution()
    configurePublications()
 }
+
+categories.configure("fast").doFirst = { scs.showGui()
+   println("HELOOOOOOOOOO THERE") }
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
    compile("org.apache.commons:commons-lang3:3.8.1")

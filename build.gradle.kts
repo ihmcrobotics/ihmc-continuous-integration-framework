@@ -14,7 +14,7 @@ subprojects {
 
 ihmc {
    group = "us.ihmc"
-   version = "4.1"
+   version = "4.2"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"
@@ -25,6 +25,8 @@ ihmc {
 
 categories.configure("fast").doFirst = { scs.showGui()
    println("HELOOOOOOOOOO THERE") }
+
+categories.configure("allocation")
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
    compile("org.apache.commons:commons-lang3:3.8.1")

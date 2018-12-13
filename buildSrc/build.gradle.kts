@@ -34,25 +34,32 @@ dependencies {
    compile("org.json:json:20180813")
 }
 
+val pluginDisplayName = "IHMC CI"
+val pluginDescription = "Gradle plugin for running groups of tests with varied runtime requirements."
+val pluginVcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
+val pluginTags = listOf("ci", "continuous", "integration", "ihmc", "robotics")
+
 gradlePlugin {
    plugins.register(project.name) {
       id = project.group as String + "." + project.name
       implementationClass = "us.ihmc.ci.IHMCCIPlugin"
-      displayName = "IHMC CI"
-      description = "Continuous integration tools for IHMC Robotics."
+      displayName = pluginDisplayName
+      description = pluginDescription
    }
 }
 
 pluginBundle {
-   website = "https://github.com/ihmcrobotics/ihmc-ci"
-   vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
-   description = "Continuous integration tools for IHMC Robotics."
-   tags = listOf("ci", "continuous", "integration", "ihmc", "robotics")
+   website = pluginVcsUrl
+   vcsUrl = pluginVcsUrl
+   description = pluginDescription
+   tags = pluginTags
 
    plugins.getByName(project.name) {
       id = project.group as String + "." + project.name
       version = project.version as String
-      displayName = "IHMC CI"
+      displayName = pluginDisplayName
+      description = pluginDescription
+      tags = pluginTags
    }
 
    mavenCoordinates(closureOf<MavenCoordinates> {

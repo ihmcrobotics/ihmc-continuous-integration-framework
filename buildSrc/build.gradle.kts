@@ -1,16 +1,14 @@
 import com.gradle.publish.MavenCoordinates
-import com.gradle.publish.PluginConfig
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 plugins {
-   `java-gradle-plugin`
    kotlin("jvm") version "1.2.61"
-   id("com.gradle.plugin-publish") version "0.9.9"
+   `java-gradle-plugin`
+   id("com.gradle.plugin-publish") version "0.10.0"
 }
 
 group = "us.ihmc"
-version = "3.4"
+version = "3.5"
 
 repositories {
    mavenCentral()
@@ -28,8 +26,8 @@ tasks.withType<KotlinJvmCompile> {
 }
 
 dependencies {
-   compile(gradleApi())
-   compile(kotlin("stdlib-jdk8"))
+   compile(gradleKotlinDsl())
+   compile(kotlin("stdlib-jdk8", "1.2.61"))
    compile("org.junit.platform:junit-platform-console:1.3.1")
    compile("org.junit.jupiter:junit-jupiter-engine:5.3.1")
    compile("com.github.kittinunf.fuel:fuel:1.15.1")
@@ -37,13 +35,11 @@ dependencies {
 }
 
 gradlePlugin {
-   plugins {
-      register("ihmcCIPlugin") {
-         id = project.group as String + "." + project.name
-         displayName = "IHMC CI"
-         implementationClass = "us.ihmc.ci.IHMCCIPlugin"
-         description = "Continuous integration tools for IHMC Robotics."
-      }
+   plugins.register(project.name) {
+      id = project.group as String + "." + project.name
+      implementationClass = "us.ihmc.ci.IHMCCIPlugin"
+      displayName = "IHMC CI"
+      description = "Continuous integration tools for IHMC Robotics."
    }
 }
 
@@ -53,7 +49,7 @@ pluginBundle {
    description = "Continuous integration tools for IHMC Robotics."
    tags = listOf("ci", "continuous", "integration", "ihmc", "robotics")
 
-   plugins.register("ihmcCIPlugin") {
+   plugins.getByName(project.name) {
       id = project.group as String + "." + project.name
       version = project.version as String
       displayName = "IHMC CI"

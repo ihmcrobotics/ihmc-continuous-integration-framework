@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "us.ihmc"
-version = "4.3"
+version = "4.4"
 
 repositories {
    mavenCentral()

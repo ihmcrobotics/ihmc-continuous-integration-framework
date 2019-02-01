@@ -13,13 +13,15 @@ Gradle plugin for running groups of tests with varied runtime requirements.
 - `runningOnCIServer` boolean JVM property to improve running tests locally
 - Support for projects using [ihmc-build](https://github.com/ihmcrobotics/ihmc-build) plugin
 - Generate empty test results when no tests are present to avoid false negative builds
+- Provide list of tests and tags to be run in console output i.e. no uncertainty about which tests are run
+- Set up full lifecycle logging for tests in --info log level i.e. started, passed, failed, skipped
 
 ### Download
 
 ```kotlin
 plugins {
-   id("us.ihmc.ihmc-build") version "0.15.1"
-   id("us.ihmc.ihmc-ci") version "1.2.0"
+   id("us.ihmc.ihmc-build") version "0.15.5"
+   id("us.ihmc.ihmc-ci") version "4.7"
 }
 ```
 
@@ -29,29 +31,15 @@ This plugin defines a concept of `categories`. Categories are communicated via t
 property (i.e. `gradle test -Pcategory=fast`)and are used to set up a test process to run tests based on tags, parallel
 execution settings, and JVM arguments.
 
-#### Built in categories
-
-The default settings can be scaled via the `cpuThreads` property (i.e. `-PcpuThreads=8`). The default value is `8`.
-
-|Category|Configuration|Summary|
-|---|---|---|
-|`fast`|`classesPerJVM = 0 // no limit`<br>`maxJVMs = 2`<br>`maxParallelTests = 4`|Run untagged tests as fast as possible.<br>Assume no special runtime requirements.|
-|`allocation`|`classesPerJVM = 0`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "allocation"`<br>`jvmArgs += getAllocationAgentJVMArg()`|Run only 1 test per JVM process so allocations don't overlap.<br>Uses provided special accessor, `allocationAgentJVMArg`,<br>to get `-javaagent:[..]java-allocation-instrumenter[..].jar`|
-|`scs`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "scs"`<br>`jvmProperties.putAll(getScsDefaultJVMProps())`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS tests.<br>(Will eventually move SCS Gradle plugin)<br>These are the default settings for SCS. Accessible via `getSCSDefaultJVMArgs()`.|
-|`video`|`classesPerJVM = 1`<br>`maxJVMs = 2`<br>`maxParallelTests = 1`<br>`includeTags += "video"`<br>`jvmProperties["create.scs.gui"] = "true"`<br>`jvmProperties["show.scs.windows"] = "true"`<br>`jvmProperties["create.videos.dir"] = "/home/shadylady/bamboo-videos/"`<br>`jvmProperties["show.scs.yographics"] = "true"`<br>`jvmProperties["java.awt.headless"] = "false"`<br>`jvmProperties["create.videos"] = "true"`<br>`jvmProperties["openh264.license"] = "accept"`<br>`jvmProperties["disable.joint.subsystem.publisher"] = "true"`<br>`jvmProperties["scs.dataBuffer.size"] = "8142"`<br>`minHeapSizeGB = 6`<br>`maxHeapSizeGB = 8`|Run SCS video recordings.<br>(Will eventually move SCS Gradle plugin)|
-
- 
 #### Custom categories
 
 In your project's `build.gradle.kts` (Kotlin):
 ```kotlin
-categories.create("slow-scs")
+categories.create("scs-slow")
 {
-   classesPerJVM = 1   // default: 1
-   maxJVMs = 2   // default: 2
-   maxParallelTests = 1   // default: 4
-   excludeTags += "none"   // default: all
-   includeTags += ["slow", "scs"]   // default: empty
+   forkEvery = 0   // default: 0
+   maxParallelForks = 1   // default: 1
+   includeTags += "scs-slow"   // default: all tests, fast tests, or category name
    jvmProperties += "some.arg" to "value"   // default: empty List
    jvmArguments += "-Dsome.arg=value"   // default: empty List
    minHeapSizeGB = 1   // default: 1
@@ -59,18 +47,31 @@ categories.create("slow-scs")
 }
 ```
 
-In your project's `build.gradle` (Groovy):
+or in `build.gradle` (Groovy):
 ```groovy
-def fast = categories.create("fast")
-fast.jvmProperties.putAll(fast.getScsDefaultJVMProps())
-fast.minHeapSizeGB = 6
-fast.maxHeapSizeGB = 8
+def gui = categories.create("gui")
+gui.forkEvery = 0
+gui.maxParallelForks = 1
+gui.minHeapSizeGB = 6
+gui.maxHeapSizeGB = 8
+ 
+def video = categories.create("video")
+video.forkEvery = 0  // forkEvery
+video.maxParallelForks = 1        // maxParallelForks
+video.minHeapSizeGB = 6
+video.maxHeapSizeGB = 8
+ 
+def scsAllocation = categories.create("scs-allocation")
+scsAllocation.forkEvery = 0  // forkEvery
+scsAllocation.maxParallelForks = 1        // maxParallelForks
+scsAllocation.jvmArguments.add("allocationAgent")
+scsAllocation.minHeapSizeGB = 6
+scsAllocation.maxHeapSizeGB = 8
 ```
 
 Special JVM argument accessors:
 
-- `getAllocationAgentJVMArg()` - Find location of `-javaagent:[..]java-allocation-instrumenter[..].jar`
-- `getSCSDefaultJVMArgs()` - Default settings for SCS
+- "allocationAgent" - Find location of `-javaagent:[..]java-allocation-instrumenter[..].jar`
 
 The plugin will do a few other things too:
 
@@ -96,11 +97,13 @@ public void fastTest() { ... }   // runs in fast category
 public void allocationTest() { ... }   // runs in allocation category
 ```
 
-#### Running tests locally in your IDE
+#### Remote Backend (Advanced users only)
 
-It is possible to run tests in parallel in your IDE, just pass these VM arguments:
+The bambooSync task provides a remote web server the authority to fail a build using any dynamic requirements it desires. In our experience, this code has a habit of changing frequently, so this logic is abstracted to the following API.
 
-```
--Djunit.jupiter.execution.parallel.enabled=true
--Djunit.jupiter.execution.parallel.config.strategy=dynamic
-```
+Set the Gradle property `ciBackendHost = 0.0.0.0`. This will be places into the following text to form a url: "http://$ciBackendHost/sync"
+
+When the task runs, it sends the project name and "`all tests to tags`" map.
+
+The task then waits for a response with `fail` (Boolean), and `message` (String). If `fail == true`, the Gradle build will fail with the message.
+

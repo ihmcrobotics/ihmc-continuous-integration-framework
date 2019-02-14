@@ -4,8 +4,8 @@ plugins {
    id("us.ihmc.ihmc-build") version "0.15.5"
    id("us.ihmc.ihmc-ci")
    id("us.ihmc.log-tools") version "0.3.1"
-   kotlin("jvm") version "1.2.61"
-   id("us.ihmc.scs") version "0.3"
+   kotlin("jvm") version "1.3.20"
+   id("us.ihmc.scs") version "0.4"
 }
 
 subprojects {
@@ -14,7 +14,7 @@ subprojects {
 
 ihmc {
    group = "us.ihmc"
-   version = "4.4"
+   version = "4.9"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"

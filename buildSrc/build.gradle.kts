@@ -29,7 +29,7 @@ dependencies {
    compile(gradleKotlinDsl())
    compile(kotlin("stdlib-jdk8", "1.2.61"))
    compile("org.junit.platform:junit-platform-console:1.3.1")
-   compile("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+   compile("org.junit.jupiter:junit-jupiter-engine:5.4.0")
    compile("com.github.kittinunf.fuel:fuel:1.15.1")
    compile("org.json:json:20180813")
 }

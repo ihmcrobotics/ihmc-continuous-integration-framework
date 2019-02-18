@@ -31,7 +31,7 @@ categories.configure("allocation")
 ihmc.sourceSetProject("junitfive-test").dependencies {
    compile("org.apache.commons:commons-lang3:3.8.1")
    compile("commons-io:commons-io:2.6")
-   compile("us.ihmc:ihmc-commons:0.25.1")
-   compile("us.ihmc:ihmc-commons-testing:0.25.1")
+   compile("us.ihmc:ihmc-commons:0.25.2")
+   compile("us.ihmc:ihmc-commons-testing:0.25.2")
 //   compile("us.ihmc:categories-test:source")  // for testing discovery of external classpath tests
 }

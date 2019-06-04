@@ -14,7 +14,7 @@ subprojects {
 
 ihmc {
    group = "us.ihmc"
-   version = "4.9"
+   version = "4.25"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-ci"
    openSource = true
    maintainer = "Duncan Calvert"

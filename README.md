@@ -2,7 +2,7 @@
 
 Gradle plugin for running groups of tests with varied runtime requirements.
 
-### Features
+## Features
 
 - Easily define and run categories of tests
 - Uses the standard `gradle test` task
@@ -16,7 +16,7 @@ Gradle plugin for running groups of tests with varied runtime requirements.
 - Provide list of tests and tags to be run in console output i.e. no uncertainty about which tests are run
 - Set up full lifecycle logging for tests in --info log level i.e. started, passed, failed, skipped
 
-### Download
+## Download
 
 ```kotlin
 plugins {
@@ -24,6 +24,19 @@ plugins {
    id("us.ihmc.ihmc-ci") version "4.7"
 }
 ```
+
+## Testing in the IDE
+
+To run tests in parallel in your IDE (useful for visualizers), add the following JVM properties to your run configuration:
+
+```
+-Djunit.jupiter.execution.parallel.enabled=true
+-Djunit.jupiter.execution.parallel.mode.default=concurrent
+```
+
+See more at https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution
+
+## Gradle
 
 ### User Guide
 

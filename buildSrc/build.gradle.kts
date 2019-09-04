@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "us.ihmc"
-version = "4.25"
+version = "4.26"
 
 repositories {
    mavenCentral()
@@ -19,8 +19,8 @@ repositories {
 }
 
 dependencies {
-   compile("org.junit.platform:junit-platform-console:1.4.0")
-   compile("org.junit.jupiter:junit-jupiter-engine:5.4.0")
+   compile("org.junit.platform:junit-platform-console:1.5.1")
+   compile("org.junit.jupiter:junit-jupiter-engine:5.5.1")
    compile("com.github.kittinunf.fuel:fuel:2.0.1")
    compile("org.json:json:20180813")
 }

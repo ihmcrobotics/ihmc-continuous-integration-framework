@@ -29,7 +29,7 @@ categories.configure("fast").doFirst = { scs.showGui()
 categories.configure("allocation")
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
-   compile("org.apache.commons:commons-lang3:3.8.1")
+   compile("org.apache.commons:commons-lang3:3.9")
    compile("commons-io:commons-io:2.6")
    compile("us.ihmc:ihmc-commons:0.26.6")
    compile("us.ihmc:ihmc-commons-testing:0.26.6")

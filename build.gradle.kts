@@ -32,6 +32,6 @@ ihmc.sourceSetProject("junitfive-test").dependencies {
    compile("org.apache.commons:commons-lang3:3.9")
    compile("commons-io:commons-io:2.6")
    compile("us.ihmc:ihmc-commons:0.30.0")
-   compile("us.ihmc:ihmc-commons-testing:0.29.0")
+   compile("us.ihmc:ihmc-commons-testing:0.30.0")
 //   compile("us.ihmc:categories-test:source")  // for testing discovery of external classpath tests
 }

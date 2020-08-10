@@ -29,9 +29,9 @@ categories.configure("fast").doFirst = { scs.showGui()
 categories.configure("allocation")
 
 ihmc.sourceSetProject("junitfive-test").dependencies {
-   compile("org.apache.commons:commons-lang3:3.9")
-   compile("commons-io:commons-io:2.6")
-   compile("us.ihmc:ihmc-commons:0.30.0")
-   compile("us.ihmc:ihmc-commons-testing:0.30.0")
-//   compile("us.ihmc:categories-test:source")  // for testing discovery of external classpath tests
+   api("org.apache.commons:commons-lang3:3.9")
+   api("commons-io:commons-io:2.6")
+   api("us.ihmc:ihmc-commons:0.30.2")
+   api("us.ihmc:ihmc-commons-testing:0.30.2")
+//   api("us.ihmc:categories-test:source")  // for testing discovery of external classpath tests
 }

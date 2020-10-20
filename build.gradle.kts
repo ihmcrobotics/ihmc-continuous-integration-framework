@@ -28,7 +28,11 @@ categories.configure("fast").doFirst = { scs.showGui()
 
 categories.configure("allocation")
 
-ihmc.sourceSetProject("junitfive-test").dependencies {
+println(junit.jupiterVersion)
+println(junit.jupiterApi())
+println(allocation.instrumenter())
+
+junitfiveTestDependencies {
    api("org.apache.commons:commons-lang3:3.9")
    api("commons-io:commons-io:2.6")
    api("us.ihmc:ihmc-commons:0.30.2")

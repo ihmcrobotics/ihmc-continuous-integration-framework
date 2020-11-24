@@ -5,7 +5,7 @@ plugins {
    id("us.ihmc.ihmc-build")
    id("us.ihmc.ihmc-ci")
    id("us.ihmc.log-tools-plugin") version "0.5.0"
-   id("us.ihmc.scs") version "0.4"
+   id("us.ihmc.scs") version "0.5"
 }
 
 subprojects {

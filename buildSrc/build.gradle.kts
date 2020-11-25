@@ -21,7 +21,7 @@ repositories {
 dependencies {
    api("org.junit.platform:junit-platform-console:1.7.0")
    api("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-   api("com.github.kittinunf.fuel:fuel:2.3.0")
+   api("com.github.kittinunf.fuel:fuel:2.2.3")
    api("org.json:json:20201115")
 }
 

@@ -13,9 +13,6 @@ version = "7.4"
 repositories {
    mavenCentral()
    jcenter()
-   maven{
-      url = uri("https://dl.bintray.com/ihmcrobotics/maven-release")
-   }
 }
 
 dependencies {
